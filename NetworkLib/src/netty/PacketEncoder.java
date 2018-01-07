@@ -30,9 +30,9 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
     @Override
     protected void encode(ChannelHandlerContext chc, Packet oPacket, ByteBuf oBuffer) throws Exception {
-        Socket Session = chc.channel().attr(Socket.SESSION_KEY).get();
+        IOClient Session = chc.channel().attr(IOClient.SESSION_KEY).get();
         byte[] aSendBuff = oPacket.GetData();
-        
+
         if (Session != null) {
 
             int dwKey = Session.uSeqSend;

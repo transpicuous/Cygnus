@@ -35,7 +35,7 @@ public class OutPacket {
         aData = new byte[0x50000];
         nOffset = 0;
     }
-    
+
     public final OutPacket Encode(int nValue) {
         aData[nOffset++] = (byte) nValue;
         return this;
@@ -99,7 +99,7 @@ public class OutPacket {
     public final OutPacket EncodeString(String sData) {
         return EncodeShort(sData.length()).Encode(sData.getBytes(ASCII));
     }
-    
+
     public final OutPacket EncodeBuffer(String sData) {
         Encode(sData.getBytes(ASCII));
         return this;
@@ -108,7 +108,7 @@ public class OutPacket {
     public final OutPacket EncodeHex(String sData) {
         return Encode(HexUtils.ToBytes(sData));
     }
-    
+
     public final OutPacket Fill(int nValue, int nLenth) {
         for (int i = 0; i < nLenth; i++) {
             Encode(nValue);

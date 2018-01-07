@@ -24,37 +24,39 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Kaz Voeten
  */
-public class Socket {
-    public static final AttributeKey<Socket> SESSION_KEY = AttributeKey.valueOf("Session");
+public class IOClient {
+
+    public static final AttributeKey<IOClient> SESSION_KEY = AttributeKey.valueOf("Session");
     public int uSeqSend, uSeqRcv;
     public int nCryptoMode = 1;
     public int nSavedLen = -1;
     private final ReentrantLock Lock;
     protected final Channel channel;
-    
-    public Socket(Channel channel, int uSeqSend, int uSeqRcv) {
+    public InPacket Decoder = new InPacket();
+
+    public IOClient(Channel channel, int uSeqSend, int uSeqRcv) {
         this.channel = channel;
         this.uSeqSend = uSeqSend;
         this.uSeqRcv = uSeqRcv;
         this.Lock = new ReentrantLock(true);
     }
-    
+
     public void write(Packet msg) {
         channel.writeAndFlush(msg);
     }
-    
+
     public void close() {
         channel.close();
     }
-    
+
     public String GetIP() {
         return channel.remoteAddress().toString().split(":")[0].substring(1);
     }
-    
+
     public void Lock() {
         this.Lock.lock();
     }
-    
+
     public void Unlock() {
         this.Lock.unlock();
     }

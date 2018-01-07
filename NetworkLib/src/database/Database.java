@@ -28,6 +28,7 @@ import java.io.PrintStream;
  * @author Kaz Voeten
  */
 public class Database {
+
     private static HikariConfig config; //Hikari database config.
     private static HikariDataSource ds; //Hikari datasource based on config.
 
@@ -53,7 +54,7 @@ public class Database {
         config = new HikariConfig("database.properties");
         ds = new HikariDataSource(config);
     }
-    
+
     public static HikariDataSource GetDataSource() {
         return ds;
     }

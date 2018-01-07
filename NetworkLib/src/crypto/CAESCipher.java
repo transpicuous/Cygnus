@@ -16,7 +16,6 @@
  */
 package crypto;
 
-
 /**
  * @author Kaz Voeten
  */
@@ -75,7 +74,7 @@ public final class CAESCipher {
         }
         return delta;
     }
-    
+
     public static byte[] multiplyBytes(byte[] iv, int i, int i0) {
         byte[] ret = new byte[i * i0];
         for (int x = 0; x < ret.length; x++) {

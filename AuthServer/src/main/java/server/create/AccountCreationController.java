@@ -71,7 +71,7 @@ public class AccountCreationController {
             return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
                     "Username has to be at least 5 and maximum 13 characters long.");
         }
-        
+
         if (password.length() < 5 || password.length() > 13) {
             return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
                     "Password has to be at least 5 and maximum 13 characters long.");

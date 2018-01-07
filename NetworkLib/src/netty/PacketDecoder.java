@@ -29,10 +29,9 @@ import java.util.List;
  */
 public class PacketDecoder extends ByteToMessageDecoder {
 
-
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf oBuffer, List<Object> oPacket) throws Exception {
-        Socket Session = chc.channel().attr(Socket.SESSION_KEY).get();
+        IOClient Session = chc.channel().attr(IOClient.SESSION_KEY).get();
 
         if (Session != null) {
             int dwKey = Session.uSeqRcv;
@@ -52,13 +51,13 @@ public class PacketDecoder extends ByteToMessageDecoder {
                 byte[] aData = new byte[Session.nSavedLen];
                 oBuffer.readBytes(aData);
                 Session.nSavedLen = -1;
-                
+
                 aData = CAESCipher.Crypt(aData, dwKey);
                 if (Session.nCryptoMode == 2) {
                     //Decode opcode here
                 }
                 Session.uSeqRcv = CIGCipher.InnoHash(dwKey, 4, 0);
-                
+
                 oPacket.add(new Packet(aData));
             }
         }

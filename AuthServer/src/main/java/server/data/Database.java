@@ -104,20 +104,20 @@ public class Database {
                 Date genTime = new Date();
                 String token = TokenFactory.genToken(id, name, genTime);
                 accounts.put(token, new Account(
-                        id, 
-                        verified, 
-                        rs.getString("name"), 
-                        token, 
-                        email, 
+                        id,
+                        verified,
+                        rs.getString("name"),
+                        token,
+                        email,
                         rs.getString("ip"),
-                        rs.getByte("state"), 
-                        rs.getByte("admin"), 
+                        rs.getByte("state"),
+                        rs.getByte("admin"),
                         rs.getByte("gender"),
-                        rs.getDate("creation"), 
-                        genTime, 
-                        rs.getDate("history"), 
-                        rs.getDate("birthday"), 
-                        rs.getShort("last_world"), 
+                        rs.getDate("creation"),
+                        genTime,
+                        rs.getDate("history"),
+                        rs.getDate("birthday"),
+                        rs.getShort("last_world"),
                         rs.getString("pic")));
                 return verified ? LoginResponseCode.SUCCESS : LoginResponseCode.UNVERIFIED;
             } else {

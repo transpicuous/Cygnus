@@ -104,11 +104,11 @@ public class Account {
     public Date getBirthday() {
         return birthday;
     }
-    
+
     public short getLastWorld() {
         return last_world;
     }
-    
+
     public String getPic() {
         return pic;
     }

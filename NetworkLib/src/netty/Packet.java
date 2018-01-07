@@ -23,6 +23,7 @@ import util.HexUtils;
  * @author Kaz Voeten
  */
 public class Packet {
+
     private byte[] aData;
 
     public Packet() {
@@ -53,13 +54,15 @@ public class Packet {
     public byte[] GetData() {
         return aData;
     }
-    
+
     @Override
     public String toString() {
-        if (aData == null) return "";
+        if (aData == null) {
+            return "";
+        }
         return HexUtils.ToHex(aData);
     }
-    
+
     public Packet Clone() {
         byte[] aClone = new byte[aData.length];
         System.arraycopy(aData, 0, aClone, 0, aData.length);

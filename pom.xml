@@ -8,6 +8,7 @@
     <modules>
         <module>NetworkLib</module>
         <module>AuthServer</module>
+        <module>LoginServer</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

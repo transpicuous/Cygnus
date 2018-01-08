@@ -67,7 +67,7 @@ public class AccountCreationController {
                     "Invalid e-mail address.");
         }
 
-        if (name.length() < 5 || email.length() > 13) {
+        if (name.length() < 5 || name.length() > 13) {
             return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
                     "Username has to be at least 5 and maximum 13 characters long.");
         }

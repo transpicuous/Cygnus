@@ -21,7 +21,6 @@ package client.packet;
  * @author Kaz Voeten
  */
 public enum LoopBackPacket {
-
     CheckPasswordResult(0),
     WorldInformation(1),
     LastConnectedWorld(2),

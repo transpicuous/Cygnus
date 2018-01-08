@@ -21,7 +21,6 @@ package client.packet;
  * @author Kaz Voeten
  */
 public enum ClientPacket {
-
     DummyCode(100),
     BeginSocket(101),
     SecurityPacket(102),

@@ -45,13 +45,13 @@ public class CClientSocket extends Socket {
             for (LoopBackPacket packet : LoopBackPacket.values()) {
                 if (packet.getValue() == (int) oPacket.GetHeader()) {
                     head = packet.name();
+                    if (packet.getValue() == 0xF0) {
+                        head = "HandShake/" + head;
+                    }
                 }
             }
             System.out.printf("[Debug] Sent %s: %s%n", head, oPacket.toString());
         }
-        
-        //Have to write the packet after checking for debug
-        //Just incase the pipeline encodes it before the log printed lol. (that happens)
         super.SendPacket(oPacket);
     }
     

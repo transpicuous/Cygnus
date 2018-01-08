@@ -165,9 +165,9 @@ public class TokenFactory {
      * @return random 4 digit code.
      */
     public static String genAuthenCode() {
-        return String.valueOf(rand.nextInt(9))
-                + String.valueOf(rand.nextInt(9))
-                + String.valueOf(rand.nextInt(9))
-                + String.valueOf(rand.nextInt(9));
+        return String.valueOf(rand.nextInt(10))
+                + String.valueOf(rand.nextInt(10))
+                + String.valueOf(rand.nextInt(10))
+                + String.valueOf(rand.nextInt(10));
     }
 }

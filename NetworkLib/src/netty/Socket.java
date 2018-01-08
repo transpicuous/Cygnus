@@ -24,9 +24,9 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Kaz Voeten
  */
-public class IOClient {
+public class Socket {
 
-    public static final AttributeKey<IOClient> SESSION_KEY = AttributeKey.valueOf("Session");
+    public static final AttributeKey<Socket> SESSION_KEY = AttributeKey.valueOf("Session");
     public int uSeqSend, uSeqRcv;
     public int nCryptoMode = 1;
     public int nSavedLen = -1;
@@ -34,18 +34,18 @@ public class IOClient {
     protected final Channel channel;
     public InPacket Decoder = new InPacket();
 
-    public IOClient(Channel channel, int uSeqSend, int uSeqRcv) {
+    public Socket(Channel channel, int uSeqSend, int uSeqRcv) {
         this.channel = channel;
         this.uSeqSend = uSeqSend;
         this.uSeqRcv = uSeqRcv;
         this.Lock = new ReentrantLock(true);
     }
 
-    public void write(Packet msg) {
+    public void SendPacket(Packet msg) {
         channel.writeAndFlush(msg);
     }
 
-    public void close() {
+    public void Close() {
         channel.close();
     }
 

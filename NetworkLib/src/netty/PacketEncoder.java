@@ -30,24 +30,24 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
     @Override
     protected void encode(ChannelHandlerContext chc, Packet oPacket, ByteBuf oBuffer) throws Exception {
-        IOClient Session = chc.channel().attr(IOClient.SESSION_KEY).get();
+        Socket pSocket = chc.channel().attr(Socket.SESSION_KEY).get();
         byte[] aSendBuff = oPacket.GetData();
 
-        if (Session != null) {
+        if (pSocket != null) {
 
-            int dwKey = Session.uSeqSend;
+            int dwKey = pSocket.uSeqSend;
             byte[] aHeader = CAESCipher.GetHeader(aSendBuff.length, dwKey);
 
-            Session.Lock();
+            pSocket.Lock();
             try {
-                if (Session.nCryptoMode == 1) {
+                if (pSocket.nCryptoMode == 1) {
                     CAESCipher.Crypt(aSendBuff, dwKey);
-                } else if (Session.nCryptoMode == 2) {
+                } else if (pSocket.nCryptoMode == 2) {
                     CIGCipher.Encrypt(aSendBuff, dwKey);
                 }
-                Session.uSeqSend = CIGCipher.InnoHash(dwKey, 4, 0);
+                pSocket.uSeqSend = CIGCipher.InnoHash(dwKey, 4, 0);
             } finally {
-                Session.Unlock();
+                pSocket.Unlock();
             }
 
             oBuffer.writeBytes(aHeader);

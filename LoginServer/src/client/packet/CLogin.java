@@ -16,7 +16,7 @@
  */
 package client.packet;
 
-import client.Client;
+import client.CClientSocket;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -31,20 +31,20 @@ public class CLogin {
 
     public static Packet Ping() {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.AliveReq.getValue());
+        oPacket.EncodeShort(LoopBackPacket.AliveReq.getValue());
         return oPacket.ToPacket();
     }
 
     public static Packet LastConnectedWorld(int world) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.LastConnectedWorld.getValue());
+        oPacket.EncodeShort(LoopBackPacket.LastConnectedWorld.getValue());
         oPacket.EncodeInteger(world);
         return oPacket.ToPacket();
     }
 
     public static Packet RecommendWorldMessage(int world) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.RecommendWorldMessage.getValue());
+        oPacket.EncodeShort(LoopBackPacket.RecommendWorldMessage.getValue());
         oPacket.Encode(1);
         oPacket.EncodeInteger(world);
         oPacket.EncodeString("The greatest world for starting anew!");
@@ -53,14 +53,14 @@ public class CLogin {
 
     public static Packet UserLimitResult(int status) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.UserLimitResult.getValue());
+        oPacket.EncodeShort(LoopBackPacket.UserLimitResult.getValue());
         oPacket.EncodeShort(status);
         return oPacket.ToPacket();
     }
 
     public static Packet getLoginFailed(int reason) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.CheckPasswordResult.getValue());
+        oPacket.EncodeShort(LoopBackPacket.CheckPasswordResult.getValue());
         oPacket.Encode(reason);
         oPacket.Encode(0);
         oPacket.EncodeInteger(0);
@@ -69,7 +69,7 @@ public class CLogin {
 
     public static Packet getBanMessage(int reason, long time) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.CheckPasswordResult.getValue());
+        oPacket.EncodeShort(LoopBackPacket.CheckPasswordResult.getValue());
         oPacket.Encode(2);
         oPacket.Encode(0);
         oPacket.EncodeInteger(0x00);
@@ -78,9 +78,9 @@ public class CLogin {
         return oPacket.ToPacket();
     }
 
-    public static Packet CheckPasswordResult(Client client) {
+    public static Packet CheckPasswordResult(CClientSocket client) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.CheckPasswordResult.getValue());
+        oPacket.EncodeShort(LoopBackPacket.CheckPasswordResult.getValue());
 
         oPacket.Encode(0);
         oPacket.Encode(0);
@@ -112,7 +112,7 @@ public class CLogin {
     /*
     public static Packet WorldInformation(World world) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.WorldInformation.getValue());
+        oPacket.EncodeShort(LP.WorldInformation);
 
         oPacket.Encode(world.getWorldId());
         oPacket.EncodeString(world.getWorldName());
@@ -152,7 +152,7 @@ public class CLogin {
      */
     public static Packet getEndOfWorldList() {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.WorldInformation.getValue());
+        oPacket.EncodeShort(LoopBackPacket.WorldInformation.getValue());
 
         oPacket.Encode(0xFF);
         oPacket.Encode(0);
@@ -220,7 +220,7 @@ public class CLogin {
      */
     public static Packet CharacterBurning(byte nType, int dwCharacterID) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.CharacterBurning.getValue());
+        oPacket.EncodeShort(LoopBackPacket.CharacterBurning.getValue());
         oPacket.Encode(nType);
         oPacket.EncodeInteger(dwCharacterID);
         return oPacket.ToPacket();
@@ -228,14 +228,14 @@ public class CLogin {
 
     public static Packet SelectWorldResult() {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.SelectWorldResult.getValue());
+        oPacket.EncodeShort(LoopBackPacket.SelectWorldResult.getValue());
         oPacket.Encode(true);
         return oPacket.ToPacket();
     }
 
     public static Packet DuplicateIDResponse(String name, boolean taken) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.CheckDuplicatedIDResult.getValue());
+        oPacket.EncodeShort(LoopBackPacket.CheckDuplicatedIDResult.getValue());
         oPacket.EncodeString(name);
         oPacket.Encode(!taken);
         return oPacket.ToPacket();
@@ -244,7 +244,7 @@ public class CLogin {
     /*
     public static Packet CreateCharacterResult(AvatarData avatar, boolean success) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.CreateCharacterResult.getValue());
+        oPacket.EncodeShort(LP.CreateCharacterResult);
 
         oPacket.Encode(!success);
         if (success) {
@@ -258,7 +258,7 @@ public class CLogin {
  /*
     public static Packet DeleteCharacterResult(int cid, int state) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.DeleteCharacterResult.getValue());
+        oPacket.EncodeShort(LP.DeleteCharacterResult);
 
         oPacket.EncodeInteger(cid);
         oPacket.Encode(state);
@@ -270,7 +270,7 @@ public class CLogin {
  /*
     public static Packet SelectCharacterResult(GameChannel gc, int cid) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.SelectCharacterResult.getValue());
+        oPacket.EncodeShort(LP.SelectCharacterResult);
 
         oPacket.EncodeShort(0x00);
         oPacket.Encode(gc.IP);
@@ -283,30 +283,30 @@ public class CLogin {
      */
     public static Packet SecurityPacket() {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.SecurityPacket.getValue());
+        oPacket.EncodeShort(LoopBackPacket.SecurityPacket.getValue());
         oPacket.Encode(0x01);
         return oPacket.ToPacket();
     }
 
     public static Packet ApplyHotFix() {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.ApplyHotFix.getValue());
+        oPacket.EncodeShort(LoopBackPacket.ApplyHotFix.getValue());
         oPacket.Encode(true);
         return oPacket.ToPacket();
     }
 
     public static Packet NCMOResult() {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.NMCOResult.getValue());
+        oPacket.EncodeShort(LoopBackPacket.NMCOResult.getValue());
         oPacket.Encode(true);
         return oPacket.ToPacket();
     }
 
     public static Packet PrivateServerPacket(int dwCurrentThreadID) {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.PrivateServerPacket.getValue());
+        oPacket.EncodeShort(LoopBackPacket.PrivateServerPacket.getValue());
 
-        int response = dwCurrentThreadID ^ LP.PrivateServerPacket.getValue();
+        int response = dwCurrentThreadID ^ LoopBackPacket.PrivateServerPacket.getValue();
         oPacket.EncodeInteger(response);
 
         return oPacket.ToPacket();

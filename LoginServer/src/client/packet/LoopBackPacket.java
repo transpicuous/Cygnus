@@ -20,7 +20,7 @@ package client.packet;
  *
  * @author Kaz Voeten
  */
-public enum LP {
+public enum LoopBackPacket {
 
     CheckPasswordResult(0),
     WorldInformation(1),
@@ -59,7 +59,7 @@ public enum LP {
 
     private int value;
 
-    private LP(int val) {
+    private LoopBackPacket(int val) {
         value = val;
     }
 

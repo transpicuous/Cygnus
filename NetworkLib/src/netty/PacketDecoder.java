@@ -30,35 +30,35 @@ import java.util.List;
 public class PacketDecoder extends ByteToMessageDecoder {
 
     @Override
-    protected void decode(ChannelHandlerContext chc, ByteBuf oBuffer, List<Object> oPacket) throws Exception {
-        IOClient Session = chc.channel().attr(IOClient.SESSION_KEY).get();
+    protected void decode(ChannelHandlerContext chc, ByteBuf oBuffer, List<Object> iPacket) throws Exception {
+        Socket pSocket = chc.channel().attr(Socket.SESSION_KEY).get();
 
-        if (Session != null) {
-            int dwKey = Session.uSeqRcv;
-            if (Session.nSavedLen == -1) {
+        if (pSocket != null) {
+            int dwKey = pSocket.uSeqRcv;
+            if (pSocket.nSavedLen == -1) {
                 if (oBuffer.readableBytes() >= 4) {
                     int nHeader = oBuffer.readInt();
                     if (!CAESCipher.ValidateHeader(nHeader, dwKey)) {
-                        Session.close();
+                        pSocket.Close();
                         return;
                     }
-                    Session.nSavedLen = CAESCipher.GetLength(nHeader);
+                    pSocket.nSavedLen = CAESCipher.GetLength(nHeader);
                 } else {
                     return;
                 }
             }
-            if (oBuffer.readableBytes() >= Session.nSavedLen) {
-                byte[] aData = new byte[Session.nSavedLen];
+            if (oBuffer.readableBytes() >= pSocket.nSavedLen) {
+                byte[] aData = new byte[pSocket.nSavedLen];
                 oBuffer.readBytes(aData);
-                Session.nSavedLen = -1;
+                pSocket.nSavedLen = -1;
 
                 aData = CAESCipher.Crypt(aData, dwKey);
-                if (Session.nCryptoMode == 2) {
+                if (pSocket.nCryptoMode == 2) {
                     //Decode opcode here
                 }
-                Session.uSeqRcv = CIGCipher.InnoHash(dwKey, 4, 0);
+                pSocket.uSeqRcv = CIGCipher.InnoHash(dwKey, 4, 0);
 
-                oPacket.add(new Packet(aData));
+                iPacket.add(new Packet(aData));
             }
         }
     }

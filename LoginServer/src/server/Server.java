@@ -16,7 +16,7 @@
  */
 package server;
 
-import client.CClientSocket;
+import client.ClientSessionManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -56,7 +56,7 @@ public class Server extends Thread {
             
             @Override
             protected void initChannel(SocketChannel c) throws Exception {
-                c.pipeline().addLast(new PacketDecoder(), new CClientSocket(), new PacketEncoder());
+                c.pipeline().addLast(new PacketDecoder(), new ClientSessionManager(), new PacketEncoder());
             }
         });
         
@@ -95,6 +95,7 @@ public class Server extends Thread {
     
     public static void main(String[] args) {
         Server.getInstance().start();
+        CenterConnection.getInstance().start();
         
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override

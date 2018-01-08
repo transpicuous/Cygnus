@@ -16,75 +16,26 @@
  */
 package center;
 
-import client.Client;
-import center.packet.CP;
+import center.packet.CenterPacket;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import java.util.Random;
 import netty.InPacket;
-import netty.Packet;
-import server.Configuration;
+import netty.Socket;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class CCenterSocket extends ChannelInboundHandlerAdapter {
+public class CCenterSocket extends Socket {
 
-    private static final Random rand = new Random();
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) {
-        Channel ch = ctx.channel();
-
-        int RecvSeq = rand.nextInt();
-        int SendSeq = rand.nextInt();
-        CenterClient client = new CenterClient(ch, SendSeq, RecvSeq);
-        ch.attr(Client.SESSION_KEY).set(client);
-
-        System.out.printf("[Debug] Center Server connected with %s%n", client.GetIP());
+    public CCenterSocket(Channel channel, int uSeqSend, int uSeqRcv) {
+        super(channel, uSeqSend, uSeqRcv);
     }
 
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        Channel ch = ctx.channel();
+    public void ProcessPacket(CenterPacket nPacketID, InPacket iPacket) {
+        switch (nPacketID) {
 
-        CenterClient client = (CenterClient) ch.attr(Client.SESSION_KEY).get();
-        client.close();
-
-        System.out.printf("[Debug] Closed Center Server session with %s.%n", client.GetIP());
-    }
-
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        Packet pBuffer = (Packet) msg;
-        Channel ch = ctx.channel();
-
-        CenterClient client = (CenterClient) ch.attr(Client.SESSION_KEY).get();
-        InPacket iPacket = client.Decoder.Next(pBuffer);
-
-        int nPacketID = iPacket.DecodeShort();
-
-        if (Configuration.SERVER_CHECK) {
-            String sHead = "Unk";
-            for (CP PacketID : CP.values()) {
-                if (PacketID.getValue() == (int) nPacketID) {
-                    sHead = PacketID.name();
-                }
-            }
-            System.out.printf("[Debug] Received Center Packet %s: %s%n", sHead, pBuffer.toString());
-        }
-
-        //TODO: Packet handling.
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
-        t.printStackTrace();
-        CenterClient client = (CenterClient) ctx.channel().attr(Client.SESSION_KEY).get();
-        if (client != null) {
-            client.close();
+            default:
+                break;
         }
     }
 }

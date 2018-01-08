@@ -36,7 +36,7 @@ public class InPacket {
     }
 
     public InPacket Next(byte[] aData) {
-        this.nOffset = 0;
+        this.nOffset = -1;
         this.aData = aData;
         return this;
     }

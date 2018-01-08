@@ -16,7 +16,7 @@
  */
 package server;
 
-import center.CCenterSocket;
+import center.CenterSessionManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -53,7 +53,7 @@ public class CenterConnection extends Thread {
 
             @Override
             protected void initChannel(SocketChannel c) throws Exception {
-                c.pipeline().addLast(new PacketDecoder(), new CCenterSocket(), new PacketEncoder());
+                c.pipeline().addLast(new PacketDecoder(), new CenterSessionManager(), new PacketEncoder());
             }
         });
 

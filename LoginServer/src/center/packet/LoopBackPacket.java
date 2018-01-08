@@ -14,22 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package client;
-
-import io.netty.channel.Channel;
-import io.netty.util.concurrent.ScheduledFuture;
-import netty.IOClient;
+package center.packet;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class Client extends IOClient {
+public enum LoopBackPacket {
 
-    public ScheduledFuture<?> ping;
+    ;
 
-    public Client(Channel channel, int uSeqSend, int uSeqRcv) {
-        super(channel, uSeqSend, uSeqRcv);
+    private int value;
+
+    private LoopBackPacket(int val) {
+        value = val;
     }
 
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int val) {
+        value = val;
+    }
 }

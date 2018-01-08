@@ -16,17 +16,20 @@
  */
 package center.packet;
 
+import client.packet.*;
+
 /**
  *
  * @author Kaz Voeten
  */
-public enum LP {
-
+public enum CenterPacket {
+    AliveAck(0),
+    AccountInformation(1),
     ;
 
     private int value;
 
-    private LP(int val) {
+    private CenterPacket(int val) {
         value = val;
     }
 

@@ -20,7 +20,7 @@ package client.packet;
  *
  * @author Kaz Voeten
  */
-public enum CP {
+public enum ClientPacket {
 
     DummyCode(100),
     BeginSocket(101),
@@ -79,7 +79,7 @@ public enum CP {
 
     private int value;
 
-    private CP(int val) {
+    private ClientPacket(int val) {
         value = val;
     }
 

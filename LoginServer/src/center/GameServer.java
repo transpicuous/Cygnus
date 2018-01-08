@@ -14,32 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package center.packet;
+package center;
 
-import client.packet.*;
+import netty.InPacket;
 
 /**
  *
  * @author Kaz Voeten
  */
-public enum CenterPacket {
-    AliveAck(0),
-    AccountInformation(1),
-    WorldInformation(2),
-    ChannelInformation(3)
-    ;
-
-    private int value;
-
-    private CenterPacket(int val) {
-        value = val;
+public class GameServer {
+    public int nChannelID;
+    public int nGaugePx;
+    
+    public GameServer(int nID, int nGaugePx) {
+        this.nChannelID = nID;
+        this.nGaugePx = nGaugePx;
     }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int val) {
-        value = val;
+    
+    public static GameServer Decode(InPacket iPacket) {
+        return new GameServer(iPacket.DecodeInteger(), iPacket.DecodeInteger());
     }
 }

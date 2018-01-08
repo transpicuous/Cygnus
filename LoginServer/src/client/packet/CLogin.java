@@ -16,10 +16,11 @@
  */
 package client.packet;
 
+import center.CenterSessionManager;
+import center.GameServer;
 import client.CClientSocket;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.logging.Logger;
+import netty.InPacket;
 import netty.OutPacket;
 import netty.Packet;
 
@@ -75,90 +76,6 @@ public class CLogin {
         oPacket.EncodeInteger(0x00);
         oPacket.Encode(reason);
         oPacket.EncodeLong(time);
-        return oPacket.ToPacket();
-    }
-
-    public static Packet CheckPasswordResult(CClientSocket client) {
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.CheckPasswordResult.getValue());
-
-        oPacket.Encode(0);
-        oPacket.Encode(0);
-        oPacket.EncodeInteger(0);
-        //oPacket.EncodeString(client.getAccountName());
-        //oPacket.EncodeInteger(client.getAccountId());
-        //oPacket.Encode(client.getAccountGender());
-        //oPacket.Encode(client.isGM());
-        //oPacket.EncodeInteger(client.isGM() ? 0x80 : 0); // admin permissions subcode (incorrect rn)
-        oPacket.EncodeInteger(0);
-        //oPacket.Encode(client.isGM());
-        //oPacket.EncodeString(client.getAccountName());
-        oPacket.Encode(3);
-        oPacket.Encode(0);
-        oPacket.EncodeLong(0); // quiet ban time // 10
-        oPacket.EncodeLong(0); // creation time     // 18
-        oPacket.EncodeInteger(0x20);
-
-        //JobOrder.Encode(oPacket);
-        oPacket.Encode(0);
-        oPacket.EncodeInteger(-1);
-        oPacket.Encode(1);
-        oPacket.Encode(1);
-        oPacket.EncodeLong(0); // session id     // 18
-
-        return oPacket.ToPacket();
-    }
-
-    /*
-    public static Packet WorldInformation(World world) {
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LP.WorldInformation);
-
-        oPacket.Encode(world.getWorldId());
-        oPacket.EncodeString(world.getWorldName());
-        oPacket.Encode(world.getEventFlag());
-        oPacket.EncodeString(world.getEventMessage());
-
-        oPacket.EncodeShort(world.getEventExp());
-        oPacket.EncodeShort(world.getEventDrop());
-        oPacket.Encode(world.disableCharCreation());
-
-        Collection<GameChannel> channels = world.getChannels();
-        oPacket.Encode(channels.size());
-        for (GameChannel wc : channels) {
-            oPacket.EncodeString(new StringBuilder(world.getWorldName()).append("-").append(wc.ID).toString());
-            oPacket.EncodeInteger(wc.LOAD);
-            oPacket.Encode(wc.ID);
-            oPacket.EncodeShort(wc.ID - 1);
-        }
-
-        List<Balloon> balloons = BalloonConstants.getBalloons();
-        if (balloons == null) {
-            oPacket.EncodeShort(0);
-        } else {
-            oPacket.EncodeShort(balloons.size());
-            for (Balloon balloon : BalloonConstants.getBalloons()) {
-                oPacket.EncodeShort(balloon.nX);
-                oPacket.EncodeShort(balloon.nY);
-                oPacket.EncodeString(balloon.sMessage);
-            }
-        }
-
-        oPacket.EncodeInteger(0);
-        oPacket.Encode(0);
-
-        return oPacket.ToPacket();
-    }
-     */
-    public static Packet getEndOfWorldList() {
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.WorldInformation.getValue());
-
-        oPacket.Encode(0xFF);
-        oPacket.Encode(0);
-        oPacket.Encode(0);
-        oPacket.Encode(0);
-
         return oPacket.ToPacket();
     }
 
@@ -322,4 +239,92 @@ public class CLogin {
         return oPacket.ToPacket();
     }
      */
+    
+    public static void OnWorldInformationRequest(CClientSocket pClient) {
+        CenterSessionManager.aCenterSessions.forEach((pWorld) -> {
+            OutPacket oPacket = new OutPacket();
+            oPacket.EncodeShort(LoopBackPacket.WorldInformation.getValue());
+
+            oPacket.Encode(pWorld.nWorldID);
+            oPacket.EncodeString(pWorld.sWorldName);
+            oPacket.Encode(pWorld.nState);
+            oPacket.EncodeString(pWorld.sMessage);
+            oPacket.Encode(pWorld.bCreateChar);
+
+            oPacket.Encode(pWorld.aChannels.size());
+            pWorld.aChannels.forEach((pChannel) -> {
+                oPacket.EncodeString(pWorld.sWorldName + "-" + pChannel.nChannelID);
+                oPacket.EncodeInteger(pChannel.nGaugePx);
+                oPacket.Encode(pWorld.nWorldID);
+                oPacket.Encode(pChannel.nChannelID);
+                oPacket.Encode(pChannel.nChannelID - 1);
+            });
+
+            oPacket.EncodeShort(0); //Balloons lel
+            oPacket.EncodeInteger(0);
+            oPacket.Encode(0);
+
+            pClient.SendPacket(oPacket.ToPacket());
+        });
+
+        OutPacket oPacket = new OutPacket();
+        oPacket.EncodeShort(LoopBackPacket.WorldInformation.getValue());
+        oPacket.Encode(0xFF);
+        oPacket.Encode(0);
+        oPacket.Encode(0);
+        oPacket.Encode(0);
+        pClient.SendPacket(oPacket.ToPacket());
+    }
+
+    public static void OnClientDumpLog(InPacket iPacket) {
+        String reportType = "Unknow report type";
+        if (iPacket.Available() < 8) {
+            System.out.println(reportType + iPacket.DecodeString(iPacket.Available()));
+        } else {
+            switch (iPacket.DecodeShort()) {
+                case 1:
+                    reportType = "Invalid Decoding";
+                    break;
+                case 2:
+                    reportType = "Crash Report";
+                    break;
+                case 3:
+                    reportType = "Exception";
+                    break;
+            }
+
+            int errorNum = iPacket.DecodeInteger();
+            short length = iPacket.DecodeShort();
+            int unkData = iPacket.DecodeInteger();//presumably a timestamp of sorts
+            short header = iPacket.DecodeShort();
+
+            String head = "Unk";
+            for (LoopBackPacket packet : LoopBackPacket.values()) {
+                if (packet.getValue() == (int) header) {
+                    head = packet.name();
+                }
+            }
+
+            iPacket.Reverse(2);
+            Packet remainder = new Packet(iPacket.GetRemainder());
+
+            System.out.println(String.format("[Debug] Report type: %s \r\n\t   Error Num: %d, Data Length: %d \r\n\t   Account: %s \r\n\t   Opcode: %s, %d | %s \r\n\t   Data: %s",
+                    reportType, errorNum, length, "//", head, header, "0x" + Integer.toHexString(header), remainder.toString()
+            ));
+
+        }
+    }
+
+    public class Balloon {
+
+        public int nX;
+        public int nY;
+        public String sMessage;
+
+        public Balloon(String sMessage, int nX, int nY) {
+            this.sMessage = sMessage;
+            this.nX = nX;
+            this.nY = nY;
+        }
+    }
 }

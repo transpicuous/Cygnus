@@ -14,13 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package client;
+package game;
 
-import client.packet.CLogin;
-import client.packet.ClientPacket;
-import client.packet.LoopBackPacket;
+import game.packet.GamePacket;
+import game.packet.LoopBackPacket;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.ScheduledFuture;
 import netty.InPacket;
 import netty.Packet;
 import netty.Socket;
@@ -30,11 +28,9 @@ import server.Configuration;
  *
  * @author Kaz Voeten
  */
-public class CClientSocket extends Socket {
+public class CGameServerSocket  extends Socket {
 
-    public ScheduledFuture<?> PingTask;
-
-    public CClientSocket(Channel channel, int uSeqSend, int uSeqRcv) {
+    public CGameServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
     
@@ -55,23 +51,8 @@ public class CClientSocket extends Socket {
         super.SendPacket(oPacket);
     }
     
-    public void ProcessPacket(ClientPacket nPacketID, InPacket iPacket) {
+    public void ProcessPacket(GamePacket nPacketID, InPacket iPacket) {
         switch(nPacketID) {
-            case NMCORequest:
-                SendPacket(CLogin.NCMOResult());
-                break;
-            case PrivateServerPacket:
-                SendPacket(CLogin.PrivateServerPacket(iPacket.DecodeInteger()));
-                break;
-            case CheckHotfix:
-                SendPacket(CLogin.ApplyHotFix());
-                break;
-            case WorldInfoLogoutRequest:
-            case WorldInfoForShiningRequest:
-                CLogin.OnWorldInformationRequest(this);
-                break;
-            case ClientDumpLog:
-                CLogin.OnClientDumpLog(iPacket);
         }
     }
 }

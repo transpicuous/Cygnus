@@ -30,6 +30,7 @@ public class Socket {
     public int uSeqSend, uSeqRcv;
     public int nCryptoMode = 1;
     public int nSavedLen = -1;
+    public boolean bEncryptData = true;
     private final ReentrantLock Lock;
     protected final Channel channel;
     public InPacket Decoder = new InPacket();

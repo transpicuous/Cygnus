@@ -14,16 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package client;
+package login;
 
-import client.packet.CLogin;
-import client.packet.ClientPacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
+import login.packet.LoginPacket;
+import login.packet.LoopBackPacket;
 import netty.InPacket;
 import netty.OutPacket;
 import netty.Packet;
@@ -33,52 +31,43 @@ import server.Configuration;
  *
  * @author Kaz Voeten
  */
-public class ClientSessionManager extends ChannelInboundHandlerAdapter {
-    public static ArrayList<CClientSocket> aSessions = new ArrayList<>();
+public class LoginSessionManager extends ChannelInboundHandlerAdapter {
+
+    public static CLoginServerSocket pSession;
     private static final Random rand = new Random();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        int RecvSeq = rand.nextInt();
-        int SendSeq = rand.nextInt();
+        CLoginServerSocket pClient = new CLoginServerSocket(ch, 0, 0);
+        ch.attr(CLoginServerSocket.SESSION_KEY).set(pClient);
+        pClient.bEncryptData = false;
+        pSession = pClient;
 
-        CClientSocket pClient = new CClientSocket(ch, SendSeq, RecvSeq);
+        System.out.printf("[Debug] Connected to Login Server at adress: %s%n", pClient.GetIP());
 
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(0x0F);
-        oPacket.EncodeShort(Configuration.MAPLE_VERSION);
-        oPacket.EncodeString(Configuration.BUILD_VERSION);
-        oPacket.EncodeInteger(RecvSeq);
-        oPacket.EncodeInteger(SendSeq);
-        oPacket.Encode(Configuration.SERVER_TYPE);
-        oPacket.Encode(0);
+        oPacket.EncodeShort(LoopBackPacket.WorldInformation.getValue());
+        oPacket.EncodeInteger(Configuration.WORLD_ID);
+        oPacket.EncodeString(Configuration.WORLD_NAME);
+        oPacket.EncodeString(Configuration.EVENT_MESSAGE);
+        oPacket.Encode(Configuration.EVENT_FLAG);
+        oPacket.EncodeShort(Configuration.EVENT_EXP);
+        oPacket.EncodeShort(Configuration.EVENT_DROP);
+        oPacket.Encode(Configuration.DISABLE_CHAR_CREATION);
         pClient.SendPacket(oPacket.ToPacket());
-        
-        ch.attr(CClientSocket.SESSION_KEY).set(pClient);
-
-        pClient.PingTask = ctx.channel().eventLoop().scheduleAtFixedRate(()
-                -> pClient.SendPacket(CLogin.Ping()), 5, 5, TimeUnit.SECONDS);
-        
-        aSessions.add(pClient);
-
-        System.out.printf("[Debug] Opened session with %s%n", pClient.GetIP());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CClientSocket pClient = (CClientSocket) ch.attr(CClientSocket.SESSION_KEY).get();
-        aSessions.remove(pClient);
-        
-        if (pClient.PingTask != null) {
-            pClient.PingTask.cancel(true);
-        }
-        
+        CLoginServerSocket pClient = (CLoginServerSocket) ch.attr(CLoginServerSocket.SESSION_KEY).get();
+        pSession = null;
+
         pClient.Close();
-        System.out.printf("[Debug] Closed session with %s.%n", pClient.GetIP());
+        System.out.println("[Debug] Disconnected from the Login Server");
     }
 
     @Override
@@ -86,18 +75,18 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
         Packet pBuffer = (Packet) msg;
         Channel ch = ctx.channel();
 
-        CClientSocket pClient = (CClientSocket) ch.attr(CClientSocket.SESSION_KEY).get();
+        CLoginServerSocket pClient = (CLoginServerSocket) ch.attr(CLoginServerSocket.SESSION_KEY).get();
         InPacket iPacket = pClient.Decoder.Next(pBuffer);
 
         short nPacketID = iPacket.DecodeShort();
 
-        ClientPacket PacketID = ClientPacket.BeginSocket;
-        for (ClientPacket cp : ClientPacket.values()) {
+        LoginPacket PacketID = LoginPacket.BeginSocket;
+        for (LoginPacket cp : LoginPacket.values()) {
             if (cp.getValue() == nPacketID) {
                 PacketID = cp;
             }
         }
-        if (PacketID != ClientPacket.BeginSocket) {
+        if (PacketID != LoginPacket.BeginSocket) {
             System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), pBuffer.toString());
         }
 
@@ -107,7 +96,7 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
         t.printStackTrace();
-        CClientSocket client = (CClientSocket) ctx.channel().attr(CClientSocket.SESSION_KEY).get();
+        CLoginServerSocket client = (CLoginServerSocket) ctx.channel().attr(CLoginServerSocket.SESSION_KEY).get();
         if (client != null) {
             client.Close();
         }

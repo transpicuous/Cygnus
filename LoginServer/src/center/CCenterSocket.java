@@ -18,6 +18,7 @@ package center;
 
 import center.packet.CenterPacket;
 import io.netty.channel.Channel;
+import java.util.ArrayList;
 import netty.InPacket;
 import netty.Socket;
 
@@ -26,6 +27,12 @@ import netty.Socket;
  * @author Kaz Voeten
  */
 public class CCenterSocket extends Socket {
+    public int nWorldID;
+    public String sWorldName, sMessage;
+    public byte nState;
+    public short nExp, nDrop;
+    public boolean bCreateChar;
+    public ArrayList<GameServer> aChannels = new ArrayList<>();
 
     public CCenterSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
@@ -33,7 +40,18 @@ public class CCenterSocket extends Socket {
 
     public void ProcessPacket(CenterPacket nPacketID, InPacket iPacket) {
         switch (nPacketID) {
-
+            case WorldInformation:
+                this.nWorldID = iPacket.DecodeInteger();
+                this.sWorldName = iPacket.DecodeString();
+                this.sMessage = iPacket.DecodeString();
+                this.nState = iPacket.DecodeByte();
+                this.nExp = iPacket.DecodeShort();
+                this.nDrop = iPacket.DecodeShort();
+                this.bCreateChar = iPacket.DecodeBoolean();
+                break;
+            case ChannelInformation:
+                aChannels.add(GameServer.Decode(iPacket));
+                break;
             default:
                 break;
         }

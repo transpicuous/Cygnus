@@ -34,6 +34,10 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         byte[] aSendBuff = oPacket.GetData();
 
         if (pSocket != null) {
+            
+            if(!pSocket.bEncryptData) {
+                oBuffer.writeBytes(aSendBuff);
+            }
 
             int dwKey = pSocket.uSeqSend;
             byte[] aHeader = CAESCipher.GetHeader(aSendBuff.length, dwKey);

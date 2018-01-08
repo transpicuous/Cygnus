@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package center;
+package game;
 
-import client.CClientSocket;
-import center.packet.CenterPacket;
+import game.packet.GamePacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -30,31 +29,33 @@ import netty.Packet;
  *
  * @author Kaz Voeten
  */
-public class CenterSessionManager extends ChannelInboundHandlerAdapter {
-    public static ArrayList<CCenterSocket> aCenterSessions = new ArrayList<>();
+public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
+    public static ArrayList<CGameServerSocket> aSessions = new ArrayList<>();
     private static final Random rand = new Random();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CCenterSocket pCenter = new CCenterSocket(ch, 0, 0);
-        ch.attr(CClientSocket.SESSION_KEY).set(pCenter);
-        aCenterSessions.add(pCenter);
-        pCenter.bEncryptData = false;
+        int RecvSeq = 0;
+        int SendSeq = 0;
 
-        System.out.printf("[Debug] Center Server connected with %s%n", pCenter.GetIP());
+        CGameServerSocket pClient = new CGameServerSocket(ch, SendSeq, RecvSeq);
+        ch.attr(CGameServerSocket.SESSION_KEY).set(pClient);
+        aSessions.add(pClient);
+
+        System.out.printf("[Debug] Opened session with %s%n", pClient.GetIP());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CCenterSocket pCenter = (CCenterSocket) ch.attr(CClientSocket.SESSION_KEY).get();
-        aCenterSessions.remove(pCenter);
-        pCenter.Close();
-
-        System.out.printf("[Debug] Closed Center Server session with %s.%n", pCenter.GetIP());
+        CGameServerSocket pClient = (CGameServerSocket) ch.attr(CGameServerSocket.SESSION_KEY).get();
+        aSessions.remove(pClient);
+        
+        pClient.Close();
+        System.out.printf("[Debug] Closed session with %s.%n", pClient.GetIP());
     }
 
     @Override
@@ -62,31 +63,30 @@ public class CenterSessionManager extends ChannelInboundHandlerAdapter {
         Packet pBuffer = (Packet) msg;
         Channel ch = ctx.channel();
 
-        CCenterSocket pCenter = (CCenterSocket) ch.attr(CClientSocket.SESSION_KEY).get();
-        InPacket iPacket = pCenter.Decoder.Next(pBuffer);
+        CGameServerSocket pClient = (CGameServerSocket) ch.attr(CGameServerSocket.SESSION_KEY).get();
+        InPacket iPacket = pClient.Decoder.Next(pBuffer);
 
-        int nPacketID = iPacket.DecodeShort();
+        short nPacketID = iPacket.DecodeShort();
 
-        CenterPacket PacketID = CenterPacket.AliveAck;
-        for (CenterPacket cp : CenterPacket.values()) {
-            if (cp.getValue() == (int) nPacketID) {
+        
+        GamePacket PacketID = GamePacket.BeginSocket;
+        for (GamePacket cp : GamePacket.values()) {
+            if (cp.getValue() == nPacketID) {
                 PacketID = cp;
             }
         }
-        
-        if (PacketID != CenterPacket.AliveAck) {
+        if (PacketID != GamePacket.BeginSocket) {
             System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), pBuffer.toString());
         }
 
-        pCenter.ProcessPacket(PacketID, iPacket);
+        pClient.ProcessPacket(PacketID, iPacket);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
-        t.printStackTrace();
-        CCenterSocket pCenter = (CCenterSocket) ctx.channel().attr(CClientSocket.SESSION_KEY).get();
-        if (pCenter != null) {
-            pCenter.Close();
+        CGameServerSocket client = (CGameServerSocket) ctx.channel().attr(CGameServerSocket.SESSION_KEY).get();
+        if (client != null) {
+            client.Close();
         }
     }
 }

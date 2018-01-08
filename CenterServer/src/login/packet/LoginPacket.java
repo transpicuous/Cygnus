@@ -14,24 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package center.packet;
-
-import client.packet.*;
+package login.packet;
 
 /**
  *
  * @author Kaz Voeten
  */
-public enum CenterPacket {
-    AliveAck(0),
-    AccountInformation(1),
-    WorldInformation(2),
-    ChannelInformation(3)
+public enum LoginPacket {
+    BeginSocket(0),
     ;
 
     private int value;
 
-    private CenterPacket(int val) {
+    private LoginPacket(int val) {
         value = val;
     }
 

@@ -31,6 +31,7 @@ import netty.Packet;
  * @author Kaz Voeten
  */
 public class CenterSessionManager extends ChannelInboundHandlerAdapter {
+
     public static ArrayList<CCenterSocket> aCenterSessions = new ArrayList<>();
     private static final Random rand = new Random();
 
@@ -73,7 +74,7 @@ public class CenterSessionManager extends ChannelInboundHandlerAdapter {
                 PacketID = cp;
             }
         }
-        
+
         if (PacketID != CenterPacket.AliveAck) {
             System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), pBuffer.toString());
         }

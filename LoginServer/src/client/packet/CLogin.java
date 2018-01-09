@@ -99,7 +99,7 @@ public class CLogin {
         oPacket.Encode(!taken);
         return oPacket.ToPacket();
     }
-    
+
     public static Packet SecurityPacket() {
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.SecurityPacket.getValue());
@@ -137,7 +137,7 @@ public class CLogin {
         JobOrder.Encode(oPacket);
         return oPacket.ToPacket();
     }
-    
+
     public static void OnWorldInformationRequest(CClientSocket pClient) {
         CenterSessionManager.aCenterSessions.forEach((pWorld) -> {
             OutPacket oPacket = new OutPacket();
@@ -152,10 +152,10 @@ public class CLogin {
             oPacket.Encode(pWorld.aChannels.size());
             pWorld.aChannels.forEach((pChannel) -> {
                 oPacket.EncodeString(pWorld.sWorldName + "-" + pChannel.nChannelID);
-                oPacket.EncodeInteger(pChannel.nGaugePx);
+                oPacket.EncodeInteger(0);//pChannel.nGaugePx
                 oPacket.Encode(pWorld.nWorldID);
-                oPacket.Encode(pChannel.nChannelID);
                 oPacket.Encode(pChannel.nChannelID - 1);
+                oPacket.Encode(0);//bIsAdultChannel
             });
 
             oPacket.EncodeShort(0); //Balloons lel
@@ -172,6 +172,8 @@ public class CLogin {
         oPacket.Encode(0);
         oPacket.Encode(0);
         pClient.SendPacket(oPacket.ToPacket());
+        pClient.SendPacket(LastConnectedWorld(CenterSessionManager.aCenterSessions.get(0).nWorldID));
+
     }
 
     public static void OnClientDumpLog(InPacket iPacket) {
@@ -225,7 +227,7 @@ public class CLogin {
             this.nY = nY;
         }
     }
-    
+
     /*
     public static Packet SelectWorldResult(Client c, List<AvatarData> avatars, boolean bIsEditedList) {
         OutPacket oPacket = new OutPacket();
@@ -246,8 +248,8 @@ public class CLogin {
          * which character is gonna be deleted at which time if I ever wanna do
          * scheduled character deletions for limited access to pink bean or
          * someshit
-        */
-     /*
+     */
+ /*
         oPacket.EncodeInteger(0);
 
         oPacket.EncodeInteger(0);//hightime

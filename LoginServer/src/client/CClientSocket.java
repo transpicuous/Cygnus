@@ -37,7 +37,7 @@ public class CClientSocket extends Socket {
     public CClientSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
-    
+
     @Override
     public void SendPacket(Packet oPacket) {
         if (Configuration.SERVER_CHECK) {
@@ -54,9 +54,9 @@ public class CClientSocket extends Socket {
         }
         super.SendPacket(oPacket);
     }
-    
+
     public void ProcessPacket(ClientPacket nPacketID, InPacket iPacket) {
-        switch(nPacketID) {
+        switch (nPacketID) {
             case NMCORequest:
                 SendPacket(CLogin.NCMOResult());
                 break;
@@ -72,6 +72,12 @@ public class CClientSocket extends Socket {
                 break;
             case ClientDumpLog:
                 CLogin.OnClientDumpLog(iPacket);
+                break;
+            case UserLimitRequest:
+                SendPacket(CLogin.UserLimitResult(0));
+                break;
+            default:
+                break;
         }
     }
 }

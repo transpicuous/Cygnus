@@ -32,7 +32,7 @@ import server.Configuration;
  *
  * @author Kaz Voeten
  */
-public class CClientSocket  extends Socket {
+public class CClientSocket extends Socket {
 
     public ScheduledFuture<?> PingTask;
     //public HashMap<Integer, User> mUsers = new HashMap<>();
@@ -40,7 +40,7 @@ public class CClientSocket  extends Socket {
     public CClientSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
-    
+
     @Override
     public void SendPacket(Packet oPacket) {
         if (Configuration.SERVER_CHECK) {
@@ -57,10 +57,10 @@ public class CClientSocket  extends Socket {
         }
         super.SendPacket(oPacket);
     }
-    
+
     public void ProcessPacket(ClientPacket nPacketID, InPacket iPacket) {
-        switch(nPacketID) {
-            
+        switch (nPacketID) {
+
         }
     }
 }

@@ -34,37 +34,37 @@ import netty.PacketEncoder;
  * @author Kaz Voeten
  */
 public class Server extends Thread {
-    
+
     private static Server instance;
     private ServerBootstrap sb;
     private Channel serverChannel;
     private EventLoopGroup bossGroup, workerGroup;
-    
+
     @Override
     public void run() {
         Long time = System.currentTimeMillis();
         System.out.println("[Info] Booting up the LoginServer");
-        
+
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
-        
+
         sb = new ServerBootstrap();
-        
+
         sb.group(bossGroup, workerGroup);
         sb.channel(NioServerSocketChannel.class);
         sb.childHandler(new ChannelInitializer<SocketChannel>() {
-            
+
             @Override
             protected void initChannel(SocketChannel c) throws Exception {
                 c.pipeline().addLast(new PacketDecoder(), new ClientSessionManager(), new PacketEncoder());
             }
         });
-        
+
         sb.option(ChannelOption.SO_BACKLOG, Configuration.MAXIMUM_CONNECTIONS);
-        
+
         sb.childOption(ChannelOption.TCP_NODELAY, true);
         sb.childOption(ChannelOption.SO_KEEPALIVE, true);
-        
+
         try {
             ChannelFuture f = sb.bind(Configuration.PORT).sync();
             serverChannel = f.channel();
@@ -79,24 +79,24 @@ public class Server extends Thread {
             System.out.printf("[Info] Login Server has been unbound from port %s.%n", Configuration.PORT);
         }
     }
-    
+
     public void shutdown(boolean planned) {
         ChannelFuture sf = serverChannel.close();
         sf.awaitUninterruptibly();
         CenterConnection.getInstance().shutdown(planned);
     }
-    
+
     public static Server getInstance() {
         if (instance == null) {
             instance = new Server();
         }
         return instance;
     }
-    
+
     public static void main(String[] args) {
         Server.getInstance().start();
         CenterConnection.getInstance().start();
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {

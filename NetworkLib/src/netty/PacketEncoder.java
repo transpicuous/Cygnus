@@ -34,8 +34,8 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         byte[] aSendBuff = oPacket.GetData();
 
         if (pSocket != null) {
-            
-            if(!pSocket.bEncryptData) {
+
+            if (!pSocket.bEncryptData) {
                 int nLen = aSendBuff.length;
                 oBuffer.writeInt(nLen);
                 oBuffer.writeBytes(aSendBuff);

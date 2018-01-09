@@ -26,8 +26,7 @@ public enum CenterPacket {
     AliveAck(0),
     AccountInformation(1),
     WorldInformation(2),
-    ChannelInformation(3)
-    ;
+    ChannelInformation(3);
 
     private int value;
 

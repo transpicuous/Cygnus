@@ -25,6 +25,7 @@ import netty.OutPacket;
  * @author Kaz Voeten
  */
 public class LLogin {
+
     public static void GameServerInformation() {
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.ChannelInformation.getValue());

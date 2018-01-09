@@ -54,9 +54,10 @@ public class CCenterSocket extends Socket {
             case ChannelInformation:
                 aChannels.clear();
                 System.out.println("[Info] Cleared channel cache.");
-                for (int i = 0; i < iPacket.Decode(); ++i) {
+                byte nSize = iPacket.DecodeByte();
+                for (int i = 0; i < nSize; ++i) {
                     aChannels.add(GameServer.Decode(iPacket));
-                    System.out.println("[Info] Registered GameServer with nChannelID " 
+                    System.out.println("[Info] Registered GameServer with nChannelID "
                             + aChannels.get(i).nChannelID + " to world " + this.sWorldName + ".");
                 }
                 break;

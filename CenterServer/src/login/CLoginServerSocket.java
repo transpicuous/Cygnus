@@ -28,12 +28,12 @@ import server.Configuration;
  *
  * @author Kaz Voeten
  */
-public class CLoginServerSocket extends Socket{ 
+public class CLoginServerSocket extends Socket {
 
     public CLoginServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
-    
+
     @Override
     public void SendPacket(Packet oPacket) {
         if (Configuration.SERVER_CHECK) {
@@ -50,10 +50,9 @@ public class CLoginServerSocket extends Socket{
         }
         super.SendPacket(oPacket);
     }
-    
+
     public void ProcessPacket(LoginPacket nPacketID, InPacket iPacket) {
-        switch(nPacketID) {
+        switch (nPacketID) {
         }
     }
 }
-

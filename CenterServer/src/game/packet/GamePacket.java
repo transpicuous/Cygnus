@@ -22,8 +22,7 @@ package game.packet;
  */
 public enum GamePacket {
     BeginSocket(0),
-    GameServerInformation(1),
-    ;
+    GameServerInformation(1),;
 
     private int value;
 

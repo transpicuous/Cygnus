@@ -21,8 +21,7 @@ package center.packet;
  * @author Kaz Voeten
  */
 public enum CenterPacket {
-    BeginSocket(0),
-    ;
+    BeginSocket(0),;
 
     private int value;
 

@@ -47,7 +47,7 @@
     </build>
     <dependencies>
         <dependency>
-             <groupId>${project.groupId}</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>NetworkLib</artifactId>
             <version>${project.version}</version>
         </dependency>

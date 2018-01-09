@@ -32,6 +32,7 @@ import netty.Packet;
  * @author Kaz Voeten
  */
 public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
+
     public static ArrayList<CGameServerSocket> aSessions = new ArrayList<>();
     private static final Random rand = new Random();
 
@@ -58,7 +59,7 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
         aSessions.remove(pClient);
         LLogin.GameServerInformation();
         System.out.printf("[Debug] GameServer disconnected! IP: %s nChannelID: %s%n", pClient.GetIP(), pClient.nChannelID);
-        
+
         pClient.Close();
     }
 
@@ -72,7 +73,6 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
 
         short nPacketID = iPacket.DecodeShort();
 
-        
         GamePacket PacketID = GamePacket.BeginSocket;
         for (GamePacket cp : GamePacket.values()) {
             if (cp.getValue() == nPacketID) {

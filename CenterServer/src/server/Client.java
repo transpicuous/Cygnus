@@ -55,7 +55,7 @@ public class Client extends Thread {
                     ch.pipeline().addLast(new PacketDecoder(), new LoginSessionManager(), new PacketEncoder());
                 }
             });
-            
+
             ChannelFuture f = b.connect(Configuration.LOGIN_SERVER_IP, Configuration.LOGIN_SERVER_PORT);
             c = f.channel();
             f.sync();
@@ -74,16 +74,16 @@ public class Client extends Thread {
         }
         return instance;
     }
-    
+
     public void shutdown(boolean planned) {
         ChannelFuture sf = c.close();
         sf.awaitUninterruptibly();
     }
-    
+
     public static void main(String[] args) {
         Server.getInstance().start();
         Client.getInstance().start();
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {

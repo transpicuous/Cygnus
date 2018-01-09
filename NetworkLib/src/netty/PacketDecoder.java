@@ -33,7 +33,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext chc, ByteBuf oBuffer, List<Object> iPacket) throws Exception {
         Socket pSocket = chc.channel().attr(Socket.SESSION_KEY).get();
         if (pSocket != null) {
-            
+
             if (!pSocket.bEncryptData) {
                 if (pSocket.nSavedLen == -1) {
                     if (oBuffer.readableBytes() >= 4) {

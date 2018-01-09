@@ -22,8 +22,7 @@ package center.packet;
  */
 public enum LoopBackPacket {
     AliveAck(0),
-    GameServerInformation(1),
-    ;
+    GameServerInformation(1),;
 
     private int value;
 

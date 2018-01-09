@@ -23,20 +23,21 @@ import netty.InPacket;
  * @author Kaz Voeten
  */
 public class GameServer {
+
     public int nChannelID;
     public int nGaugePx;
     public int nPort;
     public String sIP;
-    
+
     public GameServer(int nID, int nGaugePx, int nPort, String sIP) {
         this.nChannelID = nID;
         this.nGaugePx = nGaugePx;
         this.nPort = nPort;
         this.sIP = sIP;
     }
-    
+
     public static GameServer Decode(InPacket iPacket) {
-        return new GameServer(iPacket.DecodeInteger(), 
+        return new GameServer(iPacket.DecodeInteger(),
                 iPacket.DecodeInteger(),
                 iPacket.DecodeInteger(),
                 iPacket.DecodeString());

@@ -36,6 +36,7 @@ import server.Configuration;
  * @author Kaz Voeten
  */
 public class ClientSessionManager extends ChannelInboundHandlerAdapter {
+
     public static ArrayList<CClientSocket> aSessions = new ArrayList<>();
     private static final Random rand = new Random();
 
@@ -57,12 +58,12 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
         oPacket.Encode(Configuration.SERVER_TYPE);
         oPacket.Encode(0);
         pClient.SendPacket(oPacket.ToPacket());
-        
+
         ch.attr(CClientSocket.SESSION_KEY).set(pClient);
 
         pClient.PingTask = ctx.channel().eventLoop().scheduleAtFixedRate(()
                 -> pClient.SendPacket(CLogin.AliveReq()), 5, 5, TimeUnit.SECONDS);
-        
+
         aSessions.add(pClient);
 
         System.out.printf("[Debug] GameServer connected! IP: %s%n", pClient.GetIP());
@@ -74,9 +75,8 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
 
         CClientSocket pClient = (CClientSocket) ch.attr(CClientSocket.SESSION_KEY).get();
         aSessions.remove(pClient);
-        
+
         //TODO: LCenter.DisconnectUser(CenterSessionManager.pSession);
-        
         pClient.Close();
         System.out.printf("[Debug] GameServer disconnected! IP: %s.%n", pClient.GetIP());
     }
@@ -91,14 +91,18 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
 
         short nPacketID = iPacket.DecodeShort();
 
-        
         ClientPacket PacketID = ClientPacket.BeginSocket;
+        boolean handle = false;
         for (ClientPacket cp : ClientPacket.values()) {
             if (cp.getValue() == nPacketID) {
                 PacketID = cp;
+                handle = true;
             }
         }
-        if (PacketID != ClientPacket.BeginSocket) {
+
+        if (!handle) {
+            System.out.println("[ERROR] Non declared Recv from Client: " + nPacketID + "\r\n" + pBuffer.toString());
+        } else {
             System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), pBuffer.toString());
         }
 

@@ -31,7 +31,8 @@ import server.Configuration;
  *
  * @author Kaz Voeten
  */
-public class CGameServerSocket  extends Socket {
+public class CGameServerSocket extends Socket {
+
     public byte nChannelID;
     public int nMaxUsers;
     public int nPort;
@@ -40,7 +41,7 @@ public class CGameServerSocket  extends Socket {
     public CGameServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
-    
+
     @Override
     public void SendPacket(Packet oPacket) {
         if (Configuration.SERVER_CHECK) {
@@ -57,9 +58,9 @@ public class CGameServerSocket  extends Socket {
         }
         super.SendPacket(oPacket);
     }
-    
+
     public void ProcessPacket(GamePacket nPacketID, InPacket iPacket) {
-        switch(nPacketID) {
+        switch (nPacketID) {
             case GameServerInformation:
                 this.nChannelID = iPacket.DecodeByte();
                 this.nMaxUsers = iPacket.DecodeInteger();

@@ -25,5 +25,5 @@ import netty.OutPacket;
  * @author Kaz Voeten
  */
 public class LCenter {
-    
+
 }

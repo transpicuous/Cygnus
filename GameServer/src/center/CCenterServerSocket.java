@@ -28,12 +28,12 @@ import server.Configuration;
  *
  * @author Kaz Voeten
  */
-public class CCenterServerSocket extends Socket{ 
+public class CCenterServerSocket extends Socket {
 
     public CCenterServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
-    
+
     @Override
     public void SendPacket(Packet oPacket) {
         if (Configuration.SERVER_CHECK) {
@@ -50,10 +50,9 @@ public class CCenterServerSocket extends Socket{
         }
         super.SendPacket(oPacket);
     }
-    
+
     public void ProcessPacket(CenterPacket nPacketID, InPacket iPacket) {
-        switch(nPacketID) {
+        switch (nPacketID) {
         }
     }
 }
-

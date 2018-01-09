@@ -23,11 +23,11 @@ import java.io.PrintStream;
 import java.util.Properties;
 
 /**
- * 
+ *
  * @author Kaz Voeten
  */
 public class Configuration {
-    
+
     // [World Server Information]
     public static int WORLD_ID;
     public static String WORLD_NAME;
@@ -40,12 +40,12 @@ public class Configuration {
     public static int EVENT_DROP;
     public static boolean DISABLE_CHAR_CREATION;
     public static boolean SERVER_CHECK;
-    
+
     // [Login Server Information]
     public static String LOGIN_SERVER_IP;
     public static short LOGIN_SERVER_PORT;
     public static String CENTER_SERVER_KEY;
-    
+
     // [Ranking Worker Information]
     public static boolean RANKING_WORKER;
     public static long RANKING_WORKER_INTERVAL;
@@ -110,22 +110,22 @@ public class Configuration {
             EVENT_MESSAGE = p.getProperty("EVENT_MESSAGE");
             SERVER_MESSAGE = p.getProperty("SERVER_MESSAGE");
             SERVER_CHECK = Boolean.parseBoolean(p.getProperty("SERVER_CHECK", "false"));
-            
+
             EVENT_EXP = Integer.parseInt(p.getProperty("EVENT_EXP"));
             EVENT_DROP = Integer.parseInt(p.getProperty("EVENT_DROP"));
             RANKING_WORKER = Boolean.parseBoolean(p.getProperty("RANKING_WORKER", "false"));
-            
+
             LOGIN_SERVER_IP = p.getProperty("LOGIN_SERVER_IP");
             LOGIN_SERVER_PORT = Short.parseShort(p.getProperty("LOGIN_SERVER_PORT"));
             CENTER_SERVER_KEY = p.getProperty("CENTER_SERVER_KEY");
-            
+
             RANKING_WORKER = Boolean.parseBoolean(p.getProperty("RANKING_WORKER", "false"));
             RANKING_WORKER_INTERVAL = Long.parseLong(p.getProperty("RANKING_WORKER_INTERVAL", "0"));
-            
+
             URL = p.getProperty("URL");
             USER = p.getProperty("USER");
             PASS = p.getProperty("PASS");
-            
+
             GAME_SERVER_PORT = Integer.parseInt(p.getProperty("GAME_SERVER_PORT"));
             fr.close();
         } catch (Exception e) {

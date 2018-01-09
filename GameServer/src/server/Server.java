@@ -34,36 +34,36 @@ import netty.PacketEncoder;
  * @author Kaz Voeten
  */
 public class Server extends Thread {
-    
+
     private static Server instance;
     private ServerBootstrap sb;
     private Channel serverChannel;
     private EventLoopGroup bossGroup, workerGroup;
-    
+
     @Override
     public void run() {
         //Initialze GameServer Listener
         Long time = System.currentTimeMillis();
         System.out.println("[Info] Booting up GameServer for Channel " + Configuration.CHANNEL_ID);
-        
+
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
-        
+
         sb = new ServerBootstrap();
-        
+
         sb.group(bossGroup, workerGroup);
         sb.channel(NioServerSocketChannel.class);
         sb.childHandler(new ChannelInitializer<SocketChannel>() {
-            
+
             @Override
             protected void initChannel(SocketChannel c) throws Exception {
                 c.pipeline().addLast(new PacketDecoder(), new ClientSessionManager(), new PacketEncoder());
             }
         });
-        
+
         sb.childOption(ChannelOption.TCP_NODELAY, true);
         sb.childOption(ChannelOption.SO_KEEPALIVE, true);
-        
+
         try {
             ChannelFuture cf = sb.bind(Configuration.PORT).sync();
             serverChannel = cf.channel();
@@ -78,12 +78,12 @@ public class Server extends Thread {
             System.out.printf("[Info] GameServer has been unbound from port %s.%n", Configuration.PORT);
         }
     }
-    
+
     public void shutdown(boolean planned) {
         ChannelFuture sf = serverChannel.close();
         sf.awaitUninterruptibly();
     }
-    
+
     public static Server getInstance() {
         if (instance == null) {
             instance = new Server();

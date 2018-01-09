@@ -61,15 +61,14 @@ public enum ClientPacket {
     CreateMapleAccount(146),
     AliveAck(152), // v188
     ResponseToCheckAliveAck(148),
-    ClientDumpLog(149),
-    CrcErrorLog(150),
-    PerformanceInfoProvidedConsent(151),
+    ClientDumpLog(153), // v188
+    CrcErrorLog(154), // v188
+    PerformanceInfoProvidedConsent(155), // v188
     CheckHotfix(156), // v188
     ClientLoadingState(158), // v188
-    UnknownSpam(154),
-    UserLimitRequest(180), //temp bs
     WorldInfoRequest(162),
     SetSPW(166),
+    UserLimitRequest(167), //v188
     ChangeSPWRequest(170),
     NMCORequest(171),
     EndSocket(173),

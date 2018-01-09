@@ -21,8 +21,7 @@ package login.packet;
  * @author Kaz Voeten
  */
 public enum LoginPacket {
-    BeginSocket(0),
-    ;
+    BeginSocket(0),;
 
     private int value;
 

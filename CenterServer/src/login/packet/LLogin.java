@@ -17,7 +17,7 @@
 package login.packet;
 
 import game.GameServerSessionManager;
-import login.CLoginServerSocket;
+import login.LoginSessionManager;
 import netty.OutPacket;
 
 /**
@@ -25,14 +25,16 @@ import netty.OutPacket;
  * @author Kaz Voeten
  */
 public class LLogin {
-    public static void GameServerInformation(CLoginServerSocket pSocket) {
+    public static void GameServerInformation() {
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.ChannelInformation.getValue());
         oPacket.Encode(GameServerSessionManager.aSessions.size());
         GameServerSessionManager.aSessions.forEach((pGameServer) -> {
             oPacket.Encode(pGameServer.nChannelID);
             oPacket.EncodeInteger(pGameServer.nMaxUsers);
+            oPacket.EncodeInteger(pGameServer.nPort);
+            oPacket.EncodeString(pGameServer.GetIP());
         });
-        pSocket.SendPacket(oPacket.ToPacket());
+        LoginSessionManager.pSession.SendPacket(oPacket.ToPacket());
     }
 }

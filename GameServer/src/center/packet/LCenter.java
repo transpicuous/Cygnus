@@ -14,31 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package center;
+package center.packet;
 
-import netty.InPacket;
+import client.ClientSessionManager;
+import center.CCenterServerSocket;
+import netty.OutPacket;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class GameServer {
-    public int nChannelID;
-    public int nGaugePx;
-    public int nPort;
-    public String sIP;
+public class LCenter {
     
-    public GameServer(int nID, int nGaugePx, int nPort, String sIP) {
-        this.nChannelID = nID;
-        this.nGaugePx = nGaugePx;
-        this.nPort = nPort;
-        this.sIP = sIP;
-    }
-    
-    public static GameServer Decode(InPacket iPacket) {
-        return new GameServer(iPacket.DecodeInteger(), 
-                iPacket.DecodeInteger(),
-                iPacket.DecodeInteger(),
-                iPacket.DecodeString());
-    }
 }

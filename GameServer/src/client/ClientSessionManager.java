@@ -14,52 +14,71 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package game;
+package client;
 
-import game.packet.GamePacket;
+import client.packet.ClientPacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.ArrayList;
 import java.util.Random;
-import login.LoginSessionManager;
-import login.packet.LLogin;
+import center.CenterSessionManager;
+import center.packet.LCenter;
+import client.packet.CLogin;
+import java.util.concurrent.TimeUnit;
 import netty.InPacket;
+import netty.OutPacket;
 import netty.Packet;
+import server.Configuration;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
-    public static ArrayList<CGameServerSocket> aSessions = new ArrayList<>();
+public class ClientSessionManager extends ChannelInboundHandlerAdapter {
+    public static ArrayList<CClientSocket> aSessions = new ArrayList<>();
     private static final Random rand = new Random();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        int RecvSeq = 0;
-        int SendSeq = 0;
+        int RecvSeq = rand.nextInt();
+        int SendSeq = rand.nextInt();
 
-        CGameServerSocket pClient = new CGameServerSocket(ch, SendSeq, RecvSeq);
-        pClient.bEncryptData = false;
-        ch.attr(CGameServerSocket.SESSION_KEY).set(pClient);
+        CClientSocket pClient = new CClientSocket(ch, SendSeq, RecvSeq);
+
+        OutPacket oPacket = new OutPacket();
+        oPacket.EncodeShort(0x0F);
+        oPacket.EncodeShort(Configuration.MAPLE_VERSION);
+        oPacket.EncodeString(Configuration.BUILD_VERSION);
+        oPacket.EncodeInteger(RecvSeq);
+        oPacket.EncodeInteger(SendSeq);
+        oPacket.Encode(Configuration.SERVER_TYPE);
+        oPacket.Encode(0);
+        pClient.SendPacket(oPacket.ToPacket());
+        
+        ch.attr(CClientSocket.SESSION_KEY).set(pClient);
+
+        pClient.PingTask = ctx.channel().eventLoop().scheduleAtFixedRate(()
+                -> pClient.SendPacket(CLogin.AliveReq()), 5, 5, TimeUnit.SECONDS);
+        
         aSessions.add(pClient);
 
-        System.out.printf("[Debug] GameServer connected! IP: %s nChannelID: %s%n", pClient.GetIP(), pClient.nChannelID);
+        System.out.printf("[Debug] GameServer connected! IP: %s%n", pClient.GetIP());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CGameServerSocket pClient = (CGameServerSocket) ch.attr(CGameServerSocket.SESSION_KEY).get();
+        CClientSocket pClient = (CClientSocket) ch.attr(CClientSocket.SESSION_KEY).get();
         aSessions.remove(pClient);
-        LLogin.GameServerInformation();
-        System.out.printf("[Debug] GameServer disconnected! IP: %s nChannelID: %s%n", pClient.GetIP(), pClient.nChannelID);
+        
+        //TODO: LCenter.DisconnectUser(CenterSessionManager.pSession);
         
         pClient.Close();
+        System.out.printf("[Debug] GameServer disconnected! IP: %s.%n", pClient.GetIP());
     }
 
     @Override
@@ -67,19 +86,19 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
         Packet pBuffer = (Packet) msg;
         Channel ch = ctx.channel();
 
-        CGameServerSocket pClient = (CGameServerSocket) ch.attr(CGameServerSocket.SESSION_KEY).get();
+        CClientSocket pClient = (CClientSocket) ch.attr(CClientSocket.SESSION_KEY).get();
         InPacket iPacket = pClient.Decoder.Next(pBuffer);
 
         short nPacketID = iPacket.DecodeShort();
 
         
-        GamePacket PacketID = GamePacket.BeginSocket;
-        for (GamePacket cp : GamePacket.values()) {
+        ClientPacket PacketID = ClientPacket.BeginSocket;
+        for (ClientPacket cp : ClientPacket.values()) {
             if (cp.getValue() == nPacketID) {
                 PacketID = cp;
             }
         }
-        if (PacketID != GamePacket.BeginSocket) {
+        if (PacketID != ClientPacket.BeginSocket) {
             System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), pBuffer.toString());
         }
 
@@ -88,7 +107,7 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
-        CGameServerSocket client = (CGameServerSocket) ctx.channel().attr(CGameServerSocket.SESSION_KEY).get();
+        CClientSocket client = (CClientSocket) ctx.channel().attr(CClientSocket.SESSION_KEY).get();
         if (client != null) {
             client.Close();
         }

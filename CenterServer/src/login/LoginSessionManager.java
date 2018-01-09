@@ -41,8 +41,8 @@ public class LoginSessionManager extends ChannelInboundHandlerAdapter {
         Channel ch = ctx.channel();
 
         CLoginServerSocket pClient = new CLoginServerSocket(ch, 0, 0);
-        ch.attr(CLoginServerSocket.SESSION_KEY).set(pClient);
         pClient.bEncryptData = false;
+        ch.attr(CLoginServerSocket.SESSION_KEY).set(pClient);
         pSession = pClient;
 
         System.out.printf("[Debug] Connected to Login Server at adress: %s%n", pClient.GetIP());

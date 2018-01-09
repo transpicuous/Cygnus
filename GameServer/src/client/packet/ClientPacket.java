@@ -14,31 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package center;
-
-import netty.InPacket;
+package client.packet;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class GameServer {
-    public int nChannelID;
-    public int nGaugePx;
-    public int nPort;
-    public String sIP;
-    
-    public GameServer(int nID, int nGaugePx, int nPort, String sIP) {
-        this.nChannelID = nID;
-        this.nGaugePx = nGaugePx;
-        this.nPort = nPort;
-        this.sIP = sIP;
+public enum ClientPacket {
+    BeginSocket(0),
+    GameServerInformation(1),
+    ;
+
+    private int value;
+
+    private ClientPacket(int val) {
+        value = val;
     }
-    
-    public static GameServer Decode(InPacket iPacket) {
-        return new GameServer(iPacket.DecodeInteger(), 
-                iPacket.DecodeInteger(),
-                iPacket.DecodeInteger(),
-                iPacket.DecodeString());
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int val) {
+        value = val;
     }
 }

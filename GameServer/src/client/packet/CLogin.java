@@ -14,31 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package center;
+package client.packet;
 
-import netty.InPacket;
+import netty.OutPacket;
+import netty.Packet;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class GameServer {
-    public int nChannelID;
-    public int nGaugePx;
-    public int nPort;
-    public String sIP;
-    
-    public GameServer(int nID, int nGaugePx, int nPort, String sIP) {
-        this.nChannelID = nID;
-        this.nGaugePx = nGaugePx;
-        this.nPort = nPort;
-        this.sIP = sIP;
+public class CLogin {
+
+    public static Packet AliveReq() {
+        OutPacket oPacket = new OutPacket();
+        oPacket.EncodeShort(LoopBackPacket.AliveReq.getValue());
+        return oPacket.ToPacket();
     }
-    
-    public static GameServer Decode(InPacket iPacket) {
-        return new GameServer(iPacket.DecodeInteger(), 
-                iPacket.DecodeInteger(),
-                iPacket.DecodeInteger(),
-                iPacket.DecodeString());
-    }
+
 }

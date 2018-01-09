@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package game;
+package client;
 
-import game.packet.GamePacket;
-import game.packet.LoopBackPacket;
+import client.packet.ClientPacket;
+import client.packet.LoopBackPacket;
 import io.netty.channel.Channel;
-import login.LoginSessionManager;
-import login.packet.LLogin;
+import center.CenterSessionManager;
+import center.packet.LCenter;
+import io.netty.util.concurrent.ScheduledFuture;
 import netty.InPacket;
 import netty.Packet;
 import netty.Socket;
@@ -31,13 +32,12 @@ import server.Configuration;
  *
  * @author Kaz Voeten
  */
-public class CGameServerSocket  extends Socket {
-    public byte nChannelID;
-    public int nMaxUsers;
-    public int nPort;
+public class CClientSocket  extends Socket {
+
+    public ScheduledFuture<?> PingTask;
     //public HashMap<Integer, User> mUsers = new HashMap<>();
 
-    public CGameServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
+    public CClientSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
     
@@ -58,15 +58,9 @@ public class CGameServerSocket  extends Socket {
         super.SendPacket(oPacket);
     }
     
-    public void ProcessPacket(GamePacket nPacketID, InPacket iPacket) {
+    public void ProcessPacket(ClientPacket nPacketID, InPacket iPacket) {
         switch(nPacketID) {
-            case GameServerInformation:
-                this.nChannelID = iPacket.DecodeByte();
-                this.nMaxUsers = iPacket.DecodeInteger();
-                this.nPort = iPacket.DecodeInteger();
-                LLogin.GameServerInformation();
-                System.out.println("[Info] Registered GameServer with channel id: " + nChannelID);
-                break;
+            
         }
     }
 }

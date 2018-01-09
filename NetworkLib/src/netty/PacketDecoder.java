@@ -34,14 +34,23 @@ public class PacketDecoder extends ByteToMessageDecoder {
         Socket pSocket = chc.channel().attr(Socket.SESSION_KEY).get();
 
         if (pSocket != null) {
-            
+
             if (!pSocket.bEncryptData) {
-                byte[] aData = new byte[oBuffer.readableBytes()];
-                oBuffer.readBytes(aData);
-                iPacket.add(new Packet(aData));
+                if (pSocket.nSavedLen == -1) {
+                    if (oBuffer.readableBytes() >= 4) {
+                        pSocket.nSavedLen = oBuffer.readInt();
+                    } else {
+                        return;
+                    }
+                }
+                if (oBuffer.readableBytes() >= pSocket.nSavedLen) {
+                    byte[] aData = new byte[pSocket.nSavedLen];
+                    oBuffer.readBytes(aData);
+                    iPacket.add(new Packet(aData));
+                }
                 return;
             }
-            
+
             int dwKey = pSocket.uSeqRcv;
             if (pSocket.nSavedLen == -1) {
                 if (oBuffer.readableBytes() >= 4) {

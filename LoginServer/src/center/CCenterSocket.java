@@ -49,11 +49,15 @@ public class CCenterSocket extends Socket {
                 this.nExp = iPacket.DecodeShort();
                 this.nDrop = iPacket.DecodeShort();
                 this.bCreateChar = iPacket.DecodeBoolean();
+                System.out.println("[Info] Registered world : " + sWorldName + ".");
                 break;
             case ChannelInformation:
                 aChannels.clear();
-                for (int i = iPacket.Decode(); i > 0; --i) {
+                System.out.println("[Info] Cleared channel cache.");
+                for (int i = 0; i < iPacket.Decode(); ++i) {
                     aChannels.add(GameServer.Decode(iPacket));
+                    System.out.println("[Info] Registered GameServer with channel id " 
+                            + aChannels.get(i).nChannelID + " to world " + this.sWorldName + ".");
                 }
                 break;
             default:

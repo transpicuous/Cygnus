@@ -6,7 +6,7 @@
         <artifactId>Cygnus</artifactId>
         <version>1.0-1</version>
     </parent>
-    <artifactId>CenterServer</artifactId>
+    <artifactId>GameServer</artifactId>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

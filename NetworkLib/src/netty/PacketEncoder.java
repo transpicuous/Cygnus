@@ -36,6 +36,8 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         if (pSocket != null) {
             
             if(!pSocket.bEncryptData) {
+                int nLen = aSendBuff.length;
+                oBuffer.writeBytes(new byte[]{(byte)(nLen >>> 24), (byte)(nLen >>> 16), (byte)(nLen >>> 8),(byte)nLen});
                 oBuffer.writeBytes(aSendBuff);
             }
 

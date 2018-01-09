@@ -32,9 +32,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf oBuffer, List<Object> iPacket) throws Exception {
         Socket pSocket = chc.channel().attr(Socket.SESSION_KEY).get();
-
         if (pSocket != null) {
-
+            
             if (!pSocket.bEncryptData) {
                 if (pSocket.nSavedLen == -1) {
                     if (oBuffer.readableBytes() >= 4) {
@@ -46,9 +45,10 @@ public class PacketDecoder extends ByteToMessageDecoder {
                 if (oBuffer.readableBytes() >= pSocket.nSavedLen) {
                     byte[] aData = new byte[pSocket.nSavedLen];
                     oBuffer.readBytes(aData);
+                    pSocket.nSavedLen = -1;
+
                     iPacket.add(new Packet(aData));
                 }
-                return;
             }
 
             int dwKey = pSocket.uSeqRcv;

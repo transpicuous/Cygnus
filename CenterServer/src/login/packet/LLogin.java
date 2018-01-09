@@ -30,7 +30,7 @@ public class LLogin {
         oPacket.EncodeShort(LoopBackPacket.ChannelInformation.getValue());
         oPacket.Encode(GameServerSessionManager.aSessions.size());
         GameServerSessionManager.aSessions.forEach((pGameServer) -> {
-            oPacket.Encode(pGameServer.nChannelID);
+            oPacket.EncodeInteger(pGameServer.nChannelID);
             oPacket.EncodeInteger(pGameServer.nMaxUsers);
             oPacket.EncodeInteger(pGameServer.nPort);
             oPacket.EncodeString(pGameServer.GetIP());

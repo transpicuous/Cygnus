@@ -19,9 +19,12 @@ package game;
 import game.packet.GamePacket;
 import game.packet.LoopBackPacket;
 import io.netty.channel.Channel;
+import login.LoginSessionManager;
+import login.packet.LLogin;
 import netty.InPacket;
 import netty.Packet;
 import netty.Socket;
+import server.Client;
 import server.Configuration;
 
 /**
@@ -29,6 +32,9 @@ import server.Configuration;
  * @author Kaz Voeten
  */
 public class CGameServerSocket  extends Socket {
+    public byte nChannelID;
+    public int nMaxUsers;
+    //public HashMap<Integer, User> mUsers = new HashMap<>();
 
     public CGameServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
@@ -53,6 +59,11 @@ public class CGameServerSocket  extends Socket {
     
     public void ProcessPacket(GamePacket nPacketID, InPacket iPacket) {
         switch(nPacketID) {
+            case GameServerInformation:
+                this.nChannelID = iPacket.DecodeByte();
+                this.nMaxUsers = iPacket.DecodeByte();
+                LLogin.GameServerInformation(LoginSessionManager.pSession);
+                break;
         }
     }
 }

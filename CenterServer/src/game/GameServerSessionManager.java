@@ -22,6 +22,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.ArrayList;
 import java.util.Random;
+import login.LoginSessionManager;
+import login.packet.LLogin;
 import netty.InPacket;
 import netty.Packet;
 
@@ -44,7 +46,7 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
         ch.attr(CGameServerSocket.SESSION_KEY).set(pClient);
         aSessions.add(pClient);
 
-        System.out.printf("[Debug] Opened session with %s%n", pClient.GetIP());
+        System.out.printf("[Debug] GameServer connected! IP: %s%n", pClient.GetIP());
     }
 
     @Override
@@ -53,9 +55,10 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
 
         CGameServerSocket pClient = (CGameServerSocket) ch.attr(CGameServerSocket.SESSION_KEY).get();
         aSessions.remove(pClient);
+        LLogin.GameServerInformation(LoginSessionManager.pSession);
         
         pClient.Close();
-        System.out.printf("[Debug] Closed session with %s.%n", pClient.GetIP());
+        System.out.printf("[Debug] GameServer disconnected! IP: %s.%n", pClient.GetIP());
     }
 
     @Override

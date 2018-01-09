@@ -27,6 +27,7 @@ import netty.Socket;
  * @author Kaz Voeten
  */
 public class CCenterSocket extends Socket {
+
     public int nWorldID;
     public String sWorldName, sMessage;
     public byte nState;
@@ -41,7 +42,7 @@ public class CCenterSocket extends Socket {
     public void ProcessPacket(CenterPacket nPacketID, InPacket iPacket) {
         switch (nPacketID) {
             case WorldInformation:
-                this.nWorldID = iPacket.DecodeInteger();
+                this.nWorldID = iPacket.DecodeInteger(); //Max 44 atm
                 this.sWorldName = iPacket.DecodeString();
                 this.sMessage = iPacket.DecodeString();
                 this.nState = iPacket.DecodeByte();
@@ -50,7 +51,10 @@ public class CCenterSocket extends Socket {
                 this.bCreateChar = iPacket.DecodeBoolean();
                 break;
             case ChannelInformation:
-                aChannels.add(GameServer.Decode(iPacket));
+                aChannels.clear();
+                for (int i = iPacket.Decode(); i > 0; --i) {
+                    aChannels.add(GameServer.Decode(iPacket));
+                }
                 break;
             default:
                 break;

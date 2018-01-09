@@ -14,28 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package game.packet;
+package login.packet;
+
+import game.GameServerSessionManager;
+import login.CLoginServerSocket;
+import netty.OutPacket;
 
 /**
  *
  * @author Kaz Voeten
  */
-public enum GamePacket {
-    BeginSocket(0),
-    GameServerInformation(1),
-    ;
-
-    private int value;
-
-    private GamePacket(int val) {
-        value = val;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int val) {
-        value = val;
+public class LLogin {
+    public static void GameServerInformation(CLoginServerSocket pSocket) {
+        OutPacket oPacket = new OutPacket();
+        oPacket.EncodeShort(LoopBackPacket.ChannelInformation.getValue());
+        oPacket.Encode(GameServerSessionManager.aSessions.size());
+        GameServerSessionManager.aSessions.forEach((pGameServer) -> {
+            oPacket.Encode(pGameServer.nChannelID);
+            oPacket.EncodeInteger(pGameServer.nMaxUsers);
+        });
+        pSocket.SendPacket(oPacket.ToPacket());
     }
 }

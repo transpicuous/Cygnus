@@ -59,7 +59,7 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
         ch.attr(CClientSocket.SESSION_KEY).set(pClient);
 
         pClient.PingTask = ctx.channel().eventLoop().scheduleAtFixedRate(()
-                -> pClient.SendPacket(CLogin.Ping()), 5, 5, TimeUnit.SECONDS);
+                -> pClient.SendPacket(CLogin.AliveReq()), 5, 5, TimeUnit.SECONDS);
         
         aSessions.add(pClient);
 

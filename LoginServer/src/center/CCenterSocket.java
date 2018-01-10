@@ -17,10 +17,13 @@
 package center;
 
 import center.packet.CenterPacket;
+import client.Account;
+import client.ClientSessionManager;
 import io.netty.channel.Channel;
 import java.util.ArrayList;
 import netty.InPacket;
 import netty.Socket;
+import user.AvatarData;
 
 /**
  *
@@ -60,6 +63,17 @@ public class CCenterSocket extends Socket {
                     System.out.println("[Info] Registered GameServer with nChannelID "
                             + aChannels.get(i).nChannelID + " to world " + this.sWorldName + ".");
                 }
+                break;
+            case AccountInformation:
+                int nSessionID = iPacket.DecodeInteger();
+                ClientSessionManager.aSessions.forEach((pSocket) -> {
+                    if (pSocket.nSessionID == nSessionID) {
+                        pSocket.pAccount = Account.Decode(iPacket);
+                        for (int i = iPacket.Decode(); i > 0; --i) {
+                            pSocket.pAccount.liAvatars.add(AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket));
+                        }
+                    }
+                });
                 break;
             default:
                 break;

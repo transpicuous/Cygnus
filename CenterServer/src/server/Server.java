@@ -16,6 +16,7 @@
  */
 package server;
 
+import database.Database;
 import game.GameServerSessionManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -28,6 +29,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import netty.PacketDecoder;
 import netty.PacketEncoder;
+import wz.MapleDataFactory;
 
 /**
  *
@@ -39,12 +41,16 @@ public class Server extends Thread {
     private ServerBootstrap sb;
     private Channel serverChannel;
     private EventLoopGroup bossGroup, workerGroup;
+    public MapleDataFactory pDataFactory = new MapleDataFactory();
 
     @Override
     public void run() {
         //Initialze GameServer Listener
         Long time = System.currentTimeMillis();
         System.out.println("[Info] Booting up CenterServer for world " + Configuration.WORLD_NAME);
+        
+        Database.Initialize();
+        pDataFactory.loadData(1); //1 = Center
 
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();

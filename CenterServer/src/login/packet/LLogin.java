@@ -16,16 +16,27 @@
  */
 package login.packet;
 
+import com.zaxxer.hikari.HikariDataSource;
+import database.Database;
 import game.GameServerSessionManager;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import login.CLoginServerSocket;
 import login.LoginSessionManager;
+import netty.InPacket;
 import netty.OutPacket;
+import server.accounts.APIFactory;
+import server.accounts.Account;
+import user.AvatarData;
 
 /**
  *
  * @author Kaz Voeten
  */
 public class LLogin {
-
+    
     public static void GameServerInformation() {
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.ChannelInformation.getValue());
@@ -37,5 +48,26 @@ public class LLogin {
             oPacket.EncodeString(pGameServer.GetIP());
         });
         LoginSessionManager.pSession.SendPacket(oPacket.ToPacket());
+    }
+    
+    public static void ProcessLogin(CLoginServerSocket pSocket, InPacket iPacket) {
+        Account pAccount = APIFactory.GetAccount(iPacket.DecodeInteger(), iPacket.DecodeString());
+        if (pAccount != null) {
+            HikariDataSource pDataSource = Database.GetDataSource();
+            OutPacket oPacket = new OutPacket();
+            oPacket.EncodeShort(LoopBackPacket.AccountInformation.getValue());
+            oPacket.EncodeInteger(pAccount.nSessionID);
+            try {
+                pAccount.Encode(oPacket);
+                List<AvatarData> avatars = pAccount.GetAvatars(pAccount.nAccountID, pDataSource.getConnection(), true);
+                oPacket.Encode(avatars.size());
+                avatars.forEach((pAvatar) -> {
+                    pAvatar.Encode(oPacket, false);
+                });
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            pSocket.SendPacket(oPacket.ToPacket());
+        }
     }
 }

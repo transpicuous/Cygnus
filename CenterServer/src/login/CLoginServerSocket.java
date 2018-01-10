@@ -17,6 +17,7 @@
 package login;
 
 import io.netty.channel.Channel;
+import login.packet.LLogin;
 import login.packet.LoginPacket;
 import login.packet.LoopBackPacket;
 import netty.InPacket;
@@ -53,6 +54,9 @@ public class CLoginServerSocket extends Socket {
 
     public void ProcessPacket(LoginPacket nPacketID, InPacket iPacket) {
         switch (nPacketID) {
+            case ProcessLogin:
+                LLogin.ProcessLogin(this, iPacket);
+                break;
         }
     }
 }

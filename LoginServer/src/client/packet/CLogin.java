@@ -17,6 +17,7 @@
 package client.packet;
 
 import center.CenterSessionManager;
+import center.packet.CCenter;
 import client.CClientSocket;
 import netty.InPacket;
 import netty.OutPacket;
@@ -30,7 +31,7 @@ public class CLogin {
 
     public static Packet AliveReq() {
         OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.AliveReq.getValue());
+        oPacket.EncodeShort(LoopBackPacket.CheckAliveAck.getValue());
         return oPacket.ToPacket();
     }
 
@@ -103,7 +104,15 @@ public class CLogin {
     public static Packet SecurityPacket() {
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.SecurityPacket.getValue());
-        oPacket.Encode(0x01);
+        oPacket.Encode(0x01); //0x04 to request response.
+        return oPacket.ToPacket();
+    }
+    
+    public static Packet AuthenMessage() {
+        OutPacket oPacket = new OutPacket();
+        oPacket.EncodeShort(LoopBackPacket.AuthenMessage.getValue());
+        oPacket.EncodeInteger(0);
+        oPacket.Encode(0);
         return oPacket.ToPacket();
     }
 
@@ -167,13 +176,10 @@ public class CLogin {
 
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.WorldInformation.getValue());
-        oPacket.Encode(0xFF);
-        oPacket.Encode(0);
-        oPacket.Encode(0);
-        oPacket.Encode(0);
+        oPacket.Encode(0xFF).Encode(0).Encode(0).Encode(0);
         pClient.SendPacket(oPacket.ToPacket());
         pClient.SendPacket(LastConnectedWorld(CenterSessionManager.aCenterSessions.get(0).nWorldID));
-
+        pClient.SendPacket((new OutPacket()).EncodeShort(LoopBackPacket.OnAliveReq.getValue()).ToPacket());
     }
 
     public static void OnClientDumpLog(InPacket iPacket) {
@@ -213,6 +219,19 @@ public class CLogin {
             ));
 
         }
+    }
+
+    public static void OnSelectWorld(CClientSocket pSocket, InPacket iPacket) {
+        if (!iPacket.DecodeBoolean()) return;
+        String sToken = iPacket.DecodeString();
+        iPacket.Skip(21);
+        pSocket.nWorldID = iPacket.Decode();
+        pSocket.nChannelID = iPacket.Decode() + 1;
+        CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
+            if (pCenterSocket.nWorldID == pSocket.nWorldID) {
+                pCenterSocket.SendPacket(CCenter.ProcessLogin(pSocket.nSessionID, sToken));
+            }
+        });
     }
 
     public class Balloon {

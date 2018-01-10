@@ -349,3 +349,5 @@ ASALocalRun/
 *.binlog
 /CenterServer/target/
 /GameServer/target/
+/JWZLib/target/
+/MapleDataLib/target/

@@ -39,17 +39,19 @@ public enum LoopBackPacket {
     RenameCharacterResult(15),
     SetCharacterID(16),
     MigrateCommand(17),
-    PingCheckResult_ClientToGame(19),
-    AuthenCodeChanged(20),
-    AuthenMessage(21),
-    SecurityPacket(22),
-    PrivateServerPacket(23),
+    OnAliveReq(18),
+    PingCheckResult_ClientToGame(20),
+    AuthenCodeChanged(21),
+    AuthenMessage(22),
+    SecurityPacket(23),
+    UnknownClientSocketPacket(24),
+    PrivateServerPacket(25),
     ChangeSPWResult(31),
     CheckSPWExistResult(32),
     CheckWebLoginEmailID(33),
     CheckCrcResult(34),
     AlbaRequestResult(35),
-    AliveReq(37), //v188
+    CheckAliveAck(37), //v188
     ApplyHotFix(40), //v188
     UserLimitResult(43),//v188
     JOB_ORDER(45),

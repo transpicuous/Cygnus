@@ -57,6 +57,9 @@ public class Configuration {
 
     // [Game Server Details]
     public static int GAME_SERVER_PORT;
+    
+    // [AuthAPI Server Details]
+    public static String AUTH_API_URL;
 
     static {
         File f = new File("config.ini");
@@ -92,6 +95,9 @@ public class Configuration {
                 out.println();
                 out.println("[Game Server Details]");
                 out.println("GAME_SERVER_PORT = ");
+                out.println();
+                out.println("[AuthAPI Server Details]");
+                out.println("AUTH_API_URL = ");
                 fout.flush();
                 fout.close();
             } catch (Exception e) {
@@ -127,6 +133,7 @@ public class Configuration {
             PASS = p.getProperty("PASS");
 
             GAME_SERVER_PORT = Integer.parseInt(p.getProperty("GAME_SERVER_PORT"));
+            AUTH_API_URL = p.getProperty("AUTH_API_URL");
             fr.close();
         } catch (Exception e) {
             e.printStackTrace();

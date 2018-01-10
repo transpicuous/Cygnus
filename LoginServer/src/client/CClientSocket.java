@@ -31,7 +31,12 @@ import server.Configuration;
  * @author Kaz Voeten
  */
 public class CClientSocket extends Socket {
-
+    public int nSessionID = 0;
+    public int nWorldID = -1;
+    public int nChannelID = -1;
+    public int nCharacterSlots = 15;//TODO
+    public Account pAccount;
+    
     public ScheduledFuture<?> PingTask;
 
     public CClientSocket(Channel channel, int uSeqSend, int uSeqRcv) {
@@ -65,6 +70,8 @@ public class CClientSocket extends Socket {
                 break;
             case CheckHotfix:
                 SendPacket(CLogin.ApplyHotFix());
+                SendPacket(CLogin.SecurityPacket());
+                SendPacket(CLogin.AuthenMessage());
                 break;
             case WorldInfoLogoutRequest:
             case WorldInfoForShiningRequest:
@@ -75,6 +82,9 @@ public class CClientSocket extends Socket {
                 break;
             case UserLimitRequest:
                 SendPacket(CLogin.UserLimitResult(0));
+                break;
+            case SelectWorld:
+                CLogin.OnSelectWorld(this, iPacket);
                 break;
             default:
                 break;

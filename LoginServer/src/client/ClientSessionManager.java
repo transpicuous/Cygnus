@@ -63,6 +63,7 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
                 -> pClient.SendPacket(CLogin.AliveReq()), 5, 5, TimeUnit.SECONDS);
 
         aSessions.add(pClient);
+        pClient.nSessionID = aSessions.size();
 
         System.out.printf("[Debug] Opened session with %s%n", pClient.GetIP());
     }

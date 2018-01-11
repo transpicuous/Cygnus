@@ -14,11 +14,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.util;
 
 /**
  * AES utility class
+ *
  * @author N/A
  */
 public final class AES {
@@ -28,7 +29,7 @@ public final class AES {
             KEY_LENGTH = 32;
     int numRounds;
     byte[][] Ke;
-    byte[][] Kd;  
+    byte[][] Kd;
     byte[] Ker;
     byte[] ta;
     static final byte[] S = {
@@ -113,7 +114,7 @@ public final class AES {
                 ? alog[(log[a & 0xFF] + log[b & 0xFF]) % 255]
                 : 0;
     }
-    
+
     public byte[] encrypt(byte[] a) {
         ta = new byte[BLOCK_SIZE];
         int i, k, row, col;

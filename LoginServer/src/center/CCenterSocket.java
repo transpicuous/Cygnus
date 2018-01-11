@@ -19,6 +19,7 @@ package center;
 import center.packet.CenterPacket;
 import client.Account;
 import client.ClientSessionManager;
+import client.packet.CLogin;
 import io.netty.channel.Channel;
 import java.util.ArrayList;
 import netty.InPacket;
@@ -70,8 +71,12 @@ public class CCenterSocket extends Socket {
                     if (pSocket.nSessionID == nSessionID) {
                         pSocket.pAccount = Account.Decode(iPacket);
                         for (int i = iPacket.Decode(); i > 0; --i) {
-                            pSocket.pAccount.liAvatars.add(AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket));
+                            AvatarData pAvatar = AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket);
+                            pAvatar.nCharlistPos = iPacket.DecodeInteger();
+                            pSocket.pAccount.liAvatarData.add(pAvatar);
                         }
+                        pSocket.SendPacket(CLogin.AccountInfoResult(pSocket.pAccount));
+                        pSocket.SendPacket(CLogin.SelectWorldResult(pSocket, false));
                     }
                 });
                 break;

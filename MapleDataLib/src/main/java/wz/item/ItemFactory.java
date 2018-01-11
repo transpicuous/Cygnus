@@ -40,7 +40,7 @@ public class ItemFactory {
         this.key = key;
         this.version = version;
     }
-    
+
     public HashMap<Integer, BundleItem> getItems() {
         return this.items;
     }
@@ -93,7 +93,9 @@ public class ItemFactory {
         writer.WriteInt(WzDataTool.getInteger(item, "recoveryMP", 0));
 
         WzObject<?, ?> shareBlockedJobsList = item.getChild("cantAccountSharable");
-        if (shareBlockedJobsList != null) shareBlockedJobsList = shareBlockedJobsList.getChild("job");
+        if (shareBlockedJobsList != null) {
+            shareBlockedJobsList = shareBlockedJobsList.getChild("job");
+        }
         WzObject<?, ?> gainExpLevelLimits = item.getChild("exp");
         WzObject<?, ?> levelupWarning = item.getChild("LvUpWarning");
 
@@ -179,12 +181,12 @@ public class ItemFactory {
 
     private void parseItems(BinaryReader input) {
         for (int j = 0; j < 4; j++) {
-            
+
             long entries;
             entries = input.ReadLong();
-            
+
             for (long i = 0; i < entries; i++) {
-                
+
                 int itemID = input.ReadInt();
                 BundleItem item = new BundleItem(itemID);
                 switch (j) {
@@ -201,7 +203,7 @@ public class ItemFactory {
                         item.type = InventoryType.Install;
                         break;
                 }
-                
+
                 item.isCash = input.ReadBool();
                 item.notConsume = input.ReadBool();
                 item.noMoveToLocker = input.ReadBool();
@@ -209,7 +211,7 @@ public class ItemFactory {
                 item.notSale = input.ReadBool();
                 item.only = input.ReadBool();
                 item.timeLimited = input.ReadBool();
-                
+
                 item.dressUpgrade = input.ReadInt();
                 item.skillEffectID = input.ReadInt();
                 item.nSlotMax = (short) input.ReadInt();
@@ -223,26 +225,26 @@ public class ItemFactory {
                 item.reqLevel = input.ReadInt();
                 item.recoveryHP = input.ReadInt();
                 item.recoveryMP = input.ReadInt();
-                
+
                 if (input.ReadBool()) {
                     int numBlocks = input.ReadInt();
                     for (int k = 0; k < numBlocks; k++) {
                         item.shareBlockedJobs.add(input.ReadInt());
                     }
                 }
-                
+
                 if (input.ReadBool()) {
                     item.expGainMinLev = input.ReadInt();
                     item.expGainMaxLev = input.ReadInt();
                 }
-                
+
                 if (input.ReadBool()) {
                     int numBlocks = input.ReadInt();
                     for (int k = 0; k < numBlocks; k++) {
                         item.useExpWarningAtLevel.put(input.ReadInt(), input.ReadString());
                     }
                 }
-                
+
                 this.items.put(itemID, item);
             }
         }

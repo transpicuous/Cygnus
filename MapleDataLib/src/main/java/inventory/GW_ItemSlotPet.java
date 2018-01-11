@@ -23,6 +23,7 @@ import netty.OutPacket;
  * @author Kaz Voeten
  */
 public class GW_ItemSlotPet extends GW_ItemSlotBase {
+
     public String sPetName = "";
     public byte nLevel = 1;
     public short nTameness = 1;
@@ -36,11 +37,11 @@ public class GW_ItemSlotPet extends GW_ItemSlotBase {
     public int nAutoBuffSkill = 0;
     public int nPetHue = 0;
     public short nGiantRate = 0;
-    
+
     public GW_ItemSlotPet(int nItemID) {
         super(nItemID, 3);
     }
-    
+
     @Override
     public void RawEncode(OutPacket oPacket) {
         super.RawEncode(oPacket);
@@ -58,5 +59,5 @@ public class GW_ItemSlotPet extends GW_ItemSlotBase {
         oPacket.EncodeInteger(nPetHue);
         oPacket.EncodeShort(nGiantRate);
     }
-    
+
 }

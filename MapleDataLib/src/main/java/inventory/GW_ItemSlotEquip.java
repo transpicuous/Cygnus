@@ -24,19 +24,20 @@ import wz.item.EquipItem;
  * @author Kaz Voeten
  */
 public class GW_ItemSlotEquip extends GW_ItemSlotBase {
+
     public GW_ItemSlotEquipBase eqBase = new GW_ItemSlotEquipBase();
     public int nPrevBonusExpRate = -1;
     public String sTitle = "";
     public boolean vSlot = false;
     public int nSlot = 0;
-    
+
     //filetime
     public int ftEquippedLow = 0;
     public int ftEquippedHigh = 0;
-    
+
     //uid for tracking
     public long liSN = 0;
-    
+
     public int nGrade = 0; //potential grade
     public int nCHUC = 0; //enhancement grade
     public short nOption1 = 0; //pot line 1
@@ -57,47 +58,47 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
     public GW_ItemSlotEquip(int nItemID, EquipItem base) {
         super(nItemID, 1);
         applyStats(base.eqStats);
-        
+
     }
-    
+
     private void applyStats(GW_ItemSlotEquipBase pBase) {
         pBase.mStats.forEach((nFlag, nValue) -> this.eqBase.mStats.put(nFlag, nValue));
     }
-    
+
     @Override
     public void RawEncode(OutPacket oPacket) {
         super.RawEncode(oPacket);
         eqBase.Encode(oPacket);
-        
+
         oPacket.EncodeString(sTitle);
-        
+
         oPacket.Encode(nGrade);
         oPacket.Encode(nCHUC);
-        oPacket.EncodeShort(nOption1); 
-        oPacket.EncodeShort(nOption2); 
-        oPacket.EncodeShort(nOption3); 
+        oPacket.EncodeShort(nOption1);
+        oPacket.EncodeShort(nOption2);
+        oPacket.EncodeShort(nOption3);
         oPacket.EncodeShort(nOption4);
         oPacket.EncodeShort(nOption6);
         oPacket.EncodeShort(nOption7);
         oPacket.EncodeShort(nOption5);
-        
+
         oPacket.EncodeShort(nSocketState);
         oPacket.EncodeShort(nSocket1);
         oPacket.EncodeShort(nSocket2);
         oPacket.EncodeShort(nSocket3);
-        
+
         if (cashOpt != null) {
             oPacket.EncodeInteger(cashOpt.liCashItemSNLow);
             oPacket.EncodeInteger(cashOpt.liCashItemSNHigh);
         }
-        
+
         oPacket.EncodeInteger(ftEquippedLow);
         oPacket.EncodeInteger(ftEquippedHigh);
-        
+
         oPacket.EncodeInteger(nPrevBonusExpRate);
-        
+
         cashOpt.Encode(oPacket);
-        
+
         oPacket.EncodeShort(nSoulOptionID);
         oPacket.EncodeShort(nSoulSocketID);
         oPacket.EncodeShort(nSoulOption);

@@ -21,5 +21,5 @@ package server.accounts;
  * @author Kaz Voeten
  */
 public class AccountStorage {
-    
+
 }

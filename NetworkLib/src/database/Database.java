@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.sql.Connection;
 
 /**
  *
@@ -57,5 +58,15 @@ public class Database {
 
     public static HikariDataSource GetDataSource() {
         return ds;
+    }
+
+    public static Connection GetConnection() {
+        Connection con = null;
+        try {
+            con = ds.getConnection();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return con;
     }
 }

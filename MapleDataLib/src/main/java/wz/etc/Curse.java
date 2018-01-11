@@ -21,23 +21,26 @@ package wz.etc;
  * @author Kaz Voeten
  */
 public class Curse {
+
     private final String[] curses;
-    
+
     public Curse(int size) {
         this.curses = new String[size];
     }
-    
+
     public void add(String curse, int index) {
         this.curses[index] = curse;
     }
-    
+
     public boolean contains(String curse) {
-        for (String curseWord: curses) {
-            if (curseWord.equals(curse)) return true;
+        for (String curseWord : curses) {
+            if (curseWord.equals(curse)) {
+                return true;
+            }
         }
         return false;
     }
-    
+
     public void print() {
         String words = "";
         for (String curse : curses) {

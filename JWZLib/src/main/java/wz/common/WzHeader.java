@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.common;
 
 /**
@@ -22,15 +22,15 @@ package wz.common;
  * @author Zygon
  */
 public final class WzHeader {
-    
+
     public String IDENT = null;
     public String COPYRIGHT = null;
     public int FILE_SIZE = -1;
     public int FILE_START = -1;
-    
+
     public WzHeader() {
     }
-    
+
     public static WzHeader getDefault() {
         WzHeader h = new WzHeader();
         h.IDENT = "PKG1";

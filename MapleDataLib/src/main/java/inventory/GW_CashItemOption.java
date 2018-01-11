@@ -30,7 +30,7 @@ public class GW_CashItemOption {
     public int ftEquippedLow = 0;
     public int ftEquippedHigh = 0;
     public int[] aCashStats = new int[]{0, 0, 0};
-    
+
     public GW_CashItemOption() {
     }
 

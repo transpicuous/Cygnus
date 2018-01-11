@@ -21,7 +21,8 @@ package user;
  * @author Kaz Voeten
  */
 public class GW_WildHunterInfo {
+
     public byte nRidingType;
     public int dwCapturedMob;
-    
+
 }

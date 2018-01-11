@@ -36,7 +36,7 @@ public class MapleDataFactory {
     private static final AES aes = new AES();
     private static byte[] aKey
             = WzTool.generateKey(WzVersion.BMS);
-    private final int version = 176;
+    private final int version = 188;
     Scanner scan = new Scanner(System.in);
 
     private ETCFactory etcdata;
@@ -87,7 +87,7 @@ public class MapleDataFactory {
             System.out.println("[Info] Parsed " + itemdata.getItems().size() + " Item.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
             return;
         }
-        
+
         if (nServerType == 3) { //Game (all data)
             Long time = System.currentTimeMillis();
             System.out.println("[Info] Parsing binary Etc.bin data.");

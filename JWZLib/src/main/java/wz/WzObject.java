@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz;
 
 import java.util.Collection;
@@ -23,9 +23,8 @@ import java.util.Map;
 import wz.io.WzInputStream;
 
 /**
- * The parent representative of all entities that exist inside a WZ-formatted
- * file. <BR> Element E represent this object's core type and Element T
- * represents the contained element types.
+ * The parent representative of all entities that exist inside a WZ-formatted file. <BR> Element E represent this object's core type and
+ * Element T represents the contained element types.
  *
  * @author Zygon
  */
@@ -40,7 +39,7 @@ public abstract class WzObject<E extends WzObject, T extends WzObject<?, ?>> imp
     public void setParent(WzObject o) {
         par = o;
     }
-    
+
     public E resolve() {
         return (E) this;
     }

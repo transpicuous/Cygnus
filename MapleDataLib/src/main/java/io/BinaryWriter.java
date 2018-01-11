@@ -34,23 +34,24 @@ import javax.crypto.NoSuchPaddingException;
  * @author Novak
  */
 public class BinaryWriter {
+
     private static final Charset ASCII = Charset.forName("US-ASCII");
     private final ByteArrayOutputStream baos;
     private final FileOutputStream fos;
     private final Random rand;
     private final byte[] aIV;
     private byte[] aFileData;
-    
+
     public BinaryWriter(String path) throws FileNotFoundException, IOException {
         this.rand = new Random();
         File newbin = new File(path);
         newbin.createNewFile();
-        this.fos  = new FileOutputStream(path, false);
+        this.fos = new FileOutputStream(path, false);
         this.baos = new ByteArrayOutputStream(32);
         this.aIV = new byte[16];
         rand.nextBytes(aIV);
     }
-    
+
     public void WriteFile() throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
         FileCrypto fcCrypto = new FileCrypto(aIV);
         aFileData = fcCrypto.Encrypt(baos.toByteArray());
@@ -78,7 +79,7 @@ public class BinaryWriter {
         baos.write((byte) (i & 0xFF));
         baos.write((byte) ((i >>> 8) & 0xFF));
     }
-    
+
     public final void WriteShort(final short i) {
         baos.write((byte) (i & 0xFF));
         baos.write((byte) ((i >>> 8) & 0xFF));
@@ -90,12 +91,12 @@ public class BinaryWriter {
         baos.write((byte) ((i >>> 16) & 0xFF));
         baos.write((byte) ((i >>> 24) & 0xFF));
     }
-    
+
     public final void WriteString(final String s) {
         WriteShort((short) s.length());
         BinaryWriter.this.Write(s.getBytes(ASCII));
     }
-    
+
     public final void WritePos(final Point s) {
         BinaryWriter.this.WriteShort(s.x);
         BinaryWriter.this.WriteShort(s.y);
@@ -118,5 +119,5 @@ public class BinaryWriter {
         baos.write((byte) ((l >>> 48) & 0xFF));
         baos.write((byte) ((l >>> 56) & 0xFF));
     }
-    
+
 }

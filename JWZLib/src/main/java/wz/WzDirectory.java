@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz;
 
 import java.util.HashMap;
@@ -124,11 +124,11 @@ public final class WzDirectory extends WzObject<WzDirectory, WzObject<?, ?>> {
     public Map<String, WzObject<WzDirectory, ?>> getDirectories() {
         return directories;
     }
-    
+
     public WzObject<?, ?> getImage(String name) {
         return images.get(name);
     }
-    
+
     public WzObject<?, ?> getDirectory(String name) {
         return directories.get(name);
     }

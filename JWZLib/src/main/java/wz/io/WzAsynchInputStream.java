@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.io;
 
 import java.nio.ByteBuffer;
@@ -32,7 +32,7 @@ public final class WzAsynchInputStream extends WzInputStream {
     public WzAsynchInputStream(Path p) throws Exception {
         fc = AsynchronousFileChannel.open(p);
     }
-    
+
     @Override
     public int read(int off) {
         ByteBuffer buf = ByteBuffer.allocate(1);

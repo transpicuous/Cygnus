@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz;
 
 import java.util.Map;
@@ -23,7 +23,7 @@ import wz.common.WzHeader;
 import wz.io.WzInputStream;
 
 /**
- * 
+ *
  * @author Zygon
  */
 public final class WzFile extends WzObject<WzFile, WzObject<?, ?>> {
@@ -31,15 +31,15 @@ public final class WzFile extends WzObject<WzFile, WzObject<?, ?>> {
     private String name;
     private short version;
     private WzDirectory root;
-    
+
     private WzFile() {
     }
-    
+
     public WzFile(String wz, short ver) {
         name = wz;
         version = ver;
     }
-    
+
     @Override
     public void parse(WzInputStream in) {
         WzHeader h = new WzHeader();
@@ -54,7 +54,7 @@ public final class WzFile extends WzObject<WzFile, WzObject<?, ?>> {
         root = new WzDirectory(name, h.FILE_START + 2, h.FILE_SIZE, 0);
         root.parse(in);
     }
-    
+
     public void parseHeaderless(WzInputStream in, int len) {
         WzHeader h = new WzHeader();
         h.IDENT = "PKG1";
@@ -66,7 +66,7 @@ public final class WzFile extends WzObject<WzFile, WzObject<?, ?>> {
         root = new WzDirectory(name, h.FILE_START, h.FILE_SIZE, 0);
         root.parse(in);
     }
-    
+
     public static int getVersionHash(int ver) {
         int ret = 0;
         String v = String.valueOf(ver);
@@ -77,11 +77,11 @@ public final class WzFile extends WzObject<WzFile, WzObject<?, ?>> {
         }
         return ret & 0xFFFFFFFF;
     }
-    
+
     public WzDirectory getRoot() {
         return root;
     }
-    
+
     @Override
     public String getName() {
         return name;

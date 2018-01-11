@@ -54,14 +54,14 @@ public class BinaryReader {
 
         } catch (Exception ex) {
             Logger.getLogger(BinaryReader.class.getName()).log(Level.SEVERE, null, ex);
-             throw new RuntimeException(String.format("File %s couldn't be read!", filedata));
+            throw new RuntimeException(String.format("File %s couldn't be read!", filedata));
         }
     }
-    
+
     public final byte ReadByte() {
         return (byte) pStream.ReadByte();
     }
-    
+
     public final boolean ReadBool() {
         return pStream.ReadByte() != 0;
     }

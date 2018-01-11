@@ -21,31 +21,32 @@ package wz.etc;
  * @author Kaz Voeten
  */
 public class CardDeck {
-        private final short id;
-        private final short effect;
-        private final int skillid;
-        private final int[] cards;
-        
-        public CardDeck(short id, short effect, int skillid, int[] cards) {
-            this.id = id;
-            this.effect = effect;
-            this.skillid = skillid;
-            this.cards = cards;
-        }
-        
-        public short getId() {
-            return this.id;
-        }
-        
-        public short getEffect() {
-            return this.effect;
-        }
-        
-        public int getSkill() {
-            return this.skillid;
-        }
-        
-        public int[] getCards() {
-            return this.cards;
-        }
+
+    private final short id;
+    private final short effect;
+    private final int skillid;
+    private final int[] cards;
+
+    public CardDeck(short id, short effect, int skillid, int[] cards) {
+        this.id = id;
+        this.effect = effect;
+        this.skillid = skillid;
+        this.cards = cards;
+    }
+
+    public short getId() {
+        return this.id;
+    }
+
+    public short getEffect() {
+        return this.effect;
+    }
+
+    public int getSkill() {
+        return this.skillid;
+    }
+
+    public int[] getCards() {
+        return this.cards;
+    }
 }

@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import netty.InPacket;
 import netty.OutPacket;
 
 /**
@@ -39,7 +40,7 @@ public class AvatarData {
     public int nOverallRankMove = 0;
     public GW_CharacterStat pCharacterStat;
     public AvatarLook pAvatarLook;
-    public final ZeroInfo pZeroInfo = new ZeroInfo();
+    public ZeroInfo pZeroInfo = new ZeroInfo();
     public static final String DEFAULT_KEYMAP;
 
     public AvatarData(int nAccountID) {
@@ -59,7 +60,7 @@ public class AvatarData {
             ps.setInt(8, dwCharacterID);
             ps.executeUpdate();
 
-            pCharacterStat.saveNew(c);
+            pCharacterStat.SaveNew(c);
             pAvatarLook.SaveNew(c);
             pZeroInfo.SaveNew(c, dwCharacterID);
         } catch (Exception ex) {
@@ -115,7 +116,7 @@ public class AvatarData {
                 ret.nOverallRank = rs.getInt("nOverallRank");
                 ret.nOverallRankMove = rs.getInt("nOverallRankMove");
 
-                ret.pCharacterStat = GW_CharacterStat.loadStats(c, dwCharacterID);
+                ret.pCharacterStat = GW_CharacterStat.Load(c, dwCharacterID);
                 ret.pAvatarLook = AvatarLook.LoadAvatarLook(c, dwCharacterID);
                 ret.pZeroInfo.Load(c, dwCharacterID);
                 int nJob = ret.pCharacterStat.nJob;
@@ -127,7 +128,7 @@ public class AvatarData {
         return ret;
     }
 
-    public void Encode(OutPacket oPacket, boolean bRank) {
+    public void EncodeForClient(OutPacket oPacket, boolean bRank) {
         pCharacterStat.Encode(oPacket);
         pAvatarLook.Encode(oPacket);
         if (GW_CharacterStat.IsZeroJob(pCharacterStat.nJob)) {
@@ -141,6 +142,39 @@ public class AvatarData {
             oPacket.EncodeInteger(nOverallRank);
             oPacket.EncodeInteger(nOverallRankMove);
         }
+    }
+
+    public void Encode(OutPacket oPacket, boolean bRank) {
+        pCharacterStat.Encode(oPacket);
+        pAvatarLook.Encode(oPacket);
+        if (GW_CharacterStat.IsZeroJob(pCharacterStat.nJob)) {
+            pZeroInfo.Encode(oPacket);
+        }
+        oPacket.Encode(false);//m_abOnFamily ?
+        oPacket.Encode(nRank != 0 && !bRank);
+        if (nRank != 0 && !bRank) {
+            oPacket.EncodeInteger(nRank);
+            oPacket.EncodeInteger(nRankMove);
+            oPacket.EncodeInteger(nOverallRank);
+            oPacket.EncodeInteger(nOverallRankMove);
+        }
+    }
+
+    public static AvatarData Decode(int nAccountID, InPacket iPacket) {
+        AvatarData ret = new AvatarData(nAccountID);
+        ret.pCharacterStat = GW_CharacterStat.Decode(iPacket);
+        ret.pAvatarLook = AvatarLook.Decode(ret.pCharacterStat.dwCharacterID, iPacket);
+        if (GW_CharacterStat.IsZeroJob(ret.pCharacterStat.nJob)) {
+            ret.pZeroInfo = ZeroInfo.Decode(iPacket);
+        }
+        iPacket.DecodeBoolean();
+        if (iPacket.DecodeBoolean()) {
+            ret.nRank = iPacket.DecodeInteger();
+            ret.nRankMove = iPacket.DecodeInteger();
+            ret.nOverallRank = iPacket.DecodeInteger();
+            ret.nOverallRankMove = iPacket.DecodeInteger();
+        }
+        return ret;
     }
 
     public void SetSkin(int nSkin) {

@@ -57,7 +57,7 @@ public class Configuration {
 
     // [Game Server Details]
     public static int GAME_SERVER_PORT;
-    
+
     // [AuthAPI Server Details]
     public static String AUTH_API_URL;
 

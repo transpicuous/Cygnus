@@ -39,7 +39,6 @@ public class CharacterData extends AvatarData {
     //GW_CharacterPotentialSkill
     //BuyLimitData
     //GW_ExpConsumeItem
-            
 
     public CharacterData(int accountID) {
         super(accountID);
@@ -59,16 +58,16 @@ public class CharacterData extends AvatarData {
         oPacket.Encode(0); //if > 0 weird loop
         oPacket.EncodeInteger(0); //if > 0 encode some filetime/willexp bs.
         oPacket.Encode(0); // (if byte > 0, decode a byte and an int. if int > 0, decodebuffer. after the loop, decode an int and if int > 0, decode buffer)
-        
+
         if ((dbcharFlag & 1) != 0) {
             super.pCharacterStat.Encode(oPacket);
             oPacket.Encode(0); //might be buddylist capacity
-            
+
             oPacket.Encode(0); // if > 0 encode string
             oPacket.Encode(0); // if > 0 encode string
             oPacket.Encode(0); // if > 0 encode string
         }
-        
+
         if ((dbcharFlag & 2) != 0) {
             oPacket.EncodeLong(nMoney);
         }
@@ -76,10 +75,10 @@ public class CharacterData extends AvatarData {
         if ((dbcharFlag & 8) != 0 || (dbcharFlag & 0x2000000) != 0) {
             oPacket.EncodeInteger(0);//if > 0 encode GW_ExpConsumeItem bs
         }
-        
+
         if ((dbcharFlag & 0x8000) != 0) {
             oPacket.EncodeInteger(0);//if > 0 loop through array of GW_MonsterBattleMobInfo::Encode 's
         }
-        
+
     }
 }

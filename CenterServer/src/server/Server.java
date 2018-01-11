@@ -48,7 +48,7 @@ public class Server extends Thread {
         //Initialze GameServer Listener
         Long time = System.currentTimeMillis();
         System.out.println("[Info] Booting up CenterServer for world " + Configuration.WORLD_NAME);
-        
+
         Database.Initialize();
         pDataFactory.loadData(1); //1 = Center
 

@@ -16,16 +16,15 @@
  */
 package wz.item;
 
-
 /**
  *
  * @author Kaz Voeten
  */
 public class PetItem extends Item {
     //WZ Data
-    
+
     public PetItem(int nItemID) {
         super(nItemID);
     }
-    
+
 }

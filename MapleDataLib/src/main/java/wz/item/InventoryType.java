@@ -21,20 +21,20 @@ package wz.item;
  * @author Kaz Voeten
  */
 public enum InventoryType {
-    
+
     Install(0),
     Consume(1),
     Etc(2),
     Equip(3),
     Cash(4);
     private int type;
-    
-    private  InventoryType(int type) {
+
+    private InventoryType(int type) {
         this.type = type;
     }
-    
+
     public int getType() {
         return this.type;
     }
-    
+
 }

@@ -16,19 +16,27 @@
  */
 package server.accounts;
 
-import java.io.BufferedReader;
+import com.zaxxer.hikari.HikariDataSource;
+import database.Database;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.Date;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONException;
+import login.CLoginServerSocket;
+import login.packet.LoopBackPacket;
+import netty.OutPacket;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.json.JSONObject;
 import server.Configuration;
+import user.AvatarData;
 
 /**
  *
@@ -36,44 +44,63 @@ import server.Configuration;
  */
 public class APIFactory {
 
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
+    private static APIFactory instance;
+    private final OkHttpClient client = new OkHttpClient();
+
+    public void RequestAccount(CLoginServerSocket pSocket, int nSessionID, String sToken) {
+        Request request = new Request.Builder()
+                .url(Configuration.AUTH_API_URL + "/account?token=" + sToken)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    if (!response.isSuccessful()) {
+                        throw new IOException("[APIFactory] Unexpected code " + response);
+                    }
+                    JSONObject account = new JSONObject(responseBody.string());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Account pAccount = new Account(
+                            account.getInt("id"),
+                            nSessionID,
+                            account.getString("name"),
+                            account.getString("ip"),
+                            account.getString("pic"),
+                            (byte) account.getInt("state"),
+                            (byte) account.getInt("gender"),
+                            sdf.parse(account.getString("history")),
+                            sdf.parse(account.getString("birthday")),
+                            (byte) account.getInt("admin")
+                    );
+
+                    OutPacket oPacket = new OutPacket();
+                    oPacket.EncodeShort(LoopBackPacket.AccountInformation.getValue());
+                    oPacket.EncodeInteger(pAccount.nSessionID);
+                    pAccount.Encode(oPacket);
+                    List<AvatarData> avatars = pAccount.GetAvatars(pAccount.nAccountID, Database.GetConnection(), true);
+                    oPacket.Encode(avatars.size());
+                    avatars.forEach((pAvatar) -> {
+                        oPacket.EncodeInteger(pAvatar.nCharlistPos);
+                        pAvatar.Encode(oPacket, false);
+                    });
+                    pSocket.SendPacket(oPacket.ToPacket());
+                } catch (ParseException ex) {
+                    Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
     }
 
-    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-        InputStream is = new URL(url).openStream();
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            JSONObject json = new JSONObject(jsonText);
-            return json;
-        } finally {
-            is.close();
+    public static APIFactory GetInstance() {
+        if (instance == null) {
+            instance = new APIFactory();
         }
-    }
-
-    public static Account GetAccount(int nSessionID, String sToken) {
-        try {
-            JSONObject account = readJsonFromUrl(Configuration.AUTH_API_URL + "/account?token=" + sToken);
-            return new Account(
-                    account.getInt("id"), 
-                    nSessionID, 
-                    account.getString("name"), 
-                    account.getString("ip"),
-                    account.getString("pic"),
-                    (byte) account.getInt("state"),
-                    (byte) account.getInt("gender"),
-                    new Date(account.getString("history")),
-                    new Date(account.getString("birthday")),
-                    (byte) account.getInt("admin")
-            );
-        } catch (Exception ex) {
-            return null;
-        }
+        return instance;
     }
 }

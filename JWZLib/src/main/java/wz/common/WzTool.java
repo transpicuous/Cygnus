@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.common;
 
 import wz.io.WzInputStream;
@@ -52,14 +52,14 @@ public final class WzTool {
         switch (v) {
             case GMS:
                 return new byte[]{0x4D, 0x23, (byte) 0xC7, 0x2B,
-                            0x4D, 0x23, (byte) 0xC7, 0x2B,
-                            0x4D, 0x23, (byte) 0xC7, 0x2B,
-                            0x4D, 0x23, (byte) 0xC7, 0x2B};
+                    0x4D, 0x23, (byte) 0xC7, 0x2B,
+                    0x4D, 0x23, (byte) 0xC7, 0x2B,
+                    0x4D, 0x23, (byte) 0xC7, 0x2B};
             case EMS:
                 return new byte[]{(byte) 0xB9, 0x7D, 0x63, (byte) 0xE9,
-                            (byte) 0xB9, 0x7D, 0x63, (byte) 0xE9,
-                            (byte) 0xB9, 0x7D, 0x63, (byte) 0xE9,
-                            (byte) 0xB9, 0x7D, 0x63, (byte) 0xE9};
+                    (byte) 0xB9, 0x7D, 0x63, (byte) 0xE9,
+                    (byte) 0xB9, 0x7D, 0x63, (byte) 0xE9,
+                    (byte) 0xB9, 0x7D, 0x63, (byte) 0xE9};
             default:
                 return new byte[16];
         }
@@ -85,11 +85,9 @@ public final class WzTool {
     }
 
     /**
-     * Determines whether or not the specific InputStream loaded is a List.wz
-     * file.
+     * Determines whether or not the specific InputStream loaded is a List.wz file.
      *
-     * @param in the InputStream to determine whether it reads from the List.wz
-     * file.
+     * @param in the InputStream to determine whether it reads from the List.wz file.
      * @return whether or not the file is a list.
      */
     public static boolean isList(WzInputStream in) {

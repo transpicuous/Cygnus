@@ -21,12 +21,14 @@ package inventory;
  * @author Kaz Voeten
  */
 class VirtualEquipInventory {
+
     private static final int anBasePOS = 0;
     private static final int anEndPOS = 0;
-    
-    public VirtualEquipInventory() {}
-    
+
+    public VirtualEquipInventory() {
+    }
+
     public void SetItem() {
-        
+
     }
 }

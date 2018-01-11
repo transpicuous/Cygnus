@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.util;
 
 import java.util.Map;
@@ -23,17 +23,17 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.nfunk.jep.JEP;
 
 /**
- * 
+ *
  * @author Zygon
  */
 public final class Evaluator {
-    
+
     private static JEP eval = null;
     private static final ReentrantLock lock = new ReentrantLock(true);
-    
+
     private Evaluator() {
     }
-    
+
     public static double evaluate(String expression, Map<String, Double> variables) {
         lock.lock();
         try {

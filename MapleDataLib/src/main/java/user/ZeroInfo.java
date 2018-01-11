@@ -19,6 +19,7 @@ package user;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import netty.InPacket;
 import netty.OutPacket;
 
 /**
@@ -27,7 +28,7 @@ import netty.OutPacket;
  */
 public class ZeroInfo {
 
-    public short Flag = -1; //unsigned _int16
+    public static final short Flag = -1; //unsigned _int16
     public int nSubHP = 6910;
     public int nSubMP = 10;
     public int nSubSkin = 0;
@@ -43,7 +44,8 @@ public class ZeroInfo {
     public int nLapis = 0;
     public int nLazuli = 0;
 
-    public ZeroInfo() {}
+    public ZeroInfo() {
+    }
 
     public void Encode(OutPacket oPacket) {
         if ((Flag & 1) > 0) {
@@ -78,6 +80,43 @@ public class ZeroInfo {
             oPacket.EncodeInteger(nMixAddHairColor);
             oPacket.EncodeInteger(nMixHairBaseProb);
         }
+    }
+
+    public static ZeroInfo Decode(InPacket iPacket) {
+        ZeroInfo ret = new ZeroInfo();
+        if ((Flag & 1) > 0) {
+            ret.bIsBeta = iPacket.DecodeBoolean();
+        }
+        if ((Flag & 2) > 0) {
+            ret.nSubHP = iPacket.DecodeInteger();
+        }
+        if ((Flag & 4) > 0) {
+            ret.nSubMP = iPacket.DecodeInteger();
+        }
+        if ((Flag & 8) > 0) {
+            ret.nSubSkin = iPacket.DecodeByte();
+        }
+        if ((Flag & 0x10) > 0) {
+            ret.nSubHair = iPacket.DecodeInteger();
+        }
+        if ((Flag & 0x20) > 0) {
+            ret.nSubFace = iPacket.DecodeInteger();
+        }
+        if ((Flag & 0x40) > 0) {
+            ret.nSubMHP = iPacket.DecodeInteger();
+        }
+        if ((Flag & 0x80) > 0) {
+            ret.nSubMMP = iPacket.DecodeInteger();
+        }
+        if ((Flag & 0x100) > 0) {
+            ret.dbcharZeroLinkCashPart = iPacket.DecodeInteger();
+        }
+        if ((Flag & 0x200) > 0) {
+            ret.nMixBaseHairColor = iPacket.DecodeInteger();
+            ret.nMixAddHairColor = iPacket.DecodeInteger();
+            ret.nMixHairBaseProb = iPacket.DecodeInteger();
+        }
+        return ret;
     }
 
     public void Update(Connection c, int dwCharacterID) {

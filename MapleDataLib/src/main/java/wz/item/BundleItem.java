@@ -24,15 +24,16 @@ import java.util.HashMap;
  * @author Kaz Voeten
  */
 public class BundleItem extends Item {
+
     //WZ_DATA
     public short nSlotMax = 1;
     public short nRate = 1; //presumably consumption rate?
     public boolean notConsume = false; //doesn't disappear when consumed
-    public boolean noMoveToLocker = false; 
+    public boolean noMoveToLocker = false;
     public int skillEffectID = 0; //in addition to the base skill number?
     public int dressUpgrade = 0; //new ab dress id?
-    public int levelVariation = 0; 
-    public int sharedStatCostGrade = 0; 
+    public int levelVariation = 0;
+    public int sharedStatCostGrade = 0;
     public int useExpGainMinLevel;
     public int useExpGainMaxLevel;
     public boolean only = false; //lolwat
@@ -48,8 +49,7 @@ public class BundleItem extends Item {
     public int expGainMaxLev = 255;
     public ArrayList<Integer> shareBlockedJobs = new ArrayList<>();
     public HashMap<Integer, String> useExpWarningAtLevel = new HashMap<>();
-    
-    
+
     public BundleItem(int nItemID) {
         super(nItemID);
     }

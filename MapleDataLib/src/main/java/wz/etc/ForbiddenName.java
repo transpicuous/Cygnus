@@ -21,23 +21,26 @@ package wz.etc;
  * @author Novak
  */
 public class ForbiddenName {
+
     private final String[] names;
-    
+
     public ForbiddenName(int size) {
         this.names = new String[size];
     }
-    
+
     public void add(String name, int index) {
         this.names[index] = name;
     }
-    
+
     public boolean contains(String name) {
-        for (String word: names) {
-            if (word.equals(name)) return true;
+        for (String word : names) {
+            if (word.equals(name)) {
+                return true;
+            }
         }
         return false;
     }
-    
+
     public void print() {
         String words = "";
         for (String name : names) {

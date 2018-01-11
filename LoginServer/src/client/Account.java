@@ -30,7 +30,7 @@ public class Account {
     public final int nAccountID, nSessionID;
     public final String sAccountName, sIP, sPIC;
     public final byte nState, nGender, nAdmin;
-    public List<AvatarData> liAvatars = new LinkedList<>();
+    public List<AvatarData> liAvatarData = new LinkedList<>();
 
     private Account(int nAccountID, int nSessionID, String sAccountName, String sIP, String sPIC,
             byte nState, byte nGender, byte nAdmin) {

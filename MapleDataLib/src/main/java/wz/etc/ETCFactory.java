@@ -52,15 +52,15 @@ public class ETCFactory {
     public List<Deck> getCardDecks() {
         return this.CardDecks;
     }
-    
+
     public ForbiddenName ForbiddenNames() {
         return this.ForbiddenNames;
     }
-    
+
     public Curse CurseWords() {
         return this.CurseWords;
     }
-    
+
     public boolean isLegalName(String id) {
         return !CurseWords.contains(id) && !ForbiddenNames.contains(id);
     }
@@ -108,7 +108,7 @@ public class ETCFactory {
             writer.WriteString(WzDataTool.getString(forbiddenNames, name.getName(), "admin"));
         }
     }
-    
+
     private void dumpCurses(WzFile Etcwz, BinaryWriter writer) {
         WzObject<?, ?> curses = Etcwz.getChild("Curse.img").getChild("BlackList");
 
@@ -179,7 +179,7 @@ public class ETCFactory {
             ForbiddenNames.add(reader.ReadString(), i);
         }
     }
-    
+
     public void parseCurses(BinaryReader reader) {
         int size = reader.ReadShort();
         this.CurseWords = new Curse(size);

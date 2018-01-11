@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.io;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,14 +30,14 @@ public abstract class WzInputStream {
     protected int hash;
     protected byte[] key;
     protected WzHeader header;
-    protected ThreadLocal<AtomicInteger> positions =
-            new ThreadLocal<AtomicInteger>() {
+    protected ThreadLocal<AtomicInteger> positions
+            = new ThreadLocal<AtomicInteger>() {
 
-                @Override
-                protected AtomicInteger initialValue() {
-                    return new AtomicInteger(0);
-                }
-            };
+        @Override
+        protected AtomicInteger initialValue() {
+            return new AtomicInteger(0);
+        }
+    };
 
     protected WzInputStream() {
     }
@@ -83,6 +83,7 @@ public abstract class WzInputStream {
     }
 
     public abstract int read(int off);
+
     public abstract byte readByte(int off);
 
     public int read() {

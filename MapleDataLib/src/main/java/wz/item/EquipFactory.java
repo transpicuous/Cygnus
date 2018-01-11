@@ -30,8 +30,7 @@ import wz.io.WzMappedInputStream;
 
 /**
  *
- * @author Kaz Voeten
- * does some of the equip stat flags wrong, has to be revised for accuracy.
+ * @author Kaz Voeten does some of the equip stat flags wrong, has to be revised for accuracy.
  */
 public class EquipFactory {
 
@@ -43,7 +42,7 @@ public class EquipFactory {
         this.key = key;
         this.version = version;
     }
-    
+
     public HashMap<Integer, EquipItem> getEquips() {
         return this.equips;
     }
@@ -55,14 +54,14 @@ public class EquipFactory {
             parseBasicEquipCategory(input);
         }
     }
-    
+
     private void parseBasicEquipCategory(BinaryReader input) {
         long items = input.ReadLong();
         for (long i = 0; i < items; i++) {
-            
+
             int itemID = input.ReadInt();
             EquipItem equip = new EquipItem(itemID);
-            
+
             equip.isCash = input.ReadBool();
             equip.accountSharable = input.ReadBool();
             equip.bossReward = input.ReadBool();
@@ -73,11 +72,11 @@ public class EquipFactory {
             equip.expireOnLogout = input.ReadBool();
             equip.royalSpecial = input.ReadBool();
             equip.android = input.ReadBool();
-            
+
             equip.islot = EquipSlotType.getSlotTypeFromString(input.ReadString(), itemID);
             equip.vslot = EquipSlotType.getSlotTypeFromString(input.ReadString(), itemID);
             equip.afterImage = input.ReadString();
-            
+
             equip.reqSTR = input.ReadInt();
             equip.reqDEX = input.ReadInt();
             equip.reqINT = input.ReadInt();
@@ -86,62 +85,106 @@ public class EquipFactory {
             equip.reqLevel = input.ReadInt();
             equip.nPrice = input.ReadInt();
             equip.setItemID = input.ReadInt();
-            
+
             int value;
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niPAD, value); //base attack?
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niPAD, value); //base attack?
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMAD, value); //base attack?
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMAD, value); //base attack?
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMAD, value); //inc attack?
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMAD, value); //inc attack?
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niPAD, value); //inc attack?
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niPAD, value); //inc attack?
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.iReduceReq, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.iReduceReq, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.nRUC, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.nRUC, value);
+            }
             value = input.ReadInt();
             if (value > 0) {
                 equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.nDurability, value);
                 equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.nDurabilityMax, value);
             }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niACC, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niACC, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMaxHP, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMaxHP, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMaxMP, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMaxMP, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niSTR, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niSTR, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niDEX, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niDEX, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niINT, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niINT, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niLUK, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niLUK, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niPDD, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niPDD, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMDD, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMDD, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niEVA, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niEVA, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niSpeed, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niSpeed, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niJump, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niJump, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niLUK, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niLUK, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.nBDR, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.nBDR, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMDR, value);
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.niMDR, value);
+            }
             value = input.ReadInt();
-            if (value > 0)  equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.nDamR, value);
-            
+            if (value > 0) {
+                equip.eqStats.mStats.put(GW_ItemSlotEquipBase.Flags.nDamR, value);
+            }
+
             equip.tradeAvailable = input.ReadInt();
             equip.charmEXP = input.ReadInt();
             equip.bitsSlot = input.ReadInt();
-            
+
             this.equips.put(itemID, equip);
         }
     }
@@ -196,7 +239,7 @@ public class EquipFactory {
     private void dumpBasicEquipCategory(WzObject<?, ?> category, BinaryWriter writer) {
         writer.WriteLong((int) category.getChildren().size());
         for (WzObject<?, ?> item : category) {
-            
+
             int itemID = Integer.parseInt(item.getName().replace(".img", ""));
             writer.WriteInt(itemID);
 
@@ -225,7 +268,7 @@ public class EquipFactory {
             writer.WriteInt(WzDataTool.getInteger(item, "reqLevel", 0));
             writer.WriteInt(WzDataTool.getInteger(item, "price", 0));
             writer.WriteInt(WzDataTool.getInteger(item, "setItemID", 0));
-            
+
             writer.WriteInt(WzDataTool.getInteger(item, "attack", 0));
             writer.WriteInt(WzDataTool.getInteger(item, "attackSpeed", 0));
             writer.WriteInt(WzDataTool.getInteger(item, "incMAD", 0));
@@ -249,7 +292,7 @@ public class EquipFactory {
             writer.WriteInt(WzDataTool.getInteger(item, "incBDR", 0));
             writer.WriteInt(WzDataTool.getInteger(item, "incMDR", 0));
             writer.WriteInt(WzDataTool.getInteger(item, "incDamR", 0));
-            
+
             writer.WriteInt(WzDataTool.getInteger(item, "tradeAvailable", 0));
             writer.WriteInt(WzDataTool.getInteger(item, "charmEXP", 0));
             writer.WriteInt(WzDataTool.getInteger(item, "bitsSlot", 0));

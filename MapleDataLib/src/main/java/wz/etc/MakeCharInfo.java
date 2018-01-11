@@ -21,5 +21,5 @@ package wz.etc;
  * @author Kaz Voeten
  */
 public class MakeCharInfo {
-    
+
 }

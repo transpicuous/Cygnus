@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.common;
 
 import java.util.Arrays;
@@ -34,15 +34,15 @@ public final class MP3 {
         header = h;
         length = len;
     }
-    
+
     public int getLength() {
         return length;
     }
-    
+
     public byte[] getData() {
         return data;
     }
-    
+
     public byte[] getHeader() {
         return header;
     }
@@ -55,13 +55,13 @@ public final class MP3 {
         hash = 71 * hash + Arrays.hashCode(this.header);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof MP3) {
             MP3 other = (MP3) o;
-            return other.data == data && other.length == length &&
-                    other.header == header;
+            return other.data == data && other.length == length
+                    && other.header == header;
         }
         return false;
     }

@@ -14,21 +14,21 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.util;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Zygon
  */
 public final class GenericUtil {
-    
+
     private GenericUtil() {
     }
-    
+
     // probably better way of doing this
     public static Map combineMaps(Map m1, Map m2) {
         HashMap ret = new HashMap();

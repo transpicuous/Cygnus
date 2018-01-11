@@ -21,19 +21,20 @@ package wz.etc;
  * @author Kaz Voeten
  */
 public class CharacterCard {
-        private final short jobid;
-        private final int skillid;
-        
-        public CharacterCard(short jobid, int skillid) {
-            this.jobid = jobid;
-            this.skillid = skillid;
-        }
-        
-        public short getJob() {
-            return this.jobid;
-        }
-        
-        public int getSkill() {
-            return this.skillid;
-        }
+
+    private final short jobid;
+    private final int skillid;
+
+    public CharacterCard(short jobid, int skillid) {
+        this.jobid = jobid;
+        this.skillid = skillid;
+    }
+
+    public short getJob() {
+        return this.jobid;
+    }
+
+    public int getSkill() {
+        return this.skillid;
+    }
 }

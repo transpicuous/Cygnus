@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.common;
 
 import java.awt.Point;
@@ -25,7 +25,7 @@ import wz.WzProperty.Type;
 import wz.util.Evaluator;
 
 /**
- * 
+ *
  * @author Zygon
  */
 public final class WzDataTool {
@@ -158,14 +158,14 @@ public final class WzDataTool {
     public static PNG getPNG(WzObject src, String path, PNG def) {
         return getPNG(getProperty(src.getChildByPath(path), Type.CANVAS), def);
     }
-    
+
     public static MP3 getMP3(WzProperty obj, MP3 def) {
         if (obj != null && obj.getPropertyType().equals(Type.SOUND)) {
             return (MP3) obj.getValue();
         }
         return def;
     }
-    
+
     public static MP3 getMP3(WzObject src, String path, MP3 def) {
         return getMP3(getProperty(src.getChildByPath(path), Type.SOUND), def);
     }

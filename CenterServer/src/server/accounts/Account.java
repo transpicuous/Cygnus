@@ -53,7 +53,7 @@ public class Account {
         this.dLastLoggedIn = dLastLoggedIn;
         this.nAdmin = nAdmin;
     }
-    
+
     public void Encode(OutPacket oPacket) {
         oPacket.EncodeInteger(nAccountID);
         oPacket.EncodeInteger(nSessionID);
@@ -80,7 +80,7 @@ public class Account {
             ps.close();
             rs.close();
         } catch (SQLException e) {
-                e.printStackTrace();
+            e.printStackTrace();
             return avatars;
         } finally {
             try {

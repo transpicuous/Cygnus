@@ -24,6 +24,7 @@ import inventory.GW_ItemSlotEquipBase;
  * @author Kaz Voeten
  */
 public class EquipItem extends Item {
+
     public GW_ItemSlotEquipBase eqStats = new GW_ItemSlotEquipBase();
     //WZDATA for checks
     public int reqSTR = 0;
@@ -44,7 +45,6 @@ public class EquipItem extends Item {
     public EquipSlotType islot;
     public EquipSlotType vslot;
     public String afterImage;
-    
 
     public EquipItem(int nItemID) {
         super(nItemID);

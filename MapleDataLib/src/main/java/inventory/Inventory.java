@@ -23,13 +23,14 @@ import java.util.ArrayList;
  * @author Kaz Voeten
  */
 public class Inventory {
+
     public GW_ItemSlotBase[][] aaItemSlot = new GW_ItemSlotBase[5][60];//60 slots per inv for now
     public ArrayList<GW_ItemSlotBase> liEquipped = new ArrayList<>();
-    public VirtualEquipInventory VEInventory= new VirtualEquipInventory();
-    
-    
+    public VirtualEquipInventory VEInventory = new VirtualEquipInventory();
+
     /**
      * Returns whether or not it's a bodypart based on the negative value of the poss
+     *
      * @param nPOS - pass negative poss
      * @return boolean is_nonbodypart
      */
@@ -42,8 +43,5 @@ public class Inventory {
                 || (nPOS - 1500) <= 0xB
                 || (nPOS - 5100) <= 5;
     }
-    
-    
-    
-    
+
 }

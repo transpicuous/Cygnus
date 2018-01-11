@@ -21,6 +21,7 @@ package user;
  * @author Kaz Voeten
  */
 public class GW_DressUpInfo {
+
     public int nFace = 21173;
     public int nHair = 37141;
     public int nClothes = 5010094;
@@ -28,8 +29,8 @@ public class GW_DressUpInfo {
     public int nMixBaseHairColor = -1;
     public int nMixAddHairColor = 0;
     public int nMixHairBaseProb = 0;
-    
+
     public GW_DressUpInfo() {
-        
+
     }
 }

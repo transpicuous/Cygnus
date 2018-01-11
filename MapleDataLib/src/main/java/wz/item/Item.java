@@ -23,6 +23,7 @@ import netty.OutPacket;
  * @author Kaz Voeten
  */
 public class Item {
+
     //WZ props
     public int nItemID;
     public int nPrice = 1; //shop price (not in item packets, just in WZ/ shop packets)
@@ -34,7 +35,7 @@ public class Item {
     public boolean expireOnLogout;
     public boolean isCash = false; //just for easier item sorting.
     public InventoryType type;
-    
+
     public Item(int nItemID) {
         this.nItemID = nItemID;
     }

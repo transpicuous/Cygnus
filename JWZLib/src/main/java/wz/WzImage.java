@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz;
 
 import java.io.File;
@@ -137,7 +137,7 @@ public final class WzImage extends WzObject<WzImage, WzProperty<?>> {
             parsed = false;
         }
     }
-    
+
     public void forceUnknownHash() { // for images that do not have the hash value included
         alone = false;
         offset = 0;

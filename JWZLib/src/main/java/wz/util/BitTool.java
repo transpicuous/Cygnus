@@ -14,21 +14,21 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.util;
 
 /**
- * 
+ *
  * @author Zygon
  */
 public final class BitTool {
 
     private BitTool() {
     }
-    
+
     /**
-     * Converts the first two bytes to
-     * a short.
+     * Converts the first two bytes to a short.
+     *
      * @param in in input array.
      * @return a short.
      */
@@ -37,8 +37,8 @@ public final class BitTool {
     }
 
     /**
-     * Converts the first four bytes to
-     * an int-32.
+     * Converts the first four bytes to an int-32.
+     *
      * @param in in input array.
      * @return an int-32.
      */
@@ -47,8 +47,8 @@ public final class BitTool {
     }
 
     /**
-     * Converts the first eight bytes to
-     * a long.
+     * Converts the first eight bytes to a long.
+     *
      * @param in in input array.
      * @return a long.
      */

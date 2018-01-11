@@ -32,5 +32,5 @@ public class CCenter {
         oPacket.EncodeString(sToken);
         return oPacket.ToPacket();
     }
-    
+
 }

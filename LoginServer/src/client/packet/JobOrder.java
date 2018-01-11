@@ -5,7 +5,7 @@ import netty.OutPacket;
 public class JobOrder {
 
     public static final boolean bEnabled = true; //enable char select
-    public static final byte nOrder = 4;//176 has 0-8 where 0 will have a broken pinkbean selection
+    public static final byte nOrder = 0;
 
     public static void Encode(OutPacket oPacket) {
         oPacket.Encode(bEnabled);

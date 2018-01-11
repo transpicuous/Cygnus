@@ -36,13 +36,13 @@ public enum FileType {
     String(12),
     TamingMob(13),
     UI(14);
-    
+
     private final int nType;
-    
+
     private FileType(int type) {
         this.nType = type;
     }
-    
+
     public int GetValue() {
         return this.nType;
     }

@@ -21,22 +21,22 @@ package inventory;
  * @author Kaz Voeten
  */
 public enum TypeIndex {
-    
+
     Install(0),
     Consume(1),
     Etc(2),
     Equip(3),
     Cash(4);
     private int type;
-    
-    private  TypeIndex(int type) {
+
+    private TypeIndex(int type) {
         this.type = type;
     }
-    
+
     public int GetType() {
         return this.type;
     }
-    
+
     public static void GetItemTypeFromTypeIndex(int ti) {
         int result;
         switch (ti) {
@@ -60,5 +60,5 @@ public enum TypeIndex {
                 break;
         }
     }
-    
+
 }

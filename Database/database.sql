@@ -35,7 +35,7 @@ USE `center`;
 DROP TABLE IF EXISTS `avatardata`;
 CREATE TABLE IF NOT EXISTS `avatardata` (
   `dwCharacterID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `accountID` int(11) unsigned NOT NULL,
+  `nAccountID` int(11) unsigned NOT NULL,
   `nCharlistPos` int(11) NOT NULL DEFAULT '0',
   `nWorld` int(11) NOT NULL DEFAULT '0',
   `nRank` int(11) NOT NULL DEFAULT '0',
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `avatardata` (
   `nOverallRankMove` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`dwCharacterID`),
   UNIQUE KEY `dwCharacterID` (`dwCharacterID`),
-  KEY `accountID` (`accountID`)
+  KEY `nAccountID` (`nnAccountID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table center.avatardata: 0 rows

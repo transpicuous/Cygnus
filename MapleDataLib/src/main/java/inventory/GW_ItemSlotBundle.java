@@ -23,14 +23,15 @@ import netty.OutPacket;
  * @author Kaz Voeten
  */
 public class GW_ItemSlotBundle extends GW_ItemSlotBase {
+
     public short nNumber = 1; //count
     public short nAttribute = 0;
     public String sTitle = "";
-    
+
     public GW_ItemSlotBundle(int nItemID) {
         super(nItemID, 2);
     }
-    
+
     @Override
     public void RawEncode(OutPacket oPacket) {
         super.RawEncode(oPacket);
@@ -38,10 +39,10 @@ public class GW_ItemSlotBundle extends GW_ItemSlotBase {
         oPacket.EncodeString(sTitle);
         oPacket.EncodeShort(nAttribute);
         int v6 = nItemID / 100000;
-        if (v6 == 207 || v6 == 233 ) {
+        if (v6 == 207 || v6 == 233) {
             oPacket.EncodeInteger(cashOpt.liCashItemSNLow);
             oPacket.EncodeInteger(cashOpt.liCashItemSNHigh);
         }
     }
-    
+
 }

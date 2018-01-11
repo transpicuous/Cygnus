@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package wz.io;
 
 import java.io.IOException;
@@ -57,7 +57,7 @@ public final class WzMappedInputStream extends WzInputStream {
     public byte readByte(int off) {
         return data.get(off);
     }
-    
+
     public ByteBuffer subMap(int off, int length) throws IOException {
         return f.getChannel().map(FileChannel.MapMode.READ_ONLY, off, length);
     }

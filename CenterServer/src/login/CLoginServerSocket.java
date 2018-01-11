@@ -17,13 +17,13 @@
 package login;
 
 import io.netty.channel.Channel;
-import login.packet.LLogin;
 import login.packet.LoginPacket;
 import login.packet.LoopBackPacket;
 import netty.InPacket;
 import netty.Packet;
 import netty.Socket;
 import server.Configuration;
+import server.accounts.APIFactory;
 
 /**
  *
@@ -55,7 +55,7 @@ public class CLoginServerSocket extends Socket {
     public void ProcessPacket(LoginPacket nPacketID, InPacket iPacket) {
         switch (nPacketID) {
             case ProcessLogin:
-                LLogin.ProcessLogin(this, iPacket);
+                APIFactory.GetInstance().RequestAccount(this, iPacket.DecodeInteger(), iPacket.DecodeString());
                 break;
         }
     }

@@ -59,7 +59,7 @@ public class GW_CharacterStat {
     public byte nPortal = 0;
     public short nSubJob = 0;
     public int nDefFaceAcc = 0;
-    public byte nFatigue = 0;
+    public short nFatigue = 0;
     public int nLastFatigureUpdateTime = 0;
     public int nCharismaEXP = 0;
     public int nInsightExp = 0;
@@ -74,11 +74,6 @@ public class GW_CharacterStat {
     public byte nPvpModeLevel = 5;
     public byte nPvpModeType = 6;
     public int nEventPoint = 0;
-    public byte nAlbaActivityID = 0;
-    public int AlbaStartTimeHigh = 0; //make class with dwhighttime/dwlowtime pls
-    public int AlbaStartTimeLow = 0;
-    public int nAlbaDuration = 0;
-    public boolean bAlbaSpecialReward = false;
     //CHARACTER CARDS HERE, MAKE A MAP USING CHARCARD CLASS
     public int ftLastLogoutTimeHigh = 0; //make class with dwhighttime/dwlowtime pls
     public int ftLastLogoutTimeLow = 0;
@@ -94,8 +89,8 @@ public class GW_CharacterStat {
                     + "sCharacterName, nGender, nSkin, nFace, nHair, nMixBaseHairColor, nMixAddHairColor, nMixHairBaseProb, nLevel, nJob,"
                     + "nSTR, nDEX, nINT, nLUK, nHP, nMHP, nMP, nMMP, nAP, nSP, nExp64, nPop, nWP, dwPosMap, nPortal, nSubJob, nDefFaceAcc, nFatigue, nLastFatigureUpdateTime, "
                     + "nCharismaEXP, nInsightExp, nWillExp, nCraftExp, nSenseExp, nCharmExp, DayLimit, nPvPExp, nPVPGrade, nPvpPoint, nPvpModeLevel, nPvpModeType, "
-                    + "nEventPoint, nAlbaActivityID, AlbaStartTimeHigh, AlbaStartTimeLow, nAlbaDuration, bAlbaSpecialReward, ftLastLogoutTimeHigh, ftLastLogoutTimeLow, bBurning) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    + "nEventPoint, ftLastLogoutTimeHigh, ftLastLogoutTimeLow, bBurning) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             ps.setInt(1, dwCharacterID);
             ps.setInt(2, dwCharacterIDForLog);
@@ -127,7 +122,7 @@ public class GW_CharacterStat {
             ps.setByte(28, nPortal);
             ps.setShort(29, nSubJob);
             ps.setInt(30, nDefFaceAcc);
-            ps.setByte(31, nFatigue);
+            ps.setShort(31, nFatigue);
             ps.setInt(32, nLastFatigureUpdateTime);
             ps.setInt(33, nCharismaEXP);
             ps.setInt(34, nInsightExp);
@@ -142,14 +137,9 @@ public class GW_CharacterStat {
             ps.setByte(43, nPvpModeLevel);
             ps.setByte(44, nPvpModeType);
             ps.setInt(45, nEventPoint);
-            ps.setByte(46, nAlbaActivityID);
-            ps.setInt(47, AlbaStartTimeHigh); //make class with dwhighttime/dwlowtime pls
-            ps.setInt(48, AlbaStartTimeLow);
-            ps.setInt(49, nAlbaDuration);
-            ps.setBoolean(50, bAlbaSpecialReward);
-            ps.setInt(51, ftLastLogoutTimeHigh); //make class with dwhighttime/dwlowtime pls
-            ps.setInt(52, ftLastLogoutTimeLow);
-            ps.setBoolean(53, bBurning);
+            ps.setInt(46, ftLastLogoutTimeHigh); //make class with dwhighttime/dwlowtime pls
+            ps.setInt(47, ftLastLogoutTimeLow);
+            ps.setBoolean(48, bBurning);
 
             ps.execute();
             ps.close();
@@ -219,11 +209,6 @@ public class GW_CharacterStat {
                 ret.nPvpModeLevel = rs.getByte("nPvpModeLevel");
                 ret.nPvpModeType = rs.getByte("nPvpModeType");
                 ret.nEventPoint = rs.getByte("nEventPoint");
-                ret.nAlbaActivityID = rs.getByte("nAlbaActivityID");
-                ret.AlbaStartTimeHigh = rs.getInt("AlbaStartTimeHigh");
-                ret.AlbaStartTimeLow = rs.getInt("AlbaStartTimeLow");
-                ret.nAlbaDuration = rs.getInt("nAlbaDuration");
-                ret.bAlbaSpecialReward = rs.getBoolean("bAlbaSpecialReward");
                 ret.ftLastLogoutTimeHigh = rs.getInt("ftLastLogoutTimeHigh");
                 ret.ftLastLogoutTimeLow = rs.getInt("ftLastLogoutTimeLow");
                 ret.bBurning = rs.getBoolean("bBurning");
@@ -279,7 +264,7 @@ public class GW_CharacterStat {
             oPacket.EncodeInteger(nDefFaceAcc);
         }
 
-        oPacket.Encode(nFatigue);
+        oPacket.EncodeShort(nFatigue); //Became Short
         oPacket.EncodeInteger(nLastFatigureUpdateTime);
         oPacket.EncodeInteger(nCharismaEXP);
         oPacket.EncodeInteger(nInsightExp);
@@ -294,11 +279,6 @@ public class GW_CharacterStat {
         oPacket.Encode(nPvpModeLevel);
         oPacket.Encode(nPvpModeType);
         oPacket.EncodeInteger(nEventPoint);//kmst is byte
-        oPacket.Encode(nAlbaActivityID);
-        oPacket.EncodeInteger(AlbaStartTimeHigh);
-        oPacket.EncodeInteger(AlbaStartTimeLow);
-        oPacket.EncodeInteger(nAlbaDuration);
-        oPacket.Encode(bAlbaSpecialReward);
 
         //CharacterCard Decode here...
         for (int i = 0; i < 9; i++) {
@@ -307,7 +287,16 @@ public class GW_CharacterStat {
 
         oPacket.EncodeInteger(ftLastLogoutTimeHigh);
         oPacket.EncodeInteger(ftLastLogoutTimeLow);
-        oPacket.Encode(bBurning);
+        
+        //Legion?
+        oPacket.EncodeLong(0);
+        oPacket.EncodeLong(0);
+        oPacket.EncodeInteger(0);
+        oPacket.EncodeInteger(0);
+        oPacket.EncodeInteger(0);
+        oPacket.Encode(0);
+        oPacket.EncodeInteger(0);
+        oPacket.EncodeInteger(0);
     }
 
     public static GW_CharacterStat Decode(InPacket iPacket) {
@@ -357,7 +346,7 @@ public class GW_CharacterStat {
             ret.nDefFaceAcc = iPacket.DecodeInteger();
         }
 
-        ret.nFatigue = iPacket.DecodeByte();
+        ret.nFatigue = iPacket.DecodeShort();
         ret.nLastFatigureUpdateTime = iPacket.DecodeInteger();
         ret.nCharismaEXP = iPacket.DecodeInteger();
         ret.nInsightExp = iPacket.DecodeInteger();
@@ -372,11 +361,6 @@ public class GW_CharacterStat {
         ret.nPvpModeLevel = iPacket.DecodeByte();
         ret.nPvpModeType = iPacket.DecodeByte();
         ret.nEventPoint = iPacket.DecodeInteger();
-        ret.nAlbaActivityID = iPacket.DecodeByte();
-        ret.AlbaStartTimeHigh = iPacket.DecodeInteger();
-        ret.AlbaStartTimeLow = iPacket.DecodeInteger();
-        ret.nAlbaDuration = iPacket.DecodeInteger();
-        ret.bAlbaSpecialReward = iPacket.DecodeBoolean();
 
         for (int i = 0; i < 9; i++) {
             iPacket.DecodeInteger();
@@ -386,8 +370,16 @@ public class GW_CharacterStat {
 
         ret.ftLastLogoutTimeHigh = iPacket.DecodeInteger();
         ret.ftLastLogoutTimeLow = iPacket.DecodeInteger();
-        ret.bBurning = iPacket.DecodeBoolean();
-
+        
+        //Legion?
+        iPacket.DecodeLong();
+        iPacket.DecodeLong();
+        iPacket.DecodeInteger();
+        iPacket.DecodeInteger();
+        iPacket.DecodeInteger();
+        iPacket.DecodeByte();
+        iPacket.DecodeInteger();
+        iPacket.DecodeInteger();
         return ret;
     }
 

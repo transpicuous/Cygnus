@@ -131,24 +131,9 @@ public class AvatarData {
         return ret;
     }
 
-    public void EncodeForClient(OutPacket oPacket, boolean bRank) {
-        pCharacterStat.Encode(oPacket);
-        pAvatarLook.Encode(oPacket);
-        if (GW_CharacterStat.IsZeroJob(pCharacterStat.nJob)) {
-            pAvatarLook.Encode(oPacket, pZeroInfo);
-        }
-        oPacket.Encode(false);//m_abOnFamily ?
-        oPacket.Encode(nRank != 0 && !bRank);
-        if (nRank != 0 && !bRank) {
-            oPacket.EncodeInteger(nRank);
-            oPacket.EncodeInteger(nRankMove);
-            oPacket.EncodeInteger(nOverallRank);
-            oPacket.EncodeInteger(nOverallRankMove);
-        }
-    }
-
     public void Encode(OutPacket oPacket, boolean bRank) {
         pCharacterStat.Encode(oPacket);
+        oPacket.EncodeInteger(0); //New, idk, burning?
         pAvatarLook.Encode(oPacket);
         if (GW_CharacterStat.IsZeroJob(pCharacterStat.nJob)) {
             pZeroInfo.Encode(oPacket);
@@ -166,6 +151,7 @@ public class AvatarData {
     public static AvatarData Decode(int nAccountID, InPacket iPacket) {
         AvatarData ret = new AvatarData(nAccountID);
         ret.pCharacterStat = GW_CharacterStat.Decode(iPacket);
+        iPacket.DecodeInteger(); //?
         ret.pAvatarLook = AvatarLook.Decode(ret.pCharacterStat.dwCharacterID, iPacket);
         if (GW_CharacterStat.IsZeroJob(ret.pCharacterStat.nJob)) {
             ret.pZeroInfo = ZeroInfo.Decode(iPacket);

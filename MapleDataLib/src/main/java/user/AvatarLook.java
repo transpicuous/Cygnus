@@ -169,6 +169,7 @@ public class AvatarLook {
         oPacket.EncodeInteger(nSubWeaponID > 0 ? nSubWeaponID : 0);
 
         oPacket.Encode(bDrawElfEar);
+        oPacket.Encode(false);//new
 
         //pets todo
         for (int i = 0; i < 3; i++) {
@@ -225,6 +226,7 @@ public class AvatarLook {
         ret.nWeaponID = iPacket.DecodeInteger();
         ret.nSubWeaponID = iPacket.DecodeInteger();
         ret.bDrawElfEar = iPacket.DecodeBoolean();
+        iPacket.DecodeBoolean(); //Welp, which job has a new thing?
 
         for (int i = 0; i < 3; i++) {
             iPacket.DecodeInteger();

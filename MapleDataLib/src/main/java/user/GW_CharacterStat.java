@@ -152,6 +152,7 @@ public class GW_CharacterStat {
             ps.setBoolean(53, bBurning);
 
             ps.execute();
+            ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -227,6 +228,7 @@ public class GW_CharacterStat {
                 ret.ftLastLogoutTimeLow = rs.getInt("ftLastLogoutTimeLow");
                 ret.bBurning = rs.getBoolean("bBurning");
             }
+            ps.close();
 
         } catch (Exception ex) {
             ex.printStackTrace();

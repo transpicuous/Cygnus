@@ -18,6 +18,7 @@ package center;
 
 import center.packet.CenterPacket;
 import client.Account;
+import client.CClientSocket;
 import client.ClientSessionManager;
 import client.packet.CLogin;
 import io.netty.channel.Channel;
@@ -89,6 +90,14 @@ public class CCenterSocket extends Socket {
                                 iPacket.DecodeString(),
                                 iPacket.DecodeBoolean()
                         ));
+                    }
+                });
+                break;
+            case OnCreateCharacterResponse:
+                nSessionID = iPacket.DecodeInteger();
+                ClientSessionManager.aSessions.forEach((pSocket) -> {
+                    if (pSocket.nSessionID == nSessionID) {
+                        CLogin.OnCreateNewCharacterResult(pSocket, iPacket);
                     }
                 });
                 break;

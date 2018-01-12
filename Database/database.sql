@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `avatardata` (
   `nOverallRankMove` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`dwCharacterID`),
   UNIQUE KEY `dwCharacterID` (`dwCharacterID`),
-  KEY `nAccountID` (`nnAccountID`)
+  KEY `nAccountID` (`nAccountID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table center.avatardata: 0 rows

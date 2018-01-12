@@ -20,7 +20,6 @@ import center.CenterSessionManager;
 import center.packet.CCenter;
 import client.Account;
 import client.CClientSocket;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import netty.InPacket;
@@ -157,7 +156,7 @@ public class CLogin {
         return oPacket.ToPacket();
     }
 
-    public static Packet CreateCharacterResult(AvatarData avatar, boolean success) {
+    public static Packet CreateNewCharacterResult(AvatarData avatar, boolean success) {
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.CreateCharacterResult.getValue());
 
@@ -254,24 +253,17 @@ public class CLogin {
         oPacket.EncodeInteger(0);//nVIPGrade
         oPacket.Encode(0); //nAge (removed in v191)
         oPacket.EncodeString(pAccount.sAccountName);
-
         oPacket.Encode(0);//nPurchaseExp
         oPacket.Encode(0);//nChatBlockReason
         oPacket.EncodeLong(0);//dtChatUnblockDate
-
         oPacket.EncodeString(pAccount.sAccountName);
-
         oPacket.EncodeLong(0);
         oPacket.EncodeInteger(3);
         oPacket.EncodeLong(0);
-
         oPacket.EncodeString("");//nAge?
-
         JobOrder.Encode(oPacket);
-
         oPacket.Encode(false); //Make view world button shining?
         oPacket.EncodeInteger(-1); //Has to do with that shining button, so worldID?
-
         return oPacket.ToPacket();
     }
 
@@ -341,7 +333,7 @@ public class CLogin {
 
     public static void OnCreateNewCharacter(CClientSocket pSocket, InPacket iPacket) {
         if (pSocket.pAccount.liAvatarData.size() + 1 > pSocket.nCharacterSlots) {
-            pSocket.SendPacket(CreateCharacterResult(null, false));
+            pSocket.SendPacket(CreateNewCharacterResult(null, false));
             return;
         }
 
@@ -396,6 +388,16 @@ public class CLogin {
             ));
 
         }
+    }
+
+    public static void OnCreateNewCharacterResult(CClientSocket pSocket, InPacket iPacket) {
+        boolean bSuccess = iPacket.DecodeBoolean();
+        AvatarData pAvatar = null;
+        if (bSuccess) {
+            pAvatar = AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket);
+            pSocket.pAccount.liAvatarData.add(pAvatar);
+        }
+        pSocket.SendPacket(CreateNewCharacterResult(pAvatar, bSuccess));
     }
 
     public class Balloon {

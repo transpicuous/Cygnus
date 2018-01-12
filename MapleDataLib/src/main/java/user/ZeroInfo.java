@@ -125,7 +125,6 @@ public class ZeroInfo {
                     + " nSubHair = ?, nSubFace = ?, nSubMHP = ?, nSubMMP = ?, dbcharZeroLinkCashPart = ?, "
                     + "nMixBaseHairColor = ?, nMixAddHairColor = ?, nMixHairBaseProb = ?, bIsBeta = ?, nLapis = ?, nLazuli = ? "
                     + "WHERE dwCharacterID = ?");
-            ps.executeUpdate();
             ps.setInt(1, nSubHP);
             ps.setInt(2, nSubMP);
             ps.setInt(3, nSubSkin);
@@ -141,6 +140,8 @@ public class ZeroInfo {
             ps.setInt(13, nLapis);
             ps.setInt(14, nLazuli);
             ps.setInt(15, dwCharacterID);
+            ps.executeUpdate();
+            ps.close();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -151,8 +152,7 @@ public class ZeroInfo {
         try {
             PreparedStatement ps = c.prepareStatement("INSERT INTO ZeroInfo (dwCharacterID, nSubHP, nSubMP, nSubSkin, nSubHair, nSubFace, nSubMHP, nSubMMP, "
                     + "dbcharZeroLinkCashPart, nMixBaseHairColor, nMixAddHairColor, nMixHairBaseProb, bIsBeta, nLapis, nLazuli) "
-                    + "VALUES (?. ?. ?. ?. ?. ?. ?. ?. ?. ?. ?. ?. ?. ?, ?)");
-            ps.executeUpdate();
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setInt(1, dwCharacterID);
             ps.setInt(2, nSubHP);
             ps.setInt(3, nSubMP);
@@ -168,6 +168,8 @@ public class ZeroInfo {
             ps.setBoolean(13, bIsBeta);
             ps.setInt(14, nLapis);
             ps.setInt(15, nLazuli);
+            ps.executeUpdate();
+            ps.close();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -195,8 +197,8 @@ public class ZeroInfo {
                 this.bIsBeta = rs.getBoolean("bIsBeta");
                 this.nLapis = rs.getInt("nLapis");
                 this.nLazuli = rs.getInt("nLazuli");
-
                 ps.executeUpdate();
+                ps.close();
             }
         } catch (Exception ex) {
             ex.printStackTrace();

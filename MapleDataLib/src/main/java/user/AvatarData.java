@@ -63,6 +63,7 @@ public class AvatarData {
             pCharacterStat.SaveNew(c);
             pAvatarLook.SaveNew(c);
             pZeroInfo.SaveNew(c, dwCharacterID);
+            ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -93,6 +94,7 @@ public class AvatarData {
                 ret.pAvatarLook = new AvatarLook(dwCharacterID);
             }
 
+            ps.close();
             return ret;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -121,6 +123,7 @@ public class AvatarData {
                 ret.pZeroInfo.Load(c, dwCharacterID);
                 int nJob = ret.pCharacterStat.nJob;
             }
+            ps.close();
 
         } catch (Exception ex) {
             ex.printStackTrace();

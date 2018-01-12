@@ -44,7 +44,7 @@ public class CCenter {
     public static Packet CreateNewCharacter(int nSessionID, int nCharlistPosition, byte[] aData) {
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.CreateNewCharacter.getValue());
-        oPacket.Encode(nSessionID);
+        oPacket.EncodeInteger(nSessionID);
         oPacket.EncodeInteger(nCharlistPosition);
         oPacket.Encode(aData);
         return oPacket.ToPacket();

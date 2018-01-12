@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import netty.OutPacket;
 import user.AvatarData;
+import user.CharacterData;
 
 /**
  *
@@ -38,7 +39,8 @@ public class Account {
     public final String sAccountName, sIP, sPIC;
     public final byte nState, nGender, nAdmin;
     public final Date dBirthDay, dLastLoggedIn;
-    private List<AvatarData> avatars = new LinkedList<>();
+    private List<AvatarData> avatars = new LinkedList<>(); //Charlist
+    public CharacterData pCharacterData; //Where we add the logged in character for transitions.
 
     public Account(int nAccountID, int nSessionID, String sAccountName, String sIP, String sPIC,
             byte nState, byte nGender, Date dBirthDay, Date dLastLoggedIn, byte nAdmin) {
@@ -71,7 +73,7 @@ public class Account {
         }
         LinkedList<AvatarData> ret = new LinkedList<>();
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT dwCharacterID FROM AvatarData WHERE accountID = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT dwCharacterID FROM AvatarData WHERE nAccountID = ?");
             ps.setInt(1, nAccountID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

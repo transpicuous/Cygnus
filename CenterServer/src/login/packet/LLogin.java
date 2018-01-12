@@ -32,6 +32,7 @@ import netty.OutPacket;
 import server.Server;
 import server.accounts.Account;
 import user.AvatarData;
+import user.CharacterData;
 
 /**
  *
@@ -102,17 +103,22 @@ public class LLogin {
         int nCharListPosition = iPacket.DecodeInteger();
         String sCharacterName = iPacket.DecodeString();
         if (!pSocket.mReservedCharacterNames.containsKey(sCharacterName)
-                && (pSocket.mReservedCharacterNames.get(sCharacterName) != nSessionID)) {
+                || (pSocket.mReservedCharacterNames.get(sCharacterName) != nSessionID)) {
             OutPacket oPacket = new OutPacket();
             oPacket.EncodeShort(LoopBackPacket.OnCreateCharacterResponse.getValue());
+            oPacket.EncodeInteger(nSessionID);
             oPacket.Encode(false);
             pSocket.SendPacket(oPacket.ToPacket());
             return;
         }
 
-        pSocket.mReservedCharacterNames.remove(sCharacterName);
+        pSocket.mReservedCharacterNames.remove(sCharacterName); //Only remove once claimed.
+
         Account pAccount = pSocket.mAccountStorage.get(nSessionID);
         AvatarData pAvatar = AvatarData.CreateAvatar(Database.GetConnection(), pAccount.nAccountID, nCharListPosition);
+        CharacterData pCharacter = new CharacterData(pAvatar);
+        pAvatar.pCharacterStat.sCharacterName = sCharacterName;
+
         int nFKMOption = iPacket.DecodeInteger();
         iPacket.DecodeInteger();
         int nCurSelectedRace = iPacket.DecodeInteger();
@@ -122,6 +128,11 @@ public class LLogin {
         int nSize = iPacket.DecodeByte(); //num ints after this byte.
         int nFace = iPacket.DecodeInteger();
         int nHair = iPacket.DecodeInteger();
+        
+        pAvatar.SetFace(nFace);
+        pAvatar.SetGender((byte) nGender);
+        pAvatar.SetHair(nHair);
+        pAvatar.SetSkin(nSkin);
 
         while (iPacket.DecodeInteger() != nSkin) {
             nSize--; //To catch that extra int on Xenon.
@@ -272,6 +283,22 @@ public class LLogin {
                 pAvatar.pCharacterStat.nMMP = 5;
                 pAvatar.pCharacterStat.nMP = 5;
                 break;
+            default:
+                System.out.println("[WARNING] Improper RaceSelection. If not v188, this is a PE.");
+                OutPacket oPacket = new OutPacket();
+                oPacket.EncodeShort(LoopBackPacket.OnCreateCharacterResponse.getValue());
+                oPacket.EncodeInteger(nSessionID);
+                oPacket.Encode(false);
+                pSocket.SendPacket(oPacket.ToPacket());
+                return;
         }
+        
+        pAvatar.SaveNew(Database.GetConnection());
+        OutPacket oPacket = new OutPacket();
+        oPacket.EncodeShort(LoopBackPacket.OnCreateCharacterResponse.getValue());
+        oPacket.EncodeInteger(nSessionID);
+        oPacket.Encode(true);
+        pAvatar.Encode(oPacket, pAccount.nAdmin <= 0);
+        pSocket.SendPacket(oPacket.ToPacket());
     }
 }

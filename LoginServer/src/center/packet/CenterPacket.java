@@ -16,8 +16,6 @@
  */
 package center.packet;
 
-import client.packet.*;
-
 /**
  *
  * @author Kaz Voeten
@@ -27,7 +25,8 @@ public enum CenterPacket {
     AccountInformation(1),
     WorldInformation(2),
     ChannelInformation(3),
-    CheckDuplicatedIDResponse(4);
+    CheckDuplicatedIDResponse(4),
+    OnCreateCharacterResponse(5);
 
     private int value;
 

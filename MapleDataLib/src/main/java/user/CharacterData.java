@@ -22,9 +22,10 @@ import netty.OutPacket;
  *
  * @author Kaz Voeten
  */
-public class CharacterData extends AvatarData {
+public class CharacterData {
 
     public static final long dbcharFlag = 0xFFFFFFFFFFFFFFFFL;
+    public final AvatarData pAvatar;
     public byte nCombatOrders = 0;
     public long nMoney = 0;
     public int nSlotHyper = 0;
@@ -40,8 +41,8 @@ public class CharacterData extends AvatarData {
     //BuyLimitData
     //GW_ExpConsumeItem
 
-    public CharacterData(int accountID) {
-        super(accountID);
+    public CharacterData(AvatarData pAvatar) {
+        this.pAvatar = pAvatar;
     }
 
     public void Encode(OutPacket oPacket) {
@@ -60,7 +61,7 @@ public class CharacterData extends AvatarData {
         oPacket.Encode(0); // (if byte > 0, decode a byte and an int. if int > 0, decodebuffer. after the loop, decode an int and if int > 0, decode buffer)
 
         if ((dbcharFlag & 1) != 0) {
-            super.pCharacterStat.Encode(oPacket);
+            pAvatar.pCharacterStat.Encode(oPacket);
             oPacket.Encode(0); //might be buddylist capacity
 
             oPacket.Encode(0); // if > 0 encode string

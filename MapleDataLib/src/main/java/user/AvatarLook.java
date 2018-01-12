@@ -78,6 +78,7 @@ public class AvatarLook {
             ps.setInt(16, nMixedHairColor);
             ps.setInt(17, nMixHairPercent);
             ps.execute();
+            ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -116,6 +117,7 @@ public class AvatarLook {
             while (rs.next()) {
                 ret.anEquip.put((byte) rs.getInt("nSlot"), rs.getInt("nItemID"));
             }
+            ps.close();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -139,7 +141,7 @@ public class AvatarLook {
         HashMap<Byte, Integer> anUnseenEquip = new HashMap<>();
         HashMap<Byte, Integer> anTotemEquip = new HashMap<>();
         for (Map.Entry<Byte, Integer> item : anEquip.entrySet()) {
-            byte pos = (byte) (item.getKey() * -1);
+            byte pos = (byte) (item.getKey());
             if (pos > 127) {
                 continue;
             }
@@ -203,15 +205,20 @@ public class AvatarLook {
         iPacket.DecodeByte();
         ret.nHair = iPacket.DecodeInteger();
 
-        byte nPos;
-        while ((nPos = iPacket.DecodeByte()) != 0xFF) {
+        byte nPos = iPacket.DecodeByte();
+        while (nPos != (byte) 0xFF) {
             ret.anEquip.put(nPos, iPacket.DecodeInteger());
+            nPos = iPacket.DecodeByte();
         }
-        while ((nPos = iPacket.DecodeByte()) != 0xFF) {
+        nPos = iPacket.DecodeByte();
+        while (nPos != (byte) 0xFF) {
             ret.anEquip.put(nPos, iPacket.DecodeInteger());
+            nPos = iPacket.DecodeByte();
         }
-        while ((nPos = iPacket.DecodeByte()) != 0xFF) {
+        nPos = iPacket.DecodeByte();
+        while (nPos != (byte) 0xFF) {
             ret.anEquip.put(nPos, iPacket.DecodeInteger());
+            nPos = iPacket.DecodeByte();
         }
 
         ret.nWeaponsStickerID = iPacket.DecodeInteger();

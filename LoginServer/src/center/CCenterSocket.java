@@ -44,6 +44,7 @@ public class CCenterSocket extends Socket {
     }
 
     public void ProcessPacket(CenterPacket nPacketID, InPacket iPacket) {
+        int nSessionID;
         switch (nPacketID) {
             case WorldInformation:
                 this.nWorldID = iPacket.DecodeInteger(); //Max 44 atm
@@ -66,7 +67,7 @@ public class CCenterSocket extends Socket {
                 }
                 break;
             case AccountInformation:
-                int nSessionID = iPacket.DecodeInteger();
+                nSessionID = iPacket.DecodeInteger();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
                         pSocket.pAccount = Account.Decode(iPacket);
@@ -77,6 +78,17 @@ public class CCenterSocket extends Socket {
                         }
                         pSocket.SendPacket(CLogin.AccountInfoResult(pSocket.pAccount));
                         pSocket.SendPacket(CLogin.SelectWorldResult(pSocket, false));
+                    }
+                });
+                break;
+            case CheckDuplicatedIDResponse:
+                nSessionID = iPacket.DecodeInteger();
+                ClientSessionManager.aSessions.forEach((pSocket) -> {
+                    if (pSocket.nSessionID == nSessionID) {
+                        pSocket.SendPacket(CLogin.DuplicateIDResponse(
+                                iPacket.DecodeString(),
+                                iPacket.DecodeBoolean()
+                        ));
                     }
                 });
                 break;

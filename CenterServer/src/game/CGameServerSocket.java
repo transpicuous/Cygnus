@@ -19,12 +19,10 @@ package game;
 import game.packet.GamePacket;
 import game.packet.LoopBackPacket;
 import io.netty.channel.Channel;
-import login.LoginSessionManager;
 import login.packet.LLogin;
 import netty.InPacket;
 import netty.Packet;
 import netty.Socket;
-import server.Client;
 import server.Configuration;
 
 /**

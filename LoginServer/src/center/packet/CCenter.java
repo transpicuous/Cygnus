@@ -33,4 +33,21 @@ public class CCenter {
         return oPacket.ToPacket();
     }
 
+    public static Packet CheckDuplicatedID(int nSessionID, String sCharacterName) {
+        OutPacket oPacket = new OutPacket();
+        oPacket.EncodeShort(LoopBackPacket.CheckDuplicateID.getValue());
+        oPacket.EncodeInteger(nSessionID);
+        oPacket.EncodeString(sCharacterName);
+        return oPacket.ToPacket();
+    }
+
+    public static Packet CreateNewCharacter(int nSessionID, int nCharlistPosition, byte[] aData) {
+        OutPacket oPacket = new OutPacket();
+        oPacket.EncodeShort(LoopBackPacket.CreateNewCharacter.getValue());
+        oPacket.Encode(nSessionID);
+        oPacket.EncodeInteger(nCharlistPosition);
+        oPacket.Encode(aData);
+        return oPacket.ToPacket();
+    }
+
 }

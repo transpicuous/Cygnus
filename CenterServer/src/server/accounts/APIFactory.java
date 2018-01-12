@@ -16,10 +16,8 @@
  */
 package server.accounts;
 
-import com.zaxxer.hikari.HikariDataSource;
 import database.Database;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -78,6 +76,8 @@ public class APIFactory {
                             sdf.parse(account.getString("birthday")),
                             (byte) account.getInt("admin")
                     );
+                    
+                    pSocket.mAccountStorage.put(nSessionID, pAccount);
 
                     OutPacket oPacket = new OutPacket();
                     oPacket.EncodeShort(LoopBackPacket.AccountInformation.getValue());

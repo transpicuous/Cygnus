@@ -16,6 +16,7 @@
  */
 package client;
 
+import center.CenterSessionManager;
 import client.packet.CLogin;
 import client.packet.ClientPacket;
 import client.packet.LoopBackPacket;
@@ -88,7 +89,10 @@ public class CClientSocket extends Socket {
                 CLogin.OnSelectWorld(this, iPacket);
                 break;
             case CheckDuplicatedID:
-                
+                CLogin.OnCheckDuplicatedID(this, iPacket);
+                break;
+            case CreateNewCharacter:
+                CLogin.OnCreateNewCharacter(this, iPacket);
                 break;
             default:
                 break;

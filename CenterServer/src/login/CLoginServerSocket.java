@@ -17,6 +17,8 @@
 package login;
 
 import io.netty.channel.Channel;
+import java.util.HashMap;
+import login.packet.LLogin;
 import login.packet.LoginPacket;
 import login.packet.LoopBackPacket;
 import netty.InPacket;
@@ -24,12 +26,16 @@ import netty.Packet;
 import netty.Socket;
 import server.Configuration;
 import server.accounts.APIFactory;
+import server.accounts.Account;
 
 /**
  *
  * @author Kaz Voeten
  */
 public class CLoginServerSocket extends Socket {
+
+    public HashMap<String, Integer> mReservedCharacterNames = new HashMap<>();
+    public HashMap<Integer, Account> mAccountStorage = new HashMap<>();
 
     public CLoginServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
@@ -56,6 +62,12 @@ public class CLoginServerSocket extends Socket {
         switch (nPacketID) {
             case ProcessLogin:
                 APIFactory.GetInstance().RequestAccount(this, iPacket.DecodeInteger(), iPacket.DecodeString());
+                break;
+            case CheckDuplicateID:
+                LLogin.OnCheckDuplicateID(this, iPacket);
+                break;
+            case CreateNewCharacter:
+                LLogin.OnCreateNewCharacter(this, iPacket);
                 break;
         }
     }

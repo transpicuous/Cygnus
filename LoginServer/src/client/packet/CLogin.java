@@ -20,6 +20,7 @@ import center.CenterSessionManager;
 import center.packet.CCenter;
 import client.Account;
 import client.CClientSocket;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import netty.InPacket;
@@ -101,7 +102,7 @@ public class CLogin {
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.CheckDuplicatedIDResult.getValue());
         oPacket.EncodeString(name);
-        oPacket.Encode(!taken);
+        oPacket.Encode(taken);
         return oPacket.ToPacket();
     }
 
@@ -328,6 +329,34 @@ public class CLogin {
         oPacket.EncodeInteger(0);
 
         return oPacket.ToPacket();
+    }
+
+    public static void OnCheckDuplicatedID(CClientSocket pSocket, InPacket iPacket) {
+        CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
+            if (pCenterSocket.nWorldID == pSocket.nWorldID) {
+                pCenterSocket.SendPacket(CCenter.CheckDuplicatedID(pSocket.nSessionID, iPacket.DecodeString()));
+            }
+        });
+    }
+
+    public static void OnCreateNewCharacter(CClientSocket pSocket, InPacket iPacket) {
+        if (pSocket.pAccount.liAvatarData.size() + 1 > pSocket.nCharacterSlots) {
+            pSocket.SendPacket(CreateCharacterResult(null, false));
+            return;
+        }
+
+        CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
+            if (pCenterSocket.nWorldID == pSocket.nWorldID) {
+                pCenterSocket.SendPacket(
+                        CCenter.CreateNewCharacter(
+                                pSocket.nSessionID,
+                                pSocket.pAccount.liAvatarData.size() + 1,
+                                iPacket.Decode(iPacket.Available()
+                                )
+                        )
+                );
+            }
+        });
     }
 
     public static void OnClientDumpLog(InPacket iPacket) {

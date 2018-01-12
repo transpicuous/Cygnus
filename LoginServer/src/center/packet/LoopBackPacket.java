@@ -21,7 +21,9 @@ package center.packet;
  * @author Kaz Voeten
  */
 public enum LoopBackPacket {
-    ProcessLogin(1),;
+    ProcessLogin(1),
+    CheckDuplicateID(2),
+    CreateNewCharacter(3);
 
     private int value;
 

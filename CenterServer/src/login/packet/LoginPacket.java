@@ -22,7 +22,9 @@ package login.packet;
  */
 public enum LoginPacket {
     BeginSocket(0),
-    ProcessLogin(1),;
+    ProcessLogin(1),
+    CheckDuplicateID(2),
+    CreateNewCharacter(3);
 
     private int value;
 

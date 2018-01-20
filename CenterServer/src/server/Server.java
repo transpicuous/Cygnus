@@ -90,7 +90,7 @@ public class Server extends Thread {
         sf.awaitUninterruptibly();
     }
 
-    public static Server getInstance() {
+    public static Server GetInstance() {
         if (instance == null) {
             instance = new Server();
         }

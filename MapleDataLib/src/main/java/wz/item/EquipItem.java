@@ -16,7 +16,7 @@
  */
 package wz.item;
 
-import inventory.EquipSlotType;
+import inventory.ItemSlotIndex;
 import inventory.GW_ItemSlotEquipBase;
 
 /**
@@ -41,9 +41,8 @@ public class EquipItem extends Item {
     public boolean royalSpecial = false;
     public boolean android = false;
 
-    //Some inventory/virtual inventory stuff. Pretty wonky idk what it's for yet.
-    public EquipSlotType islot;
-    public EquipSlotType vslot;
+    public ItemSlotIndex islot;
+    public ItemSlotIndex vslot;
     public String afterImage;
 
     public EquipItem(int nItemID) {

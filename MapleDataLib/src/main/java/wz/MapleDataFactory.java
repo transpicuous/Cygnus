@@ -23,7 +23,7 @@ import wz.etc.ETCFactory;
 import wz.common.WzTool;
 import wz.common.WzVersion;
 import wz.io.WzMappedInputStream;
-import wz.item.EquipFactory;
+import wz.item.CharacterFactory;
 import wz.item.ItemFactory;
 import wz.util.AES;
 
@@ -39,33 +39,21 @@ public class MapleDataFactory {
     private final int version = 188;
     Scanner scan = new Scanner(System.in);
 
-    private ETCFactory etcdata;
-    private EquipFactory equipdata;
-    private ItemFactory itemdata;
+    public static ETCFactory pETCFactory;
+    private static CharacterFactory pCharacterFactory;
+    public static ItemFactory pItemFactory;
 
     public MapleDataFactory() {
-        this.etcdata = new ETCFactory(aKey, version);
-        this.equipdata = new EquipFactory(aKey, version);
-        this.itemdata = new ItemFactory(aKey, version);
-    }
-
-    public ETCFactory GetETC() {
-        return etcdata;
-    }
-
-    public EquipFactory GetEquip() {
-        return equipdata;
-    }
-
-    public ItemFactory GetItem() {
-        return itemdata;
+        pETCFactory = new ETCFactory(aKey, version);
+        pCharacterFactory = new CharacterFactory(aKey, version);
+        pItemFactory = new ItemFactory(aKey, version);
     }
 
     public void loadData(int nServerType) {
         if (nServerType == 0) { //Login (just some data for a few checks)
             Long time = System.currentTimeMillis();
             System.out.println("[Info] Parsing binary Etc.bin data.");
-            etcdata.loadBinary(System.getProperty("wz"));
+            pETCFactory.loadBinary(System.getProperty("wz"));
             System.out.println("[Info] Parsed Etc.bin data in " + (System.currentTimeMillis() - time) + "ms.");
             return;
         }
@@ -73,36 +61,38 @@ public class MapleDataFactory {
         if (nServerType == 1) { //Center (bit more than login)
             Long time = System.currentTimeMillis();
             System.out.println("[Info] Parsing binary Etc.bin data.");
-            etcdata.loadBinary(System.getProperty("wz"));
+            pETCFactory.loadBinary(System.getProperty("wz"));
             System.out.println("[Info] Parsed Etc.bin data in " + (System.currentTimeMillis() - time) + "ms.");
 
             time = System.currentTimeMillis();
             System.out.println("[Info] Parsing binary Character.bin data.");
-            equipdata.loadBinaryEquips(System.getProperty("wz"));
-            System.out.println("[Info] Parsed " + equipdata.getEquips().size() + " Character.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
+            pCharacterFactory.loadBinaryEquips(System.getProperty("wz"));
+            int nSize = ItemFactory.mItemData.size();
+            System.out.println("[Info] Parsed " + nSize + " Character.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
 
             time = System.currentTimeMillis();
             System.out.println("[Info] Parsing binary Item.bin data.");
-            itemdata.loadBinaryItems(System.getProperty("wz"));
-            System.out.println("[Info] Parsed " + itemdata.getItems().size() + " Item.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
+            pItemFactory.loadBinaryItems(System.getProperty("wz"));
+            System.out.println("[Info] Parsed " + (ItemFactory.mItemData.size() - nSize) + " Item.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
             return;
         }
 
         if (nServerType == 3) { //Game (all data)
             Long time = System.currentTimeMillis();
             System.out.println("[Info] Parsing binary Etc.bin data.");
-            etcdata.loadBinary(System.getProperty("wz"));
+            pETCFactory.loadBinary(System.getProperty("wz"));
             System.out.println("[Info] Parsed Etc.bin data in " + (System.currentTimeMillis() - time) + "ms.");
 
             time = System.currentTimeMillis();
             System.out.println("[Info] Parsing binary Character.bin data.");
-            equipdata.loadBinaryEquips(System.getProperty("wz"));
-            System.out.println("[Info] Parsed " + equipdata.getEquips().size() + " Character.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
+            pCharacterFactory.loadBinaryEquips(System.getProperty("wz"));
+            int nSize = ItemFactory.mItemData.size();
+            System.out.println("[Info] Parsed " + nSize + " Character.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
 
             time = System.currentTimeMillis();
             System.out.println("[Info] Parsing binary Item.bin data.");
-            itemdata.loadBinaryItems(System.getProperty("wz"));
-            System.out.println("[Info] Parsed " + itemdata.getItems().size() + " Item.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
+            pItemFactory.loadBinaryItems(System.getProperty("wz"));
+            System.out.println("[Info] Parsed " + (ItemFactory.mItemData.size() - nSize) + " Item.bin data entries in " + (System.currentTimeMillis() - time) + "ms.");
             return;
         }
 
@@ -116,17 +106,17 @@ public class MapleDataFactory {
         if (mode == 1) {
             Long time = System.currentTimeMillis();
             System.out.println("[Info] Dumping binary Etc.wz data.");
-            factory.etcdata.dumpBinary(System.getProperty("wz"), aKey);
+            factory.pETCFactory.dumpBinary(System.getProperty("wz"), aKey);
             System.out.println("[Info] Dumped Etc.wz data in " + (System.currentTimeMillis() - time) + "ms.");
 
             time = System.currentTimeMillis();
             System.out.println("[Info] Dumping binary Character.wz data.");
-            factory.equipdata.dumpBinaryEquips(System.getProperty("wz"), aKey);
+            factory.pCharacterFactory.dumpBinaryEquips(System.getProperty("wz"), aKey);
             System.out.println("[Info] Dumped Character.wz data in " + (System.currentTimeMillis() - time) + "ms.");
 
             time = System.currentTimeMillis();
             System.out.println("[Info] Dumping binary Item.wz data.");
-            factory.itemdata.dumpBinaryItems(System.getProperty("wz"), aKey);
+            factory.pItemFactory.dumpBinaryItems(System.getProperty("wz"), aKey);
             System.out.println("[Info] Dumped Item.wz data in " + (System.currentTimeMillis() - time) + "ms.");
         } else if (mode == 2) {
             factory.loadData(2);

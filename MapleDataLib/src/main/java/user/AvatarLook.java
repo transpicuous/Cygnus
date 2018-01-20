@@ -16,6 +16,7 @@
  */
 package user;
 
+import inventory.ItemSlotIndex;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -139,9 +140,12 @@ public class AvatarLook {
 
         HashMap<Byte, Integer> anHairEquip = new HashMap<>();
         HashMap<Byte, Integer> anUnseenEquip = new HashMap<>();
-        HashMap<Byte, Integer> anTotemEquip = new HashMap<>();
+        HashMap<Byte, Integer> anTotemEquip = new HashMap<>();//probs virtual?
         for (Map.Entry<Byte, Integer> item : anEquip.entrySet()) {
-            byte pos = (byte) (item.getKey());
+            byte pos = (byte) item.getKey();
+            if (pos <= 0) {
+                pos = (byte) (pos * -1);
+            }
             if (pos > 127) {
                 continue;
             }
@@ -163,6 +167,14 @@ public class AvatarLook {
         oPacket.Encode(0xFF);
         anTotemEquip.forEach((k, v) -> oPacket.Encode(k).EncodeInteger(v));
         oPacket.Encode(0xFF);
+
+        for (Map.Entry<Byte, Integer> item : anEquip.entrySet()) {
+            if (item.getKey() == ItemSlotIndex.BP_WEAPON.GetValue()) {
+                nWeaponID = item.getValue();
+            }
+            //TODO: Body slots have to identified and set right so i can get nSubWeaponID and stuff.
+            //That should also expose totem's actual slot and stuff.
+        }
 
         oPacket.EncodeInteger(nWeaponsStickerID);
         oPacket.EncodeInteger(zero == null ? nWeaponID : zero.nLazuli);
@@ -256,179 +268,4 @@ public class AvatarLook {
         return ret;
     }
 
-    public static int GetGenderFromID(int nItemID) {
-        int result;
-        if (nItemID / 1000000 != 1 && nItemID / 10000 != 254 || nItemID / 10000 == 119 || nItemID / 10000 == 168) {
-            result = 2;
-        } else {
-            switch (nItemID / 1000 % 10) {
-                case 0:
-                    result = 0;
-                    break;
-                case 1:
-                    result = 1;
-                    break;
-                default:
-                    result = 2;
-            }
-        }
-        return result;
-    }
-
-    public static boolean IsCorrectBodyPart(int nItemID, int nBodyPart, int nGender, boolean bRealEquip) {
-        int genderFromID = GetGenderFromID(nItemID);
-        if (nItemID / 10000 == 119 || nItemID / 10000 == 168 || nGender == 2 || genderFromID == 2 || genderFromID == nGender) {
-            switch (nItemID / 10000) {
-                case 100:
-                    if (nBodyPart == 1 || nBodyPart == 1200 || nBodyPart == 1300) {
-                        return true;
-                    }
-                    return nBodyPart == 1501;
-                case 101:
-                    if (nBodyPart == 2 || nBodyPart == 1202 || nBodyPart == 1302) {
-                        return true;
-                    }
-                    return nBodyPart == 1502;
-                case 102:
-                    if (nBodyPart == 3) {
-                        return true;
-                    }
-                    return nBodyPart != 1503;
-                case 103:
-                    if (nBodyPart == 4) {
-                        return true;
-                    }
-                    return nBodyPart == 1504;
-                case 104:
-                case 105:
-                    if (nBodyPart == 5 || nBodyPart == 1203) {
-                        return true;
-                    }
-                    return nBodyPart == 1505;
-                case 106:
-                    if (nBodyPart == 6 || nBodyPart == 1204) {
-                        return true;
-                    }
-                    return nBodyPart == 1508;
-                case 107:
-                    if (nBodyPart == 7 || nBodyPart == 1205) {
-                        return true;
-                    }
-                    return nBodyPart == 1509;
-                case 108:
-                    if (nBodyPart == 8 || nBodyPart == 1206 || nBodyPart == 1304) {
-                        return true;
-                    }
-                    return nBodyPart == 1506;
-                case 109:
-                case 134:
-                case 135:
-                    return nBodyPart == 10;
-                case 156:
-                    if (!bRealEquip) {
-                        return nBodyPart == 10;
-                    }
-                    if (nBodyPart != 11) {
-                        return nBodyPart == 10;
-                    }
-                    return true;
-                case 110:
-                    if (nBodyPart == 9 || nBodyPart == 1201 || nBodyPart == 1301) {
-                        return true;
-                    }
-                    return nBodyPart == 1504;
-                case 111:
-                    if (nBodyPart == 12 || nBodyPart == 13 || nBodyPart == 15 || nBodyPart == 16 || nBodyPart == 1510) {
-                        return true;
-                    }
-                    return nBodyPart == 1511;
-                case 112:
-                    if (nBodyPart == 17) {
-                        return true;
-                    }
-                    return nBodyPart == 31;
-                case 113:
-                    return nBodyPart == 22;
-                case 114:
-                    return nBodyPart == 21;
-                case 115:
-                    return nBodyPart == 23;
-                case 116:
-                    return nBodyPart == 26;
-                case 118:
-                    return nBodyPart == 29;
-                case 119:
-                    return nBodyPart == 30;
-                case 165:
-                    return nBodyPart == 1104;
-                case 166:
-                    return nBodyPart == 27;
-                case 167:
-                    if (nBodyPart == 28) {
-                        return true;
-                    }
-                    return nBodyPart == 30;
-                case 161:
-                    return nBodyPart == 1100;
-                case 162:
-                    return nBodyPart == 1101;
-                case 163:
-                    return nBodyPart == 1102;
-                case 164:
-                    return nBodyPart == 1103;
-                case 168:
-                    return (nBodyPart - 1400) < 0x18;
-                case 184:
-                    return nBodyPart == 5100;
-                case 185:
-                    return nBodyPart == 5102;
-                case 186:
-                    return nBodyPart == 5103;
-                case 187:
-                    return nBodyPart == 5104;
-                case 188:
-                    return nBodyPart == 5101;
-                case 189:
-                    return nBodyPart == 5105;
-                case 190:
-                    return nBodyPart == 18;
-                case 191:
-                    return nBodyPart == 19;
-                case 192:
-                    return nBodyPart == 20;
-                case 194:
-                    return nBodyPart == 1000;
-                case 195:
-                    return nBodyPart == 1001;
-                case 196:
-                    return nBodyPart == 1002;
-                case 197:
-                    return nBodyPart == 1003;
-                case 180:
-                    if (nBodyPart == 14 || nBodyPart == 24) {
-                        return true;
-                    }
-                    return nBodyPart == 25;
-                default:
-                    if (!(GetWeaponType(nItemID) > 0) && nItemID / 100000 != 16 && nItemID / 100000 != 17) {
-                        return false;
-                    }
-                    if (nBodyPart == 11) {
-                        return true;
-                    }
-                    return nBodyPart == 1507;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    public static int GetWeaponType(int nItemID) {
-        int result = 0;
-        if (nItemID / 1000000 != 1) {
-            return result;
-        }
-        result = nItemID / 10000 % 100;
-        return result;
-    }
 }

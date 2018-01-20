@@ -18,13 +18,12 @@ package login.packet;
 
 import database.Database;
 import game.GameServerSessionManager;
+import inventory.GW_ItemSlotEquip;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import login.CLoginServerSocket;
 import login.LoginSessionManager;
 import netty.InPacket;
@@ -33,6 +32,8 @@ import server.Server;
 import server.accounts.Account;
 import user.AvatarData;
 import user.CharacterData;
+import wz.item.EquipItem;
+import wz.item.ItemFactory;
 
 /**
  *
@@ -59,7 +60,7 @@ public class LLogin {
         boolean bDuplicatedID = false;
 
         if (sCharacterName.length() < 13
-                || !Server.getInstance().pDataFactory.GetETC().isLegalName(sCharacterName)
+                || !Server.GetInstance().pDataFactory.pETCFactory.isLegalName(sCharacterName)
                 || (pSocket.mReservedCharacterNames.containsKey(sCharacterName) && (pSocket.mReservedCharacterNames.get(sCharacterName) != nSessionID))) {
             bDuplicatedID = true;
         }
@@ -128,7 +129,7 @@ public class LLogin {
         int nSize = iPacket.DecodeByte(); //num ints after this byte.
         int nFace = iPacket.DecodeInteger();
         int nHair = iPacket.DecodeInteger();
-        
+
         pAvatar.SetFace(nFace);
         pAvatar.SetGender((byte) nGender);
         pAvatar.SetHair(nHair);
@@ -141,8 +142,18 @@ public class LLogin {
         HashMap<Byte, Integer> mBody = new HashMap<>();
         for (int i = 0; i < (nSize - 3); i++) {
             int nItemID = iPacket.DecodeInteger();
-            mBody.put((byte) ((nItemID / 10000) - 100), nItemID);
+            GW_ItemSlotEquip pItem = GW_ItemSlotEquip.Create(
+                    pAvatar.dwCharacterID, 
+                    nItemID, 
+                    ItemFactory.GetEquipSlot(nItemID) * -1,
+                    Database.GetConnection()
+            );
+            if (pItem != null) {
+                pCharacter.aEquipped[pItem.nSlot] = pItem;
+                mBody.put((byte) pItem.nSlot, nItemID);
+            }
         }
+        pAvatar.pAvatarLook.anEquip = mBody;
 
         switch (nCurSelectedRace) {
             case -1: //UltimateAdventurer
@@ -292,7 +303,7 @@ public class LLogin {
                 pSocket.SendPacket(oPacket.ToPacket());
                 return;
         }
-        
+
         pAvatar.SaveNew(Database.GetConnection());
         OutPacket oPacket = new OutPacket();
         oPacket.EncodeShort(LoopBackPacket.OnCreateCharacterResponse.getValue());

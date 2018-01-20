@@ -81,13 +81,13 @@ public class Client extends Thread {
     }
 
     public static void main(String[] args) {
-        Server.getInstance().start();
+        Server.GetInstance().start();
         Client.getInstance().start();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                Server.getInstance().shutdown(false);
+                Server.GetInstance().shutdown(false);
                 Client.getInstance().shutdown(false);
             }
         });

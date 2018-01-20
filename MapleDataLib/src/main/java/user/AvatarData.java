@@ -139,8 +139,8 @@ public class AvatarData {
             pZeroInfo.Encode(oPacket);
         }
         oPacket.Encode(false);//m_abOnFamily ?
-        oPacket.Encode(nRank != 0 && !bRank);
-        if (nRank != 0 && !bRank) {
+        oPacket.Encode(nRank != 0 && bRank);
+        if (nRank != 0 && bRank) {
             oPacket.EncodeInteger(nRank);
             oPacket.EncodeInteger(nRankMove);
             oPacket.EncodeInteger(nOverallRank);

@@ -16,13 +16,12 @@
  */
 package wz.item;
 
-import inventory.EquipSlotType;
+import inventory.ItemSlotIndex;
 import inventory.GW_ItemSlotEquipBase;
 import io.BinaryReader;
 import io.BinaryWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import wz.WzFile;
 import wz.WzObject;
 import wz.common.WzDataTool;
@@ -32,24 +31,21 @@ import wz.io.WzMappedInputStream;
  *
  * @author Kaz Voeten does some of the equip stat flags wrong, has to be revised for accuracy.
  */
-public class EquipFactory {
+public class CharacterFactory {
+    //TODO: Hair, Face, Familiar, PetEquip, TamingMob
+    //Note: Hair (and probs face) has weird AF vSlot values. 
 
-    private final HashMap<Integer, EquipItem> equips = new HashMap<>();
     private final byte[] key;
     private final int version;
 
-    public EquipFactory(byte[] key, int version) {
+    public CharacterFactory(byte[] key, int version) {
         this.key = key;
         this.version = version;
     }
 
-    public HashMap<Integer, EquipItem> getEquips() {
-        return this.equips;
-    }
-
     public void loadBinaryEquips(String wzFolder) {
         BinaryReader input = new BinaryReader(wzFolder + "Character.bin");
-        int children = 25;
+        int children = 18;
         for (int i = 0; i < children; i++) {
             parseBasicEquipCategory(input);
         }
@@ -61,6 +57,7 @@ public class EquipFactory {
 
             int itemID = input.ReadInt();
             EquipItem equip = new EquipItem(itemID);
+            equip.type = InventoryType.Equip;
 
             equip.isCash = input.ReadBool();
             equip.accountSharable = input.ReadBool();
@@ -73,8 +70,8 @@ public class EquipFactory {
             equip.royalSpecial = input.ReadBool();
             equip.android = input.ReadBool();
 
-            equip.islot = EquipSlotType.getSlotTypeFromString(input.ReadString(), itemID);
-            equip.vslot = EquipSlotType.getSlotTypeFromString(input.ReadString(), itemID);
+            equip.islot = ItemSlotIndex.GetByString(input.ReadString(), itemID);
+            equip.vslot = ItemSlotIndex.GetByString(input.ReadString(), itemID);
             equip.afterImage = input.ReadString();
 
             equip.reqSTR = input.ReadInt();
@@ -185,7 +182,7 @@ public class EquipFactory {
             equip.charmEXP = input.ReadInt();
             equip.bitsSlot = input.ReadInt();
 
-            this.equips.put(itemID, equip);
+            ItemFactory.mItemData.put(itemID, equip);
         }
     }
 
@@ -201,27 +198,20 @@ public class EquipFactory {
             //Dump data in following order
             dumpBasicEquipCategory(equipWZ.getChild("Accessory"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Android"), writer);
+            dumpBasicEquipCategory(equipWZ.getChild("ArcaneForce"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Bits"), writer);
-            dumpBasicEquipCategory(equipWZ.getChild("Accessory"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Cap"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Cape"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Coat"), writer);
-            dumpBasicEquipCategory(equipWZ.getChild("Accessory"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Dragon"), writer);
-            dumpBasicEquipCategory(equipWZ.getChild("Accessory"), writer);
-            dumpBasicEquipCategory(equipWZ.getChild("Face"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Glove"), writer);
-            dumpBasicEquipCategory(equipWZ.getChild("Hair"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Longcoat"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Mechanic"), writer);
-            dumpBasicEquipCategory(equipWZ.getChild("MonsterBattle"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("MonsterBook"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Pants"), writer);
-            dumpBasicEquipCategory(equipWZ.getChild("PetEquip"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Ring"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Shield"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Shoes"), writer);
-            dumpBasicEquipCategory(equipWZ.getChild("TamingMob"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Totem"), writer);
             dumpBasicEquipCategory(equipWZ.getChild("Weapon"), writer);
 
@@ -256,8 +246,8 @@ public class EquipFactory {
             writer.WriteBool(WzDataTool.getBoolean(item, "royalSpecial", false));
             writer.WriteBool(WzDataTool.getBoolean(item, "android", false));
 
-            writer.WriteString(WzDataTool.getString(item, "islot", ""));
-            writer.WriteString(WzDataTool.getString(item, "vslot", ""));
+            writer.WriteString(WzDataTool.getString(item, "islot", "null"));
+            writer.WriteString(WzDataTool.getString(item, "vslot", "null"));
             writer.WriteString(WzDataTool.getString(item, "afterImage", ""));
 
             writer.WriteInt(WzDataTool.getInteger(item, "reqSTR", 0));

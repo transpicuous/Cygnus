@@ -93,13 +93,14 @@ public class BinaryWriter {
     }
 
     public final void WriteString(final String s) {
-        WriteShort((short) s.length());
-        BinaryWriter.this.Write(s.getBytes(ASCII));
+        byte[] bytes = s.getBytes(ASCII);
+        WriteShort((short) bytes.length);
+        Write(bytes);
     }
 
     public final void WritePos(final Point s) {
-        BinaryWriter.this.WriteShort(s.x);
-        BinaryWriter.this.WriteShort(s.y);
+        WriteShort(s.x);
+        WriteShort(s.y);
     }
 
     public final void WriteRect(final Rectangle s) {

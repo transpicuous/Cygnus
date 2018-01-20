@@ -16,6 +16,8 @@
  */
 package user;
 
+import inventory.GW_ItemSlotBase;
+import inventory.ItemSlotIndex;
 import netty.OutPacket;
 
 /**
@@ -24,8 +26,13 @@ import netty.OutPacket;
  */
 public class CharacterData {
 
-    public static final long dbcharFlag = 0xFFFFFFFFFFFFFFFFL;
+    public static final long dbCharFlag = 0xFFFFFFFFFFFFFFFFL;
     public final AvatarData pAvatar;
+
+    public GW_ItemSlotBase[][] aaItemSlot = new GW_ItemSlotBase[5][60];//60 slots per inv for now
+    public GW_ItemSlotBase[] aEquipped = new GW_ItemSlotBase[ItemSlotIndex.BP_COUNT.GetValue()];
+    // public VirtualEquipInventory VEInventory = new VirtualEquipInventory();
+
     public byte nCombatOrders = 0;
     public long nMoney = 0;
     public int nSlotHyper = 0;
@@ -45,8 +52,24 @@ public class CharacterData {
         this.pAvatar = pAvatar;
     }
 
+    public boolean IncreaseInventorySize(int nType, int nSize) {
+        if (aaItemSlot[nType].length > 128) {
+            return false;
+        }
+        
+        int nIncrementedSize = aaItemSlot[nType].length + nSize;
+        if (nIncrementedSize > 128) {
+            nIncrementedSize = 128;
+        }
+        
+        GW_ItemSlotBase[] aItemSlot = new GW_ItemSlotBase[nIncrementedSize];
+        System.arraycopy(aaItemSlot[nType], 0, aItemSlot, 0, aaItemSlot[nType].length);
+        aaItemSlot[nType] = aItemSlot;
+        return true;
+    }
+
     public void Encode(OutPacket oPacket) {
-        oPacket.EncodeLong(dbcharFlag);
+        oPacket.EncodeLong(dbCharFlag);
         oPacket.Encode(nCombatOrders);
 
         byte nKey = 3;
@@ -60,7 +83,7 @@ public class CharacterData {
         oPacket.EncodeInteger(0); //if > 0 encode some filetime/willexp bs.
         oPacket.Encode(0); // (if byte > 0, decode a byte and an int. if int > 0, decodebuffer. after the loop, decode an int and if int > 0, decode buffer)
 
-        if ((dbcharFlag & 1) != 0) {
+        if ((dbCharFlag & 1) != 0) {
             pAvatar.pCharacterStat.Encode(oPacket);
             oPacket.Encode(0); //might be buddylist capacity
 
@@ -69,15 +92,15 @@ public class CharacterData {
             oPacket.Encode(0); // if > 0 encode string
         }
 
-        if ((dbcharFlag & 2) != 0) {
+        if ((dbCharFlag & 2) != 0) {
             oPacket.EncodeLong(nMoney);
         }
 
-        if ((dbcharFlag & 8) != 0 || (dbcharFlag & 0x2000000) != 0) {
+        if ((dbCharFlag & 8) != 0 || (dbCharFlag & 0x2000000) != 0) {
             oPacket.EncodeInteger(0);//if > 0 encode GW_ExpConsumeItem bs
         }
 
-        if ((dbcharFlag & 0x8000) != 0) {
+        if ((dbCharFlag & 0x8000) != 0) {
             oPacket.EncodeInteger(0);//if > 0 loop through array of GW_MonsterBattleMobInfo::Encode 's
         }
 

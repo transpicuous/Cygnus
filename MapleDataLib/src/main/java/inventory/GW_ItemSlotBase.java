@@ -29,8 +29,8 @@ public class GW_ItemSlotBase {
     public GW_CashItemOption cashOpt;
     public int dateExpireLow = 0;
     public int dateExpireHigh = 0;
-    public int nBagIndex = -1;
-    public int nPos = 0; //pos in inventory.
+    public int nBagIndex = -1; //pos in inventory.
+    public int nPos = 0; //pos when equipped, if available
     public byte type;
 
     public GW_ItemSlotBase(int nItemID, int type) {

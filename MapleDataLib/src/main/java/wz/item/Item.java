@@ -16,8 +16,6 @@
  */
 package wz.item;
 
-import netty.OutPacket;
-
 /**
  *
  * @author Kaz Voeten

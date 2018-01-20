@@ -16,8 +16,15 @@
  */
 package inventory;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import netty.OutPacket;
 import wz.item.EquipItem;
+import wz.item.InventoryType;
+import wz.item.ItemFactory;
 
 /**
  *
@@ -29,7 +36,7 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
     public int nPrevBonusExpRate = -1;
     public String sTitle = "";
     public boolean vSlot = false;
-    public int nSlot = 0;
+    public int nSlot = -1;
 
     //filetime
     public int ftEquippedLow = 0;
@@ -55,14 +62,44 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
     public short nSoulSocketID = 0;
     public short nSoulOption = 0;
 
-    public GW_ItemSlotEquip(int nItemID, EquipItem base) {
+    private GW_ItemSlotEquip(int nItemID) {
         super(nItemID, 1);
-        applyStats(base.eqStats);
-
+        EquipItem pBase = (EquipItem) ItemFactory.mItemData.get(nItemID);
+        if (pBase == null || pBase.type != InventoryType.Equip) {
+            return;
+        }
+        pBase.eqStats.mStats.forEach((nFlag, nValue) -> this.eqBase.mStats.put(nFlag, nValue));
+        this.nSlot = pBase.islot.GetValue();
     }
 
-    private void applyStats(GW_ItemSlotEquipBase pBase) {
-        pBase.mStats.forEach((nFlag, nValue) -> this.eqBase.mStats.put(nFlag, nValue));
+    public static GW_ItemSlotEquip Create(int dwCharacterID, int nItemID, int nSlot, Connection con) {
+        GW_ItemSlotEquip pRet = new GW_ItemSlotEquip(nItemID);
+        if (pRet != null) {
+            try {
+                PreparedStatement ps = con.prepareStatement("INSERT INTO gw_itemslotequip (dwCharacterID, nItemID, nSlot)  Values (?, ?, ?)",
+                         Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, dwCharacterID);
+                ps.setInt(2, nItemID);
+                ps.setInt(3, nSlot);
+
+                int affectedRows = ps.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating Equip failed, no rows affected.");
+                }
+
+                ResultSet rs = ps.getGeneratedKeys();
+
+                while (rs.next()) {
+                    pRet.liSN = rs.getLong("liSN");
+                    pRet.nSlot = nSlot;
+                }
+
+                ps.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return pRet;
     }
 
     @Override

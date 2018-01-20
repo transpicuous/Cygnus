@@ -290,6 +290,8 @@ public class CLogin {
 
         oPacket.EncodeInteger(0);//hightime
         oPacket.EncodeInteger(0);///lowtime
+        
+        //ReservedChar loops here after Long for time.
 
         oPacket.Encode(bIsEditedList); //bIsEditedList for after you reorganize the charlist
         Collections.sort(liAvatarData, (AvatarData o1, AvatarData o2) -> o1.nCharlistPos - o2.nCharlistPos);
@@ -303,8 +305,8 @@ public class CLogin {
         }
 
         oPacket.Encode((byte) liAvatarData.size());
-        for (AvatarData avatar : liAvatarData) {
-            avatar.Encode(oPacket, false);
+        for (AvatarData pAvatar : liAvatarData) {
+            pAvatar.Encode(oPacket, false); //no ranking for now.
         }
 
         oPacket.Encode((byte) 0); //bHasPic

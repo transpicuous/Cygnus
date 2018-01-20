@@ -32,7 +32,7 @@ import wz.io.WzMappedInputStream;
  */
 public class ItemFactory {
 
-    private final HashMap<Integer, BundleItem> items = new HashMap<>();
+    public static final HashMap<Integer, Item> mItemData = new HashMap<>();
     private final byte[] key;
     private final int version;
 
@@ -40,11 +40,15 @@ public class ItemFactory {
         this.key = key;
         this.version = version;
     }
-
-    public HashMap<Integer, BundleItem> getItems() {
-        return this.items;
+    
+    public static int GetEquipSlot(int nItemID) {
+        EquipItem pItem = (EquipItem) mItemData.get(nItemID);
+        if (pItem == null || pItem.type != InventoryType.Equip) {
+            return -1;
+        }
+        return pItem.islot.GetValue();
     }
-
+    
     public void dumpBinaryItems(String wzFolder, byte[] key) {
         try {
             BinaryWriter writer = new BinaryWriter(wzFolder + "Item.bin");
@@ -245,7 +249,7 @@ public class ItemFactory {
                     }
                 }
 
-                this.items.put(itemID, item);
+                this.mItemData.put(itemID, item);
             }
         }
     }

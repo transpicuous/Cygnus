@@ -16,11 +16,14 @@
  */
 package user;
 
+import inventory.GW_ItemSlotEquip;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import netty.InPacket;
 import netty.OutPacket;
 
@@ -47,9 +50,9 @@ public class AvatarData {
         this.nAccountID = nAccountID;
     }
 
-    public void SaveNew(Connection c) {
+    public void SaveNew(Connection con) {
         try {
-            PreparedStatement ps = c.prepareStatement("UPDATE AvatarData SET nAccountID = ?, nCharListPos = ?, nWorld = ?, nRank = ?, nRankMove = ?, nOverallRank = ?, nOverallRankMove = ? WHERE dwCharacterID = ?");
+            PreparedStatement ps = con.prepareStatement("UPDATE AvatarData SET nAccountID = ?, nCharListPos = ?, nWorld = ?, nRank = ?, nRankMove = ?, nOverallRank = ?, nOverallRankMove = ? WHERE dwCharacterID = ?");
             ps.setInt(1, nAccountID);
             ps.setInt(2, nCharlistPos);
             ps.setInt(3, nWorld);
@@ -60,19 +63,25 @@ public class AvatarData {
             ps.setInt(8, dwCharacterID);
             ps.executeUpdate();
 
-            pCharacterStat.SaveNew(c);
-            pAvatarLook.SaveNew(c);
-            pZeroInfo.SaveNew(c, dwCharacterID);
+            pCharacterStat.SaveNew(con);
+            pAvatarLook.SaveNew(con);
+            pZeroInfo.SaveNew(con, dwCharacterID);
             ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GW_ItemSlotEquip.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
-    public static AvatarData CreateAvatar(Connection c, int nAccountID, int nCharlistPos) {
+    public static AvatarData CreateAvatar(Connection con, int nAccountID, int nCharlistPos) {
         AvatarData ret = new AvatarData(nAccountID);
         try {
-            PreparedStatement ps = c.prepareStatement("INSERT INTO avatardata (nAccountID, nCharListPos)  Values (?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = con.prepareStatement("INSERT INTO avatardata (nAccountID, nCharListPos)  Values (?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, nAccountID);
             ps.setInt(2, nCharlistPos);
 
@@ -95,9 +104,16 @@ public class AvatarData {
             }
 
             ps.close();
+            rs.close();
             return ret;
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GW_ItemSlotEquip.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return null;
     }
@@ -124,13 +140,30 @@ public class AvatarData {
                 int nJob = ret.pCharacterStat.nJob;
             }
             ps.close();
-
+            rs.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return ret;
     }
 
+    public void EncodeForClient(OutPacket oPacket, boolean bRank) {
+        pCharacterStat.Encode(oPacket);
+        oPacket.EncodeInteger(0); //New, idk, burning?
+        pAvatarLook.Encode(oPacket);
+        if (GW_CharacterStat.IsZeroJob(pCharacterStat.nJob)) {
+            pAvatarLook.Encode(oPacket, pZeroInfo);
+        }
+        oPacket.Encode(false);//m_abOnFamily ?
+        oPacket.Encode(nRank != 0 && bRank);
+        if (nRank != 0 && bRank) {
+            oPacket.EncodeInteger(nRank);
+            oPacket.EncodeInteger(nRankMove);
+            oPacket.EncodeInteger(nOverallRank);
+            oPacket.EncodeInteger(nOverallRankMove);
+        }
+    }
+    
     public void Encode(OutPacket oPacket, boolean bRank) {
         pCharacterStat.Encode(oPacket);
         oPacket.EncodeInteger(0); //New, idk, burning?

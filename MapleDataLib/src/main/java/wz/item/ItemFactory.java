@@ -40,15 +40,7 @@ public class ItemFactory {
         this.key = key;
         this.version = version;
     }
-    
-    public static int GetEquipSlot(int nItemID) {
-        EquipItem pItem = (EquipItem) mItemData.get(nItemID);
-        if (pItem == null || pItem.type != InventoryType.Equip) {
-            return -1;
-        }
-        return pItem.islot.GetValue();
-    }
-    
+
     public void dumpBinaryItems(String wzFolder, byte[] key) {
         try {
             BinaryWriter writer = new BinaryWriter(wzFolder + "Item.bin");

@@ -70,8 +70,8 @@ public class CharacterFactory {
             equip.royalSpecial = input.ReadBool();
             equip.android = input.ReadBool();
 
-            equip.islot = ItemSlotIndex.GetByString(input.ReadString(), itemID);
-            equip.vslot = ItemSlotIndex.GetByString(input.ReadString(), itemID);
+            equip.islot = input.ReadString();
+            equip.vslot = input.ReadString();
             equip.afterImage = input.ReadString();
 
             equip.reqSTR = input.ReadInt();

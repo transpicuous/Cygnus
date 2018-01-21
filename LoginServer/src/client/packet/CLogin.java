@@ -162,7 +162,7 @@ public class CLogin {
 
         oPacket.Encode(!success);
         if (success) {
-            avatar.Encode(oPacket, false);
+            avatar.EncodeForClient(oPacket, false);
         }
 
         return oPacket.ToPacket();
@@ -290,9 +290,8 @@ public class CLogin {
 
         oPacket.EncodeInteger(0);//hightime
         oPacket.EncodeInteger(0);///lowtime
-        
-        //ReservedChar loops here after Long for time.
 
+        //ReservedChar loops here after Long for time.
         oPacket.Encode(bIsEditedList); //bIsEditedList for after you reorganize the charlist
         Collections.sort(liAvatarData, (AvatarData o1, AvatarData o2) -> o1.nCharlistPos - o2.nCharlistPos);
         if (bIsEditedList) {
@@ -306,7 +305,7 @@ public class CLogin {
 
         oPacket.Encode((byte) liAvatarData.size());
         for (AvatarData pAvatar : liAvatarData) {
-            pAvatar.Encode(oPacket, false); //no ranking for now.
+            pAvatar.EncodeForClient(oPacket, false); //no ranking for now.
         }
 
         oPacket.Encode((byte) 0); //bHasPic

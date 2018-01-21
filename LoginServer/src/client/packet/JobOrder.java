@@ -4,8 +4,8 @@ import netty.OutPacket;
 
 public class JobOrder {
 
-    public static final boolean bEnabled = true; //enable char select
-    public static final byte nOrder = 0;
+    public static final boolean bEnabled = true; //enable race select
+    public static final byte nOrder = 6;
 
     public static void Encode(OutPacket oPacket) {
         oPacket.Encode(bEnabled);

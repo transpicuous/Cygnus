@@ -17,320 +17,318 @@
 package inventory;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Kaz Voeten
  */
-public enum ItemSlotIndex {
+public class ItemSlotIndex {
     //TODO: Get in-game and identify the actual fucking values. (a lot is missing/wrong)
     //TODO: Virtual values (idk what they are yet so rip my life)
 
-    BP_HAIR(0),
-    BP_CAP(1),
-    BP_FACEACC(2),
-    BP_EYEACC(3),
-    BP_EARACC(7),
-    BP_CLOTHES(5),
-    BP_PANTS(6),
-    BP_SHOES(7),
-    BP_GLOVES(8),
-    BP_CAPE(9),
-    BP_SHIELD(10),
-    BP_WEAPON(11),
-    BP_RING1(12),
-    BP_RING2(13),
-    BP_PETWEAR(14),
-    BP_RING3(15),
-    BP_RING4(16),
-    BP_PENDANT(17),
-    BP_TAMINGMOB(18),
-    BP_SADDLE(19),
-    BP_MOBEQUIP(20),
-    BP_MEDAL(21),
-    BP_BELT(22),
-    BP_SHOULDER(23),
-    BP_PETWEAR2(24),
-    BP_PETWEAR3(25),
-    BP_CHARMACC(26),
-    BP_ANDROID(27),
-    BP_MACHINEHEART(28),
-    BP_BADGE(29),
-    BP_EMBLEM(30),
-    BP_EXT_0(31),
-    BP_EXT_PENDANT1(31),
-    BP_EXT_1(32),
-    BP_EXT_2(33),
-    BP_EXT_3(34),
-    BP_EXT_4(35),
-    BP_EXT_5(36),
-    BP_EXT_6(37),
-    BP_COUNT(31),
-    BP_EXT_END(31),
-    BP_EXT_COUNT(1),
-    BP_EXCOUNT(32),
-    BP_STICKER(100),
-    kIdxPetConsumeHPItem(200),
-    kIdxPetConsumeMPItem(201),
-    DP_BASE(1000),
-    DP_CAP(1000),
-    DP_PENDANT(1001),
-    DP_WING(1002),
-    DP_SHOES(1003),
-    DP_END(1004),
-    DP_COUNT(4),
-    MP_BASE(1100),
-    MP_ENGINE(1100),
-    MP_ARM(1101),
-    MP_LEG(1102),
-    MP_FRAME(1103),
-    MP_TRANSISTER(1104),
-    MP_END(1105),
-    MP_COUNT(5),
-    AP_BASE(1200),
-    AP_CAP(1200),
-    AP_CAPE(1201),
-    AP_FACEACC(1202),
-    AP_CLOTHES(1204),
-    AP_PANTS(1204),
-    AP_SHOES(1205),
-    AP_GLOVES(1206),
-    AP_END(1207),
-    AP_COUNT(7),
-    DU_BASE(1300),
-    DU_CAP(1300),
-    DU_CAPE(1301),
-    DU_FACEACC(1302),
-    DU_CLOTHES(1303),
-    DU_GLOVES(1304),
-    DU_END(1305),
-    DU_COUNT(5),
-    BITS_BASE(1400),
-    BITS_END(1425),
-    BITS_COUNT(25),
-    ZERO_BASE(1500),
-    ZERO_EYEACC(1500),
-    ZERO_CAP(1501),
-    ZERO_FACEACC(1502),
-    ZERO_EARACC(1503),
-    ZERO_CAPE(1504),
-    ZERO_CLOTHES(1505),
-    ZERO_GLOVES(1506),
-    ZERO_WEAPON(1507),
-    ZERO_PANTS(1508),
-    ZERO_SHOES(1509),
-    ZERO_RING1(1510),
-    ZERO_RING2(1511),
-    ZERO_END(1512),
-    ZERO_COUNT(12),
-    MBP_BASE(5100),
-    MBP_CAP(5100),
-    MBP_CAPE(5101),
-    MBP_CLOTHES(5102),
-    MBP_GLOVES(5103),
-    MBP_SHOES(5104),
-    MBP_WEAPON(5105),
-    MBP_END(5106),
-    MBP_COUNT(6),
-    FP_BASE(5200),
-    FP_WEAPON(5200),
-    FP_END(5201),
-    FP_COUNT(1),
-    NBP_DRAGON(0),
-    NBP_MECHANIC(1),
-    NBP_ANDROID(2),
-    NBP_DRESSUP(3),
-    NBP_BITS(4),
-    NBP_ZERO(5),
-    NBP_MBP(6),
-    NBP_NO(7),
-    NBP_COUNT(64),
-    SLOT_INDEX_NOT_DEFINE(50000);
+    public static final int BP_HAIR = 0;
+    public static final int BP_CAP = 1;
+    public static final int BP_FACEACC = 2;
+    public static final int BP_EYEACC = 3;
+    public static final int BP_EARACC = 4;
+    public static final int BP_CLOTHES = 5;
+    public static final int BP_PANTS = 6;
+    public static final int BP_SHOES = 7;
+    public static final int BP_GLOVES = 8;
+    public static final int BP_CAPE = 9;
+    public static final int BP_SHIELD = 10;
+    public static final int BP_WEAPON = 11;
+    public static final int BP_RING1 = 12;
+    public static final int BP_RING2 = 13;
+    public static final int BP_PETWEAR = 14;
+    public static final int BP_RING3 = 15;
+    public static final int BP_RING4 = 16;
+    public static final int BP_PENDANT = 17;
+    public static final int BP_TAMINGMOB = 18;
+    public static final int BP_SADDLE = 19;
+    public static final int BP_MOBEQUIP = 20;
+    public static final int BP_MEDAL = 21;
+    public static final int BP_BELT = 22;
+    public static final int BP_SHOULDER = 23;
+    public static final int BP_PETWEAR2 = 24;
+    public static final int BP_PETWEAR3 = 25;
+    public static final int BP_CHARMACC = 26;
+    public static final int BP_ANDROID = 27;
+    public static final int BP_MACHINEHEART = 28;
+    public static final int BP_BADGE = 29;
+    public static final int BP_EMBLEM = 30;
+    public static final int BP_EXT_0 = 31;
+    public static final int BP_EXT_PENDANT1 = 31;
+    public static final int BP_EXT_1 = 32;
+    public static final int BP_EXT_2 = 33;
+    public static final int BP_EXT_3 = 34;
+    public static final int BP_EXT_4 = 35;
+    public static final int BP_EXT_5 = 36;
+    public static final int BP_EXT_6 = 37;
+    public static final int BP_COUNT = 31;
+    public static final int BP_EXT_END = 37;
+    public static final int BP_EXT_COUNT = 7;
+    public static final int BP_EXCOUNT = 32;
+    public static final int BP_STICKER = 100;
 
-    private final int nSlot;
+    public static final int kIdxPetConsumeHPItem = 200;
+    public static final int kIdxPetConsumeMPItem = 201;
 
-    private ItemSlotIndex(int nSlot) {
-        this.nSlot = nSlot;
-    }
+    public static final int DP_BASE = 1000;
+    public static final int DP_CAP = 1000;
+    public static final int DP_PENDANT = 1001;
+    public static final int DP_WING = 1002;
+    public static final int DP_SHOES = 1003;
+    public static final int DP_END = 1004;
+    public static final int DP_COUNT = 4;
 
-    public int GetValue() {
-        return nSlot;
-    }
+    public static final int MP_BASE = 1100;
+    public static final int MP_ENGINE = 1100;
+    public static final int MP_ARM = 1101;
+    public static final int MP_LEG = 1102;
+    public static final int MP_FRAME = 1103;
+    public static final int MP_TRANSISTER = 1104;
+    public static final int MP_END = 1105;
+    public static final int MP_COUNT = 5;
 
-    /**
-     * Returns whether or not it's a bodypart based on the position
-     *
-     * @param nPOS
-     * @return boolean is_nonbodypart
-     */
+    public static final int AP_BASE = 1200;
+    public static final int AP_CAP = 1200;
+    public static final int AP_CAPE = 1201;
+    public static final int AP_FACEACC = 1202;
+    public static final int AP_CLOTHES = 1203;
+    public static final int AP_PANTS = 1204;
+    public static final int AP_SHOES = 1205;
+    public static final int AP_GLOVES = 1206;
+    public static final int AP_END = 1207;
+    public static final int AP_COUNT = 7;
+
+    public static final int DU_BASE = 1300;
+    public static final int DU_CAP = 1300;
+    public static final int DU_CAPE = 1301;
+    public static final int DU_FACEACC = 1302;
+    public static final int DU_CLOTHES = 1303;
+    public static final int DU_GLOVES = 1304;
+    public static final int DU_END = 1305;
+    public static final int DU_COUNT = 5;
+
+    public static final int BITS_BASE = 1400;
+    public static final int BITS_END = 1425;
+    public static final int BITS_COUNT = 25;
+
+    public static final int ZERO_BASE = 1500;
+    public static final int ZERO_EYEACC = 1500;
+    public static final int ZERO_CAP = 1501;
+    public static final int ZERO_FACEACC = 1502;
+    public static final int ZERO_EARACC = 1503;
+    public static final int ZERO_CAPE = 1504;
+    public static final int ZERO_CLOTHES = 1505;
+    public static final int ZERO_GLOVES = 1506;
+    public static final int ZERO_WEAPON = 1507;
+    public static final int ZERO_PANTS = 1508;
+    public static final int ZERO_SHOES = 1509;
+    public static final int ZERO_RING1 = 1510;
+    public static final int ZERO_RING2 = 1511;
+    public static final int ZERO_END = 1512;
+    public static final int ZERO_COUNT = 12;
+
+    public static final int MBP_BASE = 5100;
+    public static final int MBP_CAP = 5100;
+    public static final int MBP_CAPE = 5101;
+    public static final int MBP_CLOTHES = 5102;
+    public static final int MBP_GLOVES = 5103;
+    public static final int MBP_SHOES = 5104;
+    public static final int MBP_WEAPON = 5105;
+    public static final int MBP_END = 5106;
+    public static final int MBP_COUNT = 6;
+
+    public static final int FP_BASE = 5200;
+    public static final int FP_WEAPON = 5200;
+    public static final int FP_END = 5201;
+    public static final int FP_COUNT = 1;
+
+    public static final int NBP_DRAGON = 0;
+    public static final int NBP_MECHANIC = 1;
+    public static final int NBP_ANDROID = 2;
+    public static final int NBP_DRESSUP = 3;
+    public static final int NBP_BITS = 4;
+    public static final int NBP_ZERO = 5;
+    public static final int NBP_MBP = 6;
+    public static final int NBP_NO = 7;
+    public static final int NBP_COUNT = 64;
+    public static final int SLOT_INDEX_NOT_DEFINE = 50000;
+
     public static boolean Is_NonBodyPart(int nPOS) {
-        return (nPOS - 1000) <= 3
-                || (nPOS - 1100) <= 4
-                || (nPOS - 1200) <= 6
-                || (nPOS - 1300) <= 4
-                || (nPOS - 1400) <= 0x18
-                || (nPOS - 1500) <= 0xB
-                || (nPOS - 5100) <= 5;
+        return (nPOS - DP_BASE) < DP_COUNT
+                || (nPOS - MP_BASE) < MP_COUNT
+                || (nPOS - AP_BASE) < AP_COUNT
+                || (nPOS - DU_BASE) < DU_COUNT
+                || (nPOS - BITS_BASE) < BITS_COUNT
+                || (nPOS - ZERO_BASE) < ZERO_COUNT
+                || (nPOS - MBP_BASE) < MBP_COUNT;
     }
-    
+
+    //TODO: Currently KMS! Doesn't fit all GMS possibilities!
     public static boolean IsCorrectBodyPart(int nItemID, int nBodyPart, int nGender, boolean bRealEquip) {
-        int genderFromID = GetGenderFromID(nItemID);
-        if (nItemID / 10000 == 119 || nItemID / 10000 == 168 || nGender == 2 || genderFromID == 2 || genderFromID == nGender) {
+        int nGenderFromID = GetGenderFromID(nItemID);
+        if (nItemID / 10000 == 119
+                || nItemID / 10000 == 168
+                || nGender == 2
+                || nGenderFromID == 2
+                || nGenderFromID == nGender) {
             switch (nItemID / 10000) {
                 case 100:
-                    if (nBodyPart == 1 || nBodyPart == 1200 || nBodyPart == 1300) {
+                    if (nBodyPart == BP_CAP || nBodyPart == AP_CAP || nBodyPart == DU_CAP) {
                         return true;
                     }
-                    return nBodyPart == 1501;
+                    return nBodyPart == ZERO_CAP;
                 case 101:
-                    if (nBodyPart == 2 || nBodyPart == 1202 || nBodyPart == 1302) {
+                    if (nBodyPart == BP_FACEACC || nBodyPart == AP_FACEACC || nBodyPart == DU_FACEACC) {
                         return true;
                     }
-                    return nBodyPart == 1502;
+                    return nBodyPart == ZERO_FACEACC;
                 case 102:
-                    if (nBodyPart == 3) {
+                    if (nBodyPart == BP_EYEACC) {
                         return true;
                     }
-                    return nBodyPart != 1503;
+                    return nBodyPart == ZERO_EYEACC;
                 case 103:
-                    if (nBodyPart == 4) {
+                    if (nBodyPart == BP_EARACC) {
                         return true;
                     }
-                    return nBodyPart == 1504;
+                    return nBodyPart == ZERO_EARACC;
                 case 104:
                 case 105:
-                    if (nBodyPart == 5 || nBodyPart == 1203) {
+                    if (nBodyPart == BP_CLOTHES || nBodyPart == AP_CLOTHES) {
                         return true;
                     }
-                    return nBodyPart == 1505;
+                    return nBodyPart == ZERO_CLOTHES;
                 case 106:
-                    if (nBodyPart == 6 || nBodyPart == 1204) {
+                    if (nBodyPart == BP_PANTS || nBodyPart == AP_PANTS) {
                         return true;
                     }
-                    return nBodyPart == 1508;
+                    return nBodyPart == ZERO_PANTS;
                 case 107:
-                    if (nBodyPart == 7 || nBodyPart == 1205) {
+                    if (nBodyPart == BP_SHOES || nBodyPart == AP_SHOES) {
                         return true;
                     }
-                    return nBodyPart == 1509;
+                    return nBodyPart == ZERO_SHOES;
                 case 108:
-                    if (nBodyPart == 8 || nBodyPart == 1206 || nBodyPart == 1304) {
+                    if (nBodyPart == BP_GLOVES || nBodyPart == AP_GLOVES || nBodyPart == DU_GLOVES) {
                         return true;
                     }
-                    return nBodyPart == 1506;
+                    return nBodyPart == ZERO_GLOVES;
                 case 109:
                 case 134:
                 case 135:
-                    return nBodyPart == 10;
+                    return nBodyPart == BP_SHIELD;
                 case 156:
                     if (!bRealEquip) {
-                        return nBodyPart == 10;
+                        return nBodyPart == BP_SHIELD;
                     }
-                    if (nBodyPart != 11) {
-                        return nBodyPart == 10;
+                    if (nBodyPart != BP_WEAPON) {
+                        return nBodyPart == BP_SHIELD;
                     }
                     return true;
                 case 110:
-                    if (nBodyPart == 9 || nBodyPart == 1201 || nBodyPart == 1301) {
+                    if (nBodyPart == BP_CAPE || nBodyPart == AP_CAPE || nBodyPart == DU_CAPE) {
                         return true;
                     }
-                    return nBodyPart == 1504;
+                    return nBodyPart == ZERO_CAPE;
                 case 111:
-                    if (nBodyPart == 12 || nBodyPart == 13 || nBodyPart == 15 || nBodyPart == 16 || nBodyPart == 1510) {
+                    if (nBodyPart == BP_RING1 || nBodyPart == BP_RING2 || nBodyPart == BP_RING3 || nBodyPart == BP_RING4 || nBodyPart == ZERO_RING1) {
                         return true;
                     }
-                    return nBodyPart == 1511;
+                    return nBodyPart == ZERO_RING2;
                 case 112:
-                    if (nBodyPart == 17) {
+                    if (nBodyPart == BP_PENDANT) {
                         return true;
                     }
-                    return nBodyPart == 31;
+                    return nBodyPart == BP_EXT_PENDANT1;
                 case 113:
-                    return nBodyPart == 22;
+                    return nBodyPart == BP_BELT;
                 case 114:
-                    return nBodyPart == 21;
+                    return nBodyPart == BP_MEDAL;
                 case 115:
-                    return nBodyPart == 23;
+                    return nBodyPart == BP_SHOULDER;
                 case 116:
-                    return nBodyPart == 26;
+                    return nBodyPart == BP_CHARMACC;
                 case 118:
-                    return nBodyPart == 29;
+                    return nBodyPart == BP_BADGE;
                 case 119:
-                    return nBodyPart == 30;
+                    return nBodyPart == BP_EMBLEM;
                 case 165:
-                    return nBodyPart == 1104;
+                    return nBodyPart == MP_TRANSISTER;
                 case 166:
-                    return nBodyPart == 27;
+                    return nBodyPart == BP_ANDROID;
                 case 167:
-                    if (nBodyPart == 28) {
+                    if (nBodyPart == BP_MACHINEHEART) {
                         return true;
                     }
-                    return nBodyPart == 30;
+                    return nBodyPart == BP_EMBLEM;
                 case 161:
-                    return nBodyPart == 1100;
+                    return nBodyPart == MP_ENGINE;
                 case 162:
-                    return nBodyPart == 1101;
+                    return nBodyPart == MP_ARM;
                 case 163:
-                    return nBodyPart == 1102;
+                    return nBodyPart == MP_LEG;
                 case 164:
-                    return nBodyPart == 1103;
+                    return nBodyPart == MP_FRAME;
                 case 168:
-                    return (nBodyPart - 1400) < 0x18;
+                    return (nBodyPart - BITS_BASE) < BITS_COUNT;
                 case 184:
-                    return nBodyPart == 5100;
+                    return nBodyPart == MBP_CAP;
                 case 185:
-                    return nBodyPart == 5102;
+                    return nBodyPart == MBP_CLOTHES;
                 case 186:
-                    return nBodyPart == 5103;
+                    return nBodyPart == MBP_GLOVES;
                 case 187:
-                    return nBodyPart == 5104;
+                    return nBodyPart == MBP_SHOES;
                 case 188:
-                    return nBodyPart == 5101;
+                    return nBodyPart == MBP_CAPE;
                 case 189:
-                    return nBodyPart == 5105;
+                    return nBodyPart == MBP_WEAPON;
                 case 190:
-                    return nBodyPart == 18;
+                    return nBodyPart == BP_TAMINGMOB;
                 case 191:
-                    return nBodyPart == 19;
+                    return nBodyPart == BP_SADDLE;
                 case 192:
-                    return nBodyPart == 20;
+                    return nBodyPart == BP_MOBEQUIP;
                 case 194:
-                    return nBodyPart == 1000;
+                    return nBodyPart == DP_CAP;
                 case 195:
-                    return nBodyPart == 1001;
+                    return nBodyPart == DP_PENDANT;
                 case 196:
-                    return nBodyPart == 1002;
+                    return nBodyPart == DP_WING;
                 case 197:
-                    return nBodyPart == 1003;
+                    return nBodyPart == DP_SHOES;
                 case 180:
-                    if (nBodyPart == 14 || nBodyPart == 24) {
+                    if (nBodyPart == BP_PETWEAR || nBodyPart == BP_PETWEAR2) {
                         return true;
                     }
-                    return nBodyPart == 25;
+                    return nBodyPart == BP_PETWEAR3;
                 default:
-                    if (!(GetWeaponType(nItemID) > 0) && nItemID / 100000 != 16 && nItemID / 100000 != 17) {
+                    if (!GetWeaponType(nItemID) && nItemID / 100000 != 16 && nItemID / 100000 != 17) {
                         return false;
                     }
-                    if (nBodyPart == 11) {
+                    if (nBodyPart == BP_WEAPON) {
                         return true;
                     }
-                    return nBodyPart == 1507;
+                    return nBodyPart == ZERO_WEAPON;
             }
         } else {
             return false;
         }
     }
 
-    public static int GetWeaponType(int nItemID) {
+    public static boolean GetWeaponType(int nItemID) {
         int result = 0;
         if (nItemID / 1000000 != 1) {
-            return result;
+            return false;
         }
         result = nItemID / 10000 % 100;
-        return result;
+        return result != 0;
     }
-    
+
     public static int GetGenderFromID(int nItemID) {
         int result;
         if (nItemID / 1000000 != 1 && nItemID / 10000 != 254 || nItemID / 10000 == 119 || nItemID / 10000 == 168) {
@@ -350,82 +348,186 @@ public enum ItemSlotIndex {
         return result;
     }
 
-    public static ItemSlotIndex GetByString(final String wzName, final int nItemID) {
-        switch (wzName) {
-            case "Wp":
-                return ItemSlotIndex.BP_WEAPON;
-            case "WpSi":
-                return ItemSlotIndex.BP_WEAPON;
-            case "Af":
-                return ItemSlotIndex.BP_FACEACC;
-            case "Ay":
-                return ItemSlotIndex.BP_EYEACC;
-            case "Me":
-                return ItemSlotIndex.BP_MEDAL;
-            case "Be":
-                return ItemSlotIndex.BP_BELT;
-            case "Pe":
-                return ItemSlotIndex.BP_PENDANT;
-            case "Ae":
-                return ItemSlotIndex.BP_EARACC;
-            case "Sh":
-                return ItemSlotIndex.BP_SHOULDER;
-            case "Cp":
-                return ItemSlotIndex.BP_CAP;
-            case "Sr":
-                return ItemSlotIndex.BP_CAPE;
-            case "Ma":
-                return ItemSlotIndex.BP_CLOTHES;
-            case "Gv":
-                return ItemSlotIndex.BP_GLOVES;
-            case "MaPn":
-                return ItemSlotIndex.BP_CLOTHES;
-            case "Pn":
-                return ItemSlotIndex.BP_PANTS;
-            case "Ri":
-                return ItemSlotIndex.BP_RING1;
-            case "Si":
-                return ItemSlotIndex.BP_WEAPON;
-            case "So":
-                return ItemSlotIndex.BP_SHOES;
-            case "Tm":
-                final int div = nItemID / 1000;
-
-                switch (div) {
-                    /* TODO: soon as i can get them from in-game.
-                    case 1652: // 01652000.img
-                        return ItemSlotIndex.TamingMob_MechanicTransistor;
-                    case 1642:
-                        return ItemSlotIndex.TamingMob_MechanicFrame;
-                    case 1632:
-                        return ItemSlotIndex.TamingMob_MechanicLeg;
-                    case 1622:
-                        return ItemSlotIndex.TamingMob_MechanicArm;
-                    case 1612:
-                        return ItemSlotIndex.TamingMob_MechanicEngine;
-                    case 1662:
-                        return ItemSlotIndex.TamingMob_Android;
-                    case 1672:
-                        return ItemSlotIndex.TamingMob_Android;
-                    case 1942:
-                        return ItemSlotIndex.TamingMob_DragonHat;
-                    case 1952:
-                        return ItemSlotIndex.TamingMob_DragonPendant;
-                    case 1962:
-                        return ItemSlotIndex.TamingMob_DragonWingAccessory;
-                    case 1972:
-                        return ItemSlotIndex.TamingMob_DragonTailAccessory;
-                        */
-                }
-                return ItemSlotIndex.MP_BASE; //shrug... for now...
-            case "Sd":
-                return ItemSlotIndex.MP_BASE; //shrug... for now...
-            default:
-                if (!wzName.equals("null")) { //Reader has some broken items?
-                    System.out.println("[Warning] Unknow equip nSlot value for WZ string: " + wzName + ", item: " + nItemID);
-                }
-                return ItemSlotIndex.SLOT_INDEX_NOT_DEFINE;
+    public static int GetBodyPartFromItem(int nItemID, int nGender) {
+        ArrayList<Integer> aBodyPart = GetBodyPartArrayFromItem(nItemID, nGender);
+        if (aBodyPart.isEmpty()) {
+            return SLOT_INDEX_NOT_DEFINE;
         }
+        return aBodyPart.get(0);
     }
 
+    public static ArrayList<Integer> GetBodyPartArrayFromItem(int nItemID, int nGender) {
+        ArrayList<Integer> aBodyPart = new ArrayList<>();
+        int nGenderFromID = GetGenderFromID(nItemID);
+        if (nItemID / 10000 == 119
+                || nItemID / 10000 == 168
+                || nGender == 2
+                || nGenderFromID == 2
+                || nGenderFromID == nGender) {
+            switch (nItemID / 10000) {
+                case 100:
+                    aBodyPart.add(BP_CAP);
+                    aBodyPart.add(AP_CAP);
+                    aBodyPart.add(DU_CAP);
+                    aBodyPart.add(ZERO_CAP);
+                    break;
+                case 101:
+                    aBodyPart.add(BP_FACEACC);
+                    aBodyPart.add(AP_FACEACC);
+                    aBodyPart.add(DU_FACEACC);
+                    aBodyPart.add(ZERO_FACEACC);
+                    break;
+                case 102:
+                    aBodyPart.add(BP_EYEACC);
+                    aBodyPart.add(ZERO_EYEACC);
+                    break;
+                case 103:
+                    aBodyPart.add(BP_EARACC);
+                    aBodyPart.add(ZERO_EARACC);
+                    break;
+                case 104:
+                case 105:
+                    aBodyPart.add(BP_CLOTHES);
+                    aBodyPart.add(AP_CLOTHES);
+                    aBodyPart.add(ZERO_CLOTHES);
+                    break;
+                case 106:
+                    aBodyPart.add(BP_PANTS);
+                    aBodyPart.add(AP_PANTS);
+                    aBodyPart.add(ZERO_PANTS);
+                    break;
+                case 107:
+                    aBodyPart.add(BP_SHOES);
+                    aBodyPart.add(AP_SHOES);
+                    aBodyPart.add(ZERO_SHOES);
+                    break;
+                case 108:
+                    aBodyPart.add(BP_GLOVES);
+                    aBodyPart.add(AP_GLOVES);
+                    aBodyPart.add(ZERO_GLOVES);
+                    break;
+                case 109:
+                case 134:
+                case 135:
+                case 156:
+                    aBodyPart.add(BP_SHIELD);
+                    break;
+                case 110:
+                    aBodyPart.add(BP_CAPE);
+                    aBodyPart.add(AP_CAPE);
+                    aBodyPart.add(DU_CAPE);
+                    aBodyPart.add(ZERO_CAPE);
+                    break;
+                case 111:
+                    aBodyPart.add(BP_RING1);
+                    aBodyPart.add(BP_RING2);
+                    aBodyPart.add(BP_RING3);
+                    aBodyPart.add(BP_RING4);
+                    aBodyPart.add(ZERO_RING1);
+                    aBodyPart.add(ZERO_RING2);
+                    break;
+                case 112:
+                    aBodyPart.add(BP_PENDANT);
+                    aBodyPart.add(BP_EXT_PENDANT1);
+                    break;
+                case 113:
+                    aBodyPart.add(BP_BELT);
+                    break;
+                case 114:
+                    aBodyPart.add(BP_MEDAL);
+                    break;
+                case 115:
+                    aBodyPart.add(BP_SHOULDER);
+                    break;
+                case 116:
+                    aBodyPart.add(BP_CHARMACC);
+                    break;
+                case 118:
+                    aBodyPart.add(BP_BADGE);
+                    break;
+                case 165:
+                    aBodyPart.add(MP_TRANSISTER);
+                    break;
+                case 161:
+                    aBodyPart.add(MP_ENGINE);
+                    break;
+                case 162:
+                    aBodyPart.add(MP_ARM);
+                    break;
+                case 163:
+                    aBodyPart.add(MP_LEG);
+                    break;
+                case 164:
+                    aBodyPart.add(MP_FRAME);
+                    break;
+                case 166:
+                    aBodyPart.add(BP_ANDROID);
+                    break;
+                case 167:
+                    aBodyPart.add(BP_MACHINEHEART);
+                    break;
+                case 119:
+                    aBodyPart.add(BP_EMBLEM);
+                    break;
+                case 168:
+                    int v10 = BITS_BASE;
+                    do {
+                        aBodyPart.add(v10++);
+                    } while (v10 < BITS_COUNT);
+                    break;
+                case 190:
+                    aBodyPart.add(BP_TAMINGMOB);
+                    break;
+                case 191:
+                    aBodyPart.add(BP_SADDLE);
+                    break;
+                case 192:
+                    aBodyPart.add(BP_MOBEQUIP);
+                    break;
+                case 194:
+                    aBodyPart.add(DP_CAP);
+                    break;
+                case 195:
+                    aBodyPart.add(DP_PENDANT);
+                    break;
+                case 196:
+                    aBodyPart.add(DP_WING);
+                    break;
+                case 197:
+                    aBodyPart.add(DP_SHOES);
+                    break;
+                case 184:
+                    aBodyPart.add(MBP_CAP);
+                    break;
+                case 185:
+                    aBodyPart.add(MBP_CLOTHES);
+                    break;
+                case 186:
+                    aBodyPart.add(MBP_GLOVES);
+                    break;
+                case 187:
+                    aBodyPart.add(MBP_SHOES);
+                    break;
+                case 188:
+                    aBodyPart.add(MBP_CAPE);
+                    break;
+                case 189:
+                    aBodyPart.add(MBP_WEAPON);
+                    break;
+                case 180:
+                    aBodyPart.add(BP_PETWEAR);
+                    aBodyPart.add(BP_PETWEAR2);
+                    aBodyPart.add(BP_PETWEAR3);
+                    break;
+                default:
+                    if (GetWeaponType(nItemID) || nItemID / 100000 == 16 || nItemID / 100000 == 17) {
+                        aBodyPart.add(BP_WEAPON);
+                        aBodyPart.add(ZERO_WEAPON);
+                    }
+                    break;
+            }
+            //IDA has more, but honestly this should do it. They have dressup checks and stuff, but they way i handle that this is fine.
+        }
+        return aBodyPart;
+    }
 }

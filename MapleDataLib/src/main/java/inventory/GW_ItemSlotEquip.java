@@ -21,6 +21,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import netty.OutPacket;
 import wz.item.EquipItem;
 import wz.item.InventoryType;
@@ -69,18 +71,16 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
             return;
         }
         pBase.eqStats.mStats.forEach((nFlag, nValue) -> this.eqBase.mStats.put(nFlag, nValue));
-        this.nSlot = pBase.islot.GetValue();
     }
 
-    public static GW_ItemSlotEquip Create(int dwCharacterID, int nItemID, int nSlot, Connection con) {
+    public static GW_ItemSlotEquip Create(int dwCharacterID, int nItemID, Connection con) {
         GW_ItemSlotEquip pRet = new GW_ItemSlotEquip(nItemID);
         if (pRet != null) {
             try {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO gw_itemslotequip (dwCharacterID, nItemID, nSlot)  Values (?, ?, ?)",
-                         Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = con.prepareStatement("INSERT INTO gw_itemslotequip (dwCharacterID, nItemID)  Values (?, ?)",
+                        Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, dwCharacterID);
                 ps.setInt(2, nItemID);
-                ps.setInt(3, nSlot);
 
                 int affectedRows = ps.executeUpdate();
                 if (affectedRows == 0) {
@@ -91,15 +91,175 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
 
                 while (rs.next()) {
                     pRet.liSN = rs.getLong("liSN");
-                    pRet.nSlot = nSlot;
                 }
 
+                rs.close();
                 ps.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
+            } finally {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GW_ItemSlotEquip.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         return pRet;
+    }
+
+    public void Save(int dwCharacterID, Connection con) {
+        try {
+            PreparedStatement ps = con.prepareStatement("UPDATE gw_itemslotequip SET "
+                    + "dwCharacterID = ?,"
+                    + "nItemID = ?,"
+                    + "nPos = ?,"
+                    + "dateExpireLow = ?,"
+                    + "dateExpireHigh = ?,"
+                    + "nBagIndex = ?,"
+                    + "nPrevBonusExpRate = ?,"
+                    + "sTitle = ?,"
+                    + "vSlot = ?,"
+                    + "nSlot = ?,"
+                    + "ftEquippedLow = ?,"
+                    + "ftEquippedHigh = ?,"
+                    + "nGrade = ?,"
+                    + "nCHUC = ?,"
+                    + "nOption1 = ?,"
+                    + "nOption2 = ?,"
+                    + "nOption3 = ?,"
+                    + "nOption4 = ?,"
+                    + "nOption5 = ?,"
+                    + "nOption6 = ?,"
+                    + "nOption7 = ?,"
+                    + "nSocketState = ?,"
+                    + "nSocket1 = ?,"
+                    + "nSocket2 = ?,"
+                    + "nSocket3 = ?,"
+                    + "nSoulOptionID = ?,"
+                    + "nSoulSocketID = ?,"
+                    + "nSoulOption = ?,"
+                    + "nRUC = ?,"
+                    + "nCUC = ?,"
+                    + "niSTR = ?,"
+                    + "niDEX = ?,"
+                    + "niINT = ?,"
+                    + "niLUK = ?,"
+                    + "niMaxHP = ?,"
+                    + "niMaxMP = ?,"
+                    + "niPAD = ?,"
+                    + "niMAD = ?,"
+                    + "niPDD = ?,"
+                    + "niMDD = ?,"
+                    + "niACC = ?,"
+                    + "niEVA = ?,"
+                    + "niCraft = ?,"
+                    + "niSpeed = ?,"
+                    + "niJump = ?,"
+                    + "nAttribute = ?,"
+                    + "nLevelUpType = ?,"
+                    + "nLevel = ?,"
+                    + "nEXP64 = ?,"
+                    + "nDurability = ?,"
+                    + "nIUC = ?,"
+                    + "niPVPDamage = ?,"
+                    + "iReduceReq = ?,"
+                    + "nSpecialAttribute = ?,"
+                    + "nDurabilityMax = ?,"
+                    + "niIncReq = ?,"
+                    + "nGrowthEnchant = ?,"
+                    + "nPsEnchant = ?,"
+                    + "nBDR = ?,"
+                    + "niMDR = ?,"
+                    + "nDamR = ?,"
+                    + "nStatR = ?,"
+                    + "nCuttable = ?,"
+                    + "nExGradeOption = ?,"
+                    + "nItemState = ? "
+                    + "WHERE liSN = ?");
+
+            ps.setInt(1, dwCharacterID);
+            ps.setInt(2, nItemID);
+            ps.setInt(3, nPos);
+            ps.setInt(4, dateExpireLow);
+            ps.setInt(5, dateExpireHigh);
+            ps.setInt(6, nBagIndex);
+            ps.setInt(7, nPrevBonusExpRate);
+            ps.setString(8, sTitle);
+            ps.setBoolean(9, vSlot);
+            ps.setInt(10, nSlot);
+            ps.setInt(11, ftEquippedLow);
+            ps.setInt(12, ftEquippedHigh);
+            ps.setInt(13, nGrade);
+            ps.setInt(14, nCHUC);
+            ps.setInt(15, nOption1);
+            ps.setInt(16, nOption2);
+            ps.setInt(17, nOption3);
+            ps.setInt(18, nOption4);
+            ps.setInt(19, nOption5);
+            ps.setInt(20, nOption6);
+            ps.setInt(21, nOption7);
+            ps.setInt(22, nSocketState);
+            ps.setInt(23, nSocket1);
+            ps.setInt(24, nSocket2);
+            ps.setInt(25, nSocket3);
+            ps.setInt(26, nSoulOptionID);
+            ps.setInt(27, nSoulSocketID);
+            ps.setInt(28, nSoulOption);
+            ps.setInt(29, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nRUC, 0));
+            ps.setInt(30, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nCUC, 0));
+            ps.setInt(31, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niSTR, 0));
+            ps.setInt(32, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niDEX, 0));
+            ps.setInt(33, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niINT, 0));
+            ps.setInt(34, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niLUK, 0));
+            ps.setInt(35, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niMaxHP, 0));
+            ps.setInt(36, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niMaxMP, 0));
+            ps.setInt(37, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niPAD, 0));
+            ps.setInt(38, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niMAD, 0));
+            ps.setInt(39, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niPDD, 0));
+            ps.setInt(40, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niMDD, 0));
+            ps.setInt(41, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niACC, 0));
+            ps.setInt(42, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niEVA, 0));
+            ps.setInt(43, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niCraft, 0));
+            ps.setInt(44, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niSpeed, 0));
+            ps.setInt(45, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niJump, 0));
+            ps.setInt(46, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nAttribute, 0));
+            ps.setInt(47, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nLevelUpType, 0));
+            ps.setInt(48, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nLevel, 0));
+            ps.setInt(49, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nEXP64, 0));
+            ps.setInt(50, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nDurability, 0));
+            ps.setInt(51, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nIUC, 0));
+            ps.setInt(52, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niPVPDamage, 0));
+            ps.setInt(53, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.iReduceReq, 0));
+            ps.setInt(54, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nSpecialAttribute, 0));
+            ps.setInt(55, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nDurabilityMax, 0));
+            ps.setInt(56, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niIncReq, 0));
+            ps.setInt(57, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nGrowthEnchant, 0));
+            ps.setInt(58, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nPsEnchant, 0));
+            ps.setInt(59, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nBDR, 0));
+            ps.setInt(60, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.niMDR, 0));
+            ps.setInt(61, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nDamR, 0));
+            ps.setInt(62, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nStatR, 0));
+            ps.setInt(63, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nCuttable, 0));
+            ps.setInt(64, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nExGradeOption, 0));
+            ps.setInt(65, eqBase.mStats.getOrDefault(GW_ItemSlotEquipBase.Flags.nItemState, 0));
+            ps.setLong(66, liSN);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Saving Equip failed, no rows affected.");
+            }
+
+            ps.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GW_ItemSlotEquip.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override

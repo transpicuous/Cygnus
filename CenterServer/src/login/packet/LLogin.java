@@ -19,6 +19,7 @@ package login.packet;
 import database.Database;
 import game.GameServerSessionManager;
 import inventory.GW_ItemSlotEquip;
+import inventory.ItemSlotIndex;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,8 +33,6 @@ import server.Server;
 import server.accounts.Account;
 import user.AvatarData;
 import user.CharacterData;
-import wz.item.EquipItem;
-import wz.item.ItemFactory;
 
 /**
  *
@@ -117,7 +116,6 @@ public class LLogin {
 
         Account pAccount = pSocket.mAccountStorage.get(nSessionID);
         AvatarData pAvatar = AvatarData.CreateAvatar(Database.GetConnection(), pAccount.nAccountID, nCharListPosition);
-        CharacterData pCharacter = new CharacterData(pAvatar);
         pAvatar.pCharacterStat.sCharacterName = sCharacterName;
 
         int nFKMOption = iPacket.DecodeInteger();
@@ -134,22 +132,23 @@ public class LLogin {
         pAvatar.SetGender((byte) nGender);
         pAvatar.SetHair(nHair);
         pAvatar.SetSkin(nSkin);
-
-        while (iPacket.DecodeInteger() != nSkin) {
-            nSize--; //To catch that extra int on Xenon.
-        }
+        iPacket.DecodeInteger();
 
         HashMap<Byte, Integer> mBody = new HashMap<>();
         for (int i = 0; i < (nSize - 3); i++) {
             int nItemID = iPacket.DecodeInteger();
+            int nItemGender = ItemSlotIndex.GetGenderFromID(nItemID);
+            if (nItemGender != 2 && nItemGender != nGender) {
+                continue;
+            }
             GW_ItemSlotEquip pItem = GW_ItemSlotEquip.Create(
-                    pAvatar.dwCharacterID, 
-                    nItemID, 
-                    ItemFactory.GetEquipSlot(nItemID) * -1,
+                    pAvatar.dwCharacterID,
+                    nItemID,
                     Database.GetConnection()
             );
             if (pItem != null) {
-                pCharacter.aEquipped[pItem.nSlot] = pItem;
+                pItem.nSlot = ItemSlotIndex.GetBodyPartFromItem(nItemID, nGender);
+                pItem.Save(pAvatar.dwCharacterID, Database.GetConnection());
                 mBody.put((byte) pItem.nSlot, nItemID);
             }
         }
@@ -295,7 +294,6 @@ public class LLogin {
                 pAvatar.pCharacterStat.nMP = 5;
                 break;
             default:
-                System.out.println("[WARNING] Improper RaceSelection. If not v188, this is a PE.");
                 OutPacket oPacket = new OutPacket();
                 oPacket.EncodeShort(LoopBackPacket.OnCreateCharacterResponse.getValue());
                 oPacket.EncodeInteger(nSessionID);

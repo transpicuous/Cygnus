@@ -41,8 +41,8 @@ public class EquipItem extends Item {
     public boolean royalSpecial = false;
     public boolean android = false;
 
-    public ItemSlotIndex islot;
-    public ItemSlotIndex vslot;
+    public String islot;
+    public String vslot;
     public String afterImage;
 
     public EquipItem(int nItemID) {

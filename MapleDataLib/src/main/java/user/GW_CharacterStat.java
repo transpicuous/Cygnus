@@ -214,7 +214,7 @@ public class GW_CharacterStat {
                 ret.bBurning = rs.getBoolean("bBurning");
             }
             ps.close();
-
+            rs.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -287,7 +287,7 @@ public class GW_CharacterStat {
 
         oPacket.EncodeInteger(ftLastLogoutTimeHigh);
         oPacket.EncodeInteger(ftLastLogoutTimeLow);
-        
+
         //Legion?
         oPacket.EncodeLong(0);
         oPacket.EncodeLong(0);
@@ -370,7 +370,7 @@ public class GW_CharacterStat {
 
         ret.ftLastLogoutTimeHigh = iPacket.DecodeInteger();
         ret.ftLastLogoutTimeLow = iPacket.DecodeInteger();
-        
+
         //Legion?
         iPacket.DecodeLong();
         iPacket.DecodeLong();

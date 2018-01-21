@@ -30,19 +30,19 @@ public class ZeroInfo {
 
     public static final short Flag = -1; //unsigned _int16
     public int nSubHP = 6910;
-    public int nSubMP = 10;
+    public int nSubMP = 100;
     public int nSubSkin = 0;
     public int nSubHair = 37623;
     public int nSubFace = 21290;
     public int nSubMHP = 6910;
-    public int nSubMMP = 1000;
+    public int nSubMMP = 100;
     public int dbcharZeroLinkCashPart = 0;
     public int nMixBaseHairColor = -1;
     public int nMixAddHairColor = 0;
     public int nMixHairBaseProb = 0;
     public boolean bIsBeta = false;
-    public int nLapis = 0;
-    public int nLazuli = 0;
+    public int nLapis = 1562000;
+    public int nLazuli = 1572000;
 
     public ZeroInfo() {
     }
@@ -198,8 +198,9 @@ public class ZeroInfo {
                 this.nLapis = rs.getInt("nLapis");
                 this.nLazuli = rs.getInt("nLazuli");
                 ps.executeUpdate();
-                ps.close();
             }
+            ps.close();
+            rs.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -18,6 +18,7 @@ package user;
 
 import inventory.GW_ItemSlotBase;
 import inventory.ItemSlotIndex;
+import java.sql.Connection;
 import netty.OutPacket;
 
 /**
@@ -30,7 +31,7 @@ public class CharacterData {
     public final AvatarData pAvatar;
 
     public GW_ItemSlotBase[][] aaItemSlot = new GW_ItemSlotBase[5][60];//60 slots per inv for now
-    public GW_ItemSlotBase[] aEquipped = new GW_ItemSlotBase[ItemSlotIndex.BP_COUNT.GetValue()];
+    public GW_ItemSlotBase[] aEquipped = new GW_ItemSlotBase[ItemSlotIndex.BP_COUNT];
     // public VirtualEquipInventory VEInventory = new VirtualEquipInventory();
 
     public byte nCombatOrders = 0;
@@ -56,12 +57,12 @@ public class CharacterData {
         if (aaItemSlot[nType].length > 128) {
             return false;
         }
-        
+
         int nIncrementedSize = aaItemSlot[nType].length + nSize;
         if (nIncrementedSize > 128) {
             nIncrementedSize = 128;
         }
-        
+
         GW_ItemSlotBase[] aItemSlot = new GW_ItemSlotBase[nIncrementedSize];
         System.arraycopy(aaItemSlot[nType], 0, aItemSlot, 0, aaItemSlot[nType].length);
         aaItemSlot[nType] = aItemSlot;

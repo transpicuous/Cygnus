@@ -73,8 +73,9 @@ public class CCenterSocket extends Socket {
                     if (pSocket.nSessionID == nSessionID) {
                         pSocket.pAccount = Account.Decode(iPacket);
                         for (int i = iPacket.Decode(); i > 0; --i) {
+                            int nCharListPosition = iPacket.DecodeInteger();
                             AvatarData pAvatar = AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket);
-                            pAvatar.nCharlistPos = iPacket.DecodeInteger();
+                            pAvatar.nCharlistPos = nCharListPosition;
                             pSocket.pAccount.liAvatarData.add(pAvatar);
                         }
                         pSocket.SendPacket(CLogin.AccountInfoResult(pSocket.pAccount));

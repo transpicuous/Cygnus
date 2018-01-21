@@ -20,6 +20,7 @@ import inventory.ItemSlotIndex;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import netty.InPacket;
@@ -118,10 +119,27 @@ public class AvatarLook {
             while (rs.next()) {
                 ret.anEquip.put((byte) rs.getInt("nSlot"), rs.getInt("nItemID"));
             }
-            ps.close();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            try {
+                ps = c.prepareStatement("SELECT * FROM GW_ItemSlotEquip WHERE dwCharacterID = ?");
+                ps.setInt(1, dwCharacterID);
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    int nSlot = rs.getByte("nSlot");
+                    int nItemID = rs.getInt("nItemID");
+                    if (nSlot > 0) {
+                        ret.anEquip.put((byte) nSlot, nItemID);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return ret;
     }
@@ -130,64 +148,70 @@ public class AvatarLook {
         Encode(oPacket, null);
     }
 
-    public void Encode(OutPacket oPacket, ZeroInfo zero) {
-        oPacket.Encode(zero == null ? nGender : 1);
-        oPacket.Encode(zero == null ? nSkin : zero.nSubSkin);
-        oPacket.EncodeInteger(zero == null ? nFace : zero.nSubFace);
+    public void Encode(OutPacket oPacket, ZeroInfo pZero) {
+        oPacket.Encode(pZero == null ? nGender : 1);
+        oPacket.Encode(pZero == null ? nSkin : pZero.nSubSkin);
+        oPacket.EncodeInteger(pZero == null ? nFace : pZero.nSubFace);
         oPacket.EncodeInteger(nJob);
         oPacket.Encode(false);
-        oPacket.EncodeInteger(zero == null ? nHair : zero.nSubHair);
+        oPacket.EncodeInteger(pZero == null ? nHair : pZero.nSubHair);
 
-        HashMap<Byte, Integer> anHairEquip = new HashMap<>();
-        HashMap<Byte, Integer> anUnseenEquip = new HashMap<>();
-        HashMap<Byte, Integer> anTotemEquip = new HashMap<>();//probs virtual?
+        int[] anHairEquip = new int[ItemSlotIndex.BP_COUNT];
+        int[] anUnseenEquip = new int[ItemSlotIndex.BP_COUNT];
+        int[] anVirtualEquip = new int[ItemSlotIndex.BP_COUNT];
         for (Map.Entry<Byte, Integer> item : anEquip.entrySet()) {
-            byte pos = (byte) item.getKey();
-            if (pos <= 0) {
-                pos = (byte) (pos * -1);
-            }
-            if (pos > 127) {
-                continue;
-            }
-            if (pos < 100 && !anHairEquip.containsKey(pos)) {
-                anHairEquip.put(pos, item.getValue());
-            } else if (pos > 100 && pos != 111) {
-                pos -= 100;
-                if (anHairEquip.containsKey(pos)) {
-                    anUnseenEquip.put(pos, anHairEquip.get(pos));
+            int nPos = item.getKey();
+            if (nPos < ItemSlotIndex.BP_COUNT) {
+                if (anHairEquip[nPos] == 0) {
+                    anHairEquip[nPos] = item.getValue();
                 }
-                anHairEquip.put(pos, item.getValue());
-            } else if (anHairEquip.containsKey(pos)) {
-                anUnseenEquip.put(pos, item.getValue());
+                if (anHairEquip[nPos] != 0 && nPos != ItemSlotIndex.BP_WEAPON) {
+                    anUnseenEquip[nPos] = anHairEquip[nPos];
+                    anVirtualEquip[nPos] = anHairEquip[nPos];//IDK FO SURE FAM
+                }
             }
         }
-        anHairEquip.forEach((k, v) -> oPacket.Encode(k).EncodeInteger(v));
-        oPacket.Encode(0xFF);
-        anUnseenEquip.forEach((k, v) -> oPacket.Encode(k).EncodeInteger(v));
-        oPacket.Encode(0xFF);
-        anTotemEquip.forEach((k, v) -> oPacket.Encode(k).EncodeInteger(v));
+
+        int i = 1; //Starts at cap, not hair :3
+        do {
+            if (anHairEquip[i] != 0) {
+                oPacket.Encode(i).EncodeInteger(anHairEquip[i]);
+            }
+            ++i;
+        } while (i < ItemSlotIndex.BP_COUNT);
         oPacket.Encode(0xFF);
 
-        for (Map.Entry<Byte, Integer> item : anEquip.entrySet()) {
-            if (item.getKey() == ItemSlotIndex.BP_WEAPON.GetValue()) {
-                nWeaponID = item.getValue();
+        i = 1;
+        do {
+            if (anUnseenEquip[i] != 0) {
+                oPacket.Encode(i).EncodeInteger(anUnseenEquip[i]);
             }
-            //TODO: Body slots have to identified and set right so i can get nSubWeaponID and stuff.
-            //That should also expose totem's actual slot and stuff.
-        }
+            ++i;
+        } while (i < ItemSlotIndex.BP_COUNT);
+        oPacket.Encode(0xFF);
+
+        i = 1;
+        do {
+            if (anVirtualEquip[i] != 0) {
+                oPacket.Encode(i).EncodeInteger(anVirtualEquip[i]);
+            }
+            ++i;
+        } while (i < ItemSlotIndex.BP_COUNT);
+        oPacket.Encode(0xFF);
 
         oPacket.EncodeInteger(nWeaponsStickerID);
-        oPacket.EncodeInteger(zero == null ? nWeaponID : zero.nLazuli);
-        oPacket.EncodeInteger(nSubWeaponID > 0 ? nSubWeaponID : 0);
+        oPacket.EncodeInteger(pZero == null ? anHairEquip[ItemSlotIndex.BP_WEAPON] : pZero.nLazuli);
+        oPacket.EncodeInteger(anHairEquip[ItemSlotIndex.BP_SHIELD]);
 
         oPacket.Encode(bDrawElfEar);
         oPacket.Encode(false);//new
 
-        //pets todo
-        for (int i = 0; i < 3; i++) {
-            oPacket.EncodeInteger(0);
+        //TODO: Pets
+        for (i = 0; i < 3; i++) {
+            oPacket.EncodeInteger(0); //Just pet ID lol.
         }
 
+        //TODO: make face acc. part of unseen equip inventory properly.
         if (nJob / 100 != 31 && nJob != 3001) {
             if (nJob / 100 != 36 && nJob != 3002) {
                 if (nJob != 10000 && nJob != 10100 && nJob != 10110 && nJob != 10111 && nJob != 10112) {
@@ -197,7 +221,7 @@ public class AvatarLook {
                         oPacket.Encode(true).EncodeInteger(nBeastTail);
                     }
                 } else {
-                    oPacket.Encode(zero != null);
+                    oPacket.Encode(pZero != null);
                 }
             } else {
                 oPacket.EncodeInteger(nXenonDefFaceAcc);

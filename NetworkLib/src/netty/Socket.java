@@ -29,11 +29,11 @@ public class Socket {
     public static final AttributeKey<Socket> SESSION_KEY = AttributeKey.valueOf("Session");
     public int uSeqSend, uSeqRcv;
     public int nCryptoMode = 1;
-    public int nSavedLen = -1;
+    public int nLastState = -1;
     public boolean bEncryptData = true;
+    public final InPacket pBuffer = new InPacket();
     private final ReentrantLock Lock;
     protected final Channel channel;
-    public InPacket Decoder = new InPacket();
 
     public Socket(Channel channel, int uSeqSend, int uSeqRcv) {
         this.channel = channel;

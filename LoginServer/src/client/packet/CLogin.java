@@ -26,6 +26,7 @@ import netty.InPacket;
 import netty.OutPacket;
 import netty.Packet;
 import user.AvatarData;
+import util.HexUtils;
 
 /**
  *
@@ -228,7 +229,7 @@ public class CLogin {
     }
 
     public static void OnSelectWorld(CClientSocket pSocket, InPacket iPacket) {
-        if (!iPacket.DecodeBoolean()) {
+        if (!iPacket.DecodeBool()) {
             return;
         }
         String sToken = iPacket.DecodeString();
@@ -344,7 +345,7 @@ public class CLogin {
                         CCenter.CreateNewCharacter(
                                 pSocket.nSessionID,
                                 pSocket.pAccount.liAvatarData.size() + 1,
-                                iPacket.Decode(iPacket.Available()
+                                iPacket.Decode(iPacket.GetDataLen()
                                 )
                         )
                 );
@@ -354,8 +355,8 @@ public class CLogin {
 
     public static void OnClientDumpLog(InPacket iPacket) {
         String sType = "Unknow report type";
-        if (iPacket.Available() < 8) {
-            System.out.println(sType + iPacket.DecodeString(iPacket.Available()));
+        if (iPacket.GetDataLen() < 8) {
+            System.out.println(sType + iPacket.DecodeString(iPacket.GetDataLen()));
         } else {
             switch (iPacket.DecodeShort()) {
                 case 1:
@@ -374,25 +375,18 @@ public class CLogin {
             int tTimeStamp = iPacket.DecodeInteger();
             short nPacketID = iPacket.DecodeShort();
 
-            String sPacketName = "Unk";
-            for (LoopBackPacket packet : LoopBackPacket.values()) {
-                if (packet.getValue() == (int) nPacketID) {
-                    sPacketName = packet.name();
-                }
-            }
 
-            iPacket.Reverse(2);
-            Packet pPacket = new Packet(iPacket.GetRemainder());
+            String sData = HexUtils.ToHex(iPacket.GetRemainder());
 
             System.out.println(String.format("[Debug] Report type: %s \r\n\t   Error Num: %d, Data Length: %d \r\n\t   Account: %s \r\n\t   Opcode: %s, %d | %s \r\n\t   Data: %s",
-                    sType, nError, nLen, "//", sPacketName, nPacketID, "0x" + Integer.toHexString(nPacketID), pPacket.toString()
+                    sType, nError, nLen, "//", "", nPacketID, "0x" + Integer.toHexString(nPacketID), sData
             ));
 
         }
     }
 
     public static void OnCreateNewCharacterResult(CClientSocket pSocket, InPacket iPacket) {
-        boolean bSuccess = iPacket.DecodeBoolean();
+        boolean bSuccess = iPacket.DecodeBool();
         AvatarData pAvatar = null;
         if (bSuccess) {
             pAvatar = AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket);

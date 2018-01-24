@@ -189,8 +189,8 @@ public class AvatarData {
         if (GW_CharacterStat.IsZeroJob(ret.pCharacterStat.nJob)) {
             ret.pZeroInfo = ZeroInfo.Decode(iPacket);
         }
-        iPacket.DecodeBoolean();
-        if (iPacket.DecodeBoolean()) {
+        iPacket.DecodeBool();
+        if (iPacket.DecodeBool()) {
             ret.nRank = iPacket.DecodeInteger();
             ret.nRankMove = iPacket.DecodeInteger();
             ret.nOverallRank = iPacket.DecodeInteger();

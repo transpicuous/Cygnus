@@ -85,7 +85,7 @@ public class ZeroInfo {
     public static ZeroInfo Decode(InPacket iPacket) {
         ZeroInfo ret = new ZeroInfo();
         if ((Flag & 1) > 0) {
-            ret.bIsBeta = iPacket.DecodeBoolean();
+            ret.bIsBeta = iPacket.DecodeBool();
         }
         if ((Flag & 2) > 0) {
             ret.nSubHP = iPacket.DecodeInteger();

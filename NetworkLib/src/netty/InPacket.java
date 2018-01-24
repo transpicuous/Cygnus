@@ -16,6 +16,9 @@
  */
 package netty;
 
+import crypto.CAESCipher;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.nio.charset.Charset;
@@ -26,31 +29,71 @@ import java.nio.charset.Charset;
  */
 public class InPacket {
 
-    private int nOffset;
-    private byte[] aData;
+    private final ByteBuf pRecvBuff;
+    private int uLength = 0, uRawSeq = 0, uDataLen = 0, nState = 0;
     private static Charset ASCII = Charset.forName("US-ASCII");
 
     public InPacket() {
-        nOffset = -1;
-        aData = null;
+        this.pRecvBuff = Unpooled.buffer();
     }
 
-    public InPacket Next(byte[] aData) {
-        this.nOffset = -1;
-        this.aData = aData;
-        return this;
+    public boolean DecryptData(int uSeqKey) {
+        if (uDataLen > 0) {
+            byte[] aData = new byte[uDataLen];
+            pRecvBuff.readBytes(aData);
+            CAESCipher.Crypt(aData, uSeqKey);
+            pRecvBuff.writeBytes(aData);
+            return true;
+        }
+        return false;
     }
 
-    public InPacket Next(Packet packet) {
-        return Next(packet.GetData());
+    public int AppendBuffer(ByteBuf pBuff, Socket pSocket) {
+        final int HEADER = Short.BYTES + Short.BYTES;// + uDataLen
+
+        pSocket.nLastState = nState;
+        int uSize = pBuff.readableBytes();
+        if (nState == 0) {
+            int uLen = Math.min(uSize, HEADER - uLength);
+            RawAppendBuffer(pBuff, uLen);
+            if (uSize >= HEADER) {
+                nState = 1;
+                uRawSeq = DecodeShort();
+                uDataLen = DecodeShort();
+                if (pSocket.bEncryptData) {
+                    uDataLen ^= uRawSeq;
+                }
+            }
+            uSize -= uLen;
+            if (uSize == 0) {
+                return nState;
+            }
+        }
+        int uAppend = Math.min(uSize, uDataLen + HEADER - uLength);
+        RawAppendBuffer(pBuff, uAppend);
+        if (uLength >= uDataLen + HEADER) {
+            nState = 2;
+        }
+        uSize -= uAppend;
+        if (uSize > 0) {
+
+        }
+        return nState;
+    }
+
+    public void RawAppendBuffer(ByteBuf pBuff, int uSize) {
+        if (uSize + uLength > pRecvBuff.readableBytes()) {
+            pRecvBuff.writeBytes(pBuff);
+        }
+        uLength += uSize;
+    }
+
+    public short DecodeSeqBase(int uSeqKey) {
+        return (short) ((uSeqKey >> 16) ^ uRawSeq);
     }
 
     public int Decode() {
-        nOffset++;
-        if (nOffset >= aData.length) {
-            return -1;
-        }
-        return 0xFF & aData[nOffset];
+        return pRecvBuff.readByte();
     }
 
     public void Decode(byte[] aData) {
@@ -71,8 +114,8 @@ public class InPacket {
         return aRet;
     }
 
-    public boolean DecodeBoolean() {
-        return Decode() > 0;
+    public boolean DecodeBool() {
+        return pRecvBuff.readBoolean();
     }
 
     public byte DecodeByte() {
@@ -80,16 +123,15 @@ public class InPacket {
     }
 
     public short DecodeShort() {
-        return (short) (Decode() + (Decode() << 8));
+        return pRecvBuff.readShort();
     }
 
     public char DecodeChar() {
-        return (char) (Decode() + (Decode() << 8));
+        return pRecvBuff.readChar();
     }
 
     public int DecodeInteger() {
-        return Decode() + (Decode() << 8) + (Decode() << 16)
-                + (Decode() << 24);
+        return pRecvBuff.readInt();
     }
 
     public float DecodeFloat() {
@@ -97,10 +139,7 @@ public class InPacket {
     }
 
     public long DecodeLong() {
-        return Decode() + (Decode() << 8) + (Decode() << 16)
-                + (Decode() << 24) + (Decode() << 32)
-                + (Decode() << 40) + (Decode() << 48)
-                + (Decode() << 56);
+        return pRecvBuff.readLong();
     }
 
     public double DecodeDouble() {
@@ -120,12 +159,13 @@ public class InPacket {
     }
 
     public String DecodeNullTerminatedString() {
-        int c = 0;
+        int nOffset = pRecvBuff.readerIndex();
+        int nLen = 0;
         while (Decode() != 0) {
-            c++;
+            nLen++;
         }
-        nOffset -= (c + 1);
-        return DecodeString(c);
+        pRecvBuff.readerIndex(nOffset);
+        return DecodeString(nLen);
     }
 
     public Point DecodePosition() {
@@ -137,34 +177,17 @@ public class InPacket {
     }
 
     public InPacket Skip(int nLen) {
-        nOffset += nLen;
+        pRecvBuff.readerIndex(pRecvBuff.readerIndex() + nLen);
         return this;
     }
 
-    public int Available() {
-        return aData.length - nOffset;
+    public int GetDataLen() {
+        return pRecvBuff.readableBytes();
     }
-
-    public int GetOffset() {
-        return nOffset;
-    }
-
-    public byte[] GetData() {
-        return aData;
-    }
-
-    public void Clear() {
-        nOffset = -1;
-        aData = null;
-    }
-
+    
     public byte[] GetRemainder() {
-        byte[] remainder = new byte[Available()];
-        System.arraycopy(aData, nOffset, remainder, 0, Available());
-        return remainder;
-    }
-
-    public void Reverse(int nLength) {
-        nOffset -= nLength;
+        byte[] aData = new byte[GetDataLen()];
+        pRecvBuff.readBytes(aData);
+        return aData;
     }
 }

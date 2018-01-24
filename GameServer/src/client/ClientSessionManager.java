@@ -22,8 +22,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.ArrayList;
 import java.util.Random;
-import center.CenterSessionManager;
-import center.packet.LCenter;
 import client.packet.CLogin;
 import java.util.concurrent.TimeUnit;
 import netty.InPacket;
@@ -82,12 +80,11 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        Packet pBuffer = (Packet) msg;
+    public void channelRead(ChannelHandlerContext ctx, Object in) {
         Channel ch = ctx.channel();
 
         CClientSocket pClient = (CClientSocket) ch.attr(CClientSocket.SESSION_KEY).get();
-        InPacket iPacket = pClient.Decoder.Next(pBuffer);
+        InPacket iPacket = (InPacket) in;
 
         short nPacketID = iPacket.DecodeShort();
 
@@ -101,9 +98,9 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
         }
 
         if (!handle) {
-            System.out.println("[ERROR] Non declared Recv from Client: " + nPacketID + "\r\n" + pBuffer.toString());
+            System.out.println("[ERROR] Non declared Recv from Client: " + nPacketID + "\r\n" + "");
         } else {
-            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), pBuffer.toString());
+            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), "");
         }
 
         pClient.ProcessPacket(PacketID, iPacket);

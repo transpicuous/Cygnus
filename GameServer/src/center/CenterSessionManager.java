@@ -67,12 +67,11 @@ public class CenterSessionManager extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        Packet pBuffer = (Packet) msg;
+    public void channelRead(ChannelHandlerContext ctx, Object in) {
         Channel ch = ctx.channel();
 
         CCenterServerSocket pClient = (CCenterServerSocket) ch.attr(CCenterServerSocket.SESSION_KEY).get();
-        InPacket iPacket = pClient.Decoder.Next(pBuffer);
+        InPacket iPacket = (InPacket) in;
 
         short nPacketID = iPacket.DecodeShort();
 
@@ -83,7 +82,7 @@ public class CenterSessionManager extends ChannelInboundHandlerAdapter {
             }
         }
         if (PacketID != CenterPacket.BeginSocket) {
-            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), pBuffer.toString());
+            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), "");
         }
 
         pClient.ProcessPacket(PacketID, iPacket);

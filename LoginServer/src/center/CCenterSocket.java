@@ -54,7 +54,7 @@ public class CCenterSocket extends Socket {
                 this.nState = iPacket.DecodeByte();
                 this.nExp = iPacket.DecodeShort();
                 this.nDrop = iPacket.DecodeShort();
-                this.bCreateChar = iPacket.DecodeBoolean();
+                this.bCreateChar = iPacket.DecodeBool();
                 System.out.println("[Info] Registered world : " + sWorldName + ".");
                 break;
             case ChannelInformation:
@@ -89,7 +89,7 @@ public class CCenterSocket extends Socket {
                     if (pSocket.nSessionID == nSessionID) {
                         pSocket.SendPacket(CLogin.DuplicateIDResponse(
                                 iPacket.DecodeString(),
-                                iPacket.DecodeBoolean()
+                                iPacket.DecodeBool()
                         ));
                     }
                 });

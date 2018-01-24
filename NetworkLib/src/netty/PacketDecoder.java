@@ -16,11 +16,11 @@
  */
 package netty;
 
-import crypto.CAESCipher;
 import crypto.CIGCipher;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import java.nio.ByteOrder;
 import java.util.List;
 
 /**
@@ -30,53 +30,39 @@ import java.util.List;
 public class PacketDecoder extends ByteToMessageDecoder {
 
     @Override
-    protected void decode(ChannelHandlerContext chc, ByteBuf oBuffer, List<Object> iPacket) throws Exception {
+    protected void decode(ChannelHandlerContext chc, ByteBuf in, List<Object> out) throws Exception {
         Socket pSocket = chc.channel().attr(Socket.SESSION_KEY).get();
-        if (pSocket != null) {
 
-            if (!pSocket.bEncryptData) {
-                if (pSocket.nSavedLen == -1) {
-                    if (oBuffer.readableBytes() >= 4) {
-                        pSocket.nSavedLen = oBuffer.readInt();
-                    } else {
-                        return;
-                    }
-                }
-                if (oBuffer.readableBytes() >= pSocket.nSavedLen) {
-                    byte[] aData = new byte[pSocket.nSavedLen];
-                    oBuffer.readBytes(aData);
-                    pSocket.nSavedLen = -1;
+        int nState;
+        InPacket iPacket = new InPacket();
+        ByteBuf pBuff = in.readBytes(4).order(ByteOrder.LITTLE_ENDIAN);
 
-                    iPacket.add(new Packet(aData));
-                }
+        try {
+            nState = iPacket.AppendBuffer(pBuff, pSocket);
+            if (nState > 0 && pSocket.nLastState <= 0) {
+                System.out.println(iPacket.DecodeSeqBase(pSocket.uSeqRcv));
             }
+            if (iPacket.GetDataLen() > 0x50000) {
+                System.out.println("Recv packet length overflow.");
+            }
+        } finally {
+            pBuff.release();
+        }
 
-            int dwKey = pSocket.uSeqRcv;
-            if (pSocket.nSavedLen == -1) {
-                if (oBuffer.readableBytes() >= 4) {
-                    int nHeader = oBuffer.readInt();
-                    if (!CAESCipher.ValidateHeader(nHeader, dwKey)) {
-                        pSocket.Close();
-                        return;
-                    }
-                    pSocket.nSavedLen = CAESCipher.GetLength(nHeader);
-                } else {
+        pBuff = in.readBytes(iPacket.GetDataLen()).order(ByteOrder.LITTLE_ENDIAN);
+        try {
+            nState = iPacket.AppendBuffer(pBuff, pSocket);
+            if (nState == 2) {
+                if (pSocket.bEncryptData && !iPacket.DecryptData(pSocket.uSeqRcv)) {
+                    System.out.println("Unable to decrypt data.");
+                    pSocket.uSeqRcv = CIGCipher.InnoHash(pSocket.uSeqRcv, 4, 0);
                     return;
                 }
+                pSocket.uSeqRcv = CIGCipher.InnoHash(pSocket.uSeqRcv, 4, 0);
+                out.add(iPacket);
             }
-            if (oBuffer.readableBytes() >= pSocket.nSavedLen) {
-                byte[] aData = new byte[pSocket.nSavedLen];
-                oBuffer.readBytes(aData);
-                pSocket.nSavedLen = -1;
-
-                aData = CAESCipher.Crypt(aData, dwKey);
-                if (pSocket.nCryptoMode == 2) {
-                    //Decode opcode here
-                }
-                pSocket.uSeqRcv = CIGCipher.InnoHash(dwKey, 4, 0);
-
-                iPacket.add(new Packet(aData));
-            }
+        } finally {
+            pBuff.release();
         }
     }
 }

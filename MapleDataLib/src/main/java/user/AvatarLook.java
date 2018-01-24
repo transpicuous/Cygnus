@@ -261,8 +261,8 @@ public class AvatarLook {
         ret.nWeaponsStickerID = iPacket.DecodeInteger();
         ret.nWeaponID = iPacket.DecodeInteger();
         ret.nSubWeaponID = iPacket.DecodeInteger();
-        ret.bDrawElfEar = iPacket.DecodeBoolean();
-        iPacket.DecodeBoolean(); //Welp, which job has a new thing?
+        ret.bDrawElfEar = iPacket.DecodeBool();
+        iPacket.DecodeBool(); //Welp, which job has a new thing?
 
         for (int i = 0; i < 3; i++) {
             iPacket.DecodeInteger();
@@ -279,7 +279,7 @@ public class AvatarLook {
                         ret.nBeastTail = iPacket.DecodeInteger();
                     }
                 } else {
-                    iPacket.DecodeBoolean();//True if zero char.
+                    iPacket.DecodeBool();//True if zero char.
                 }
             } else {
                 ret.nXenonDefFaceAcc = iPacket.DecodeInteger();

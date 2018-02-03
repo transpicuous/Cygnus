@@ -22,9 +22,8 @@ package crypto;
 public final class CAESCipher {
 
     private static final AES cipher;
-    private static final short sendVersion, recvVersion;
 
-    private static final short nVersion = 188;
+    public static final short nVersion = 188;
     private static final byte[] aKey = new byte[]{
         (byte) 0x29, (byte) 0x00, (byte) 0x00,
         (byte) 0x00, (byte) 0xF6, (byte) 0x00,
@@ -42,8 +41,6 @@ public final class CAESCipher {
     static {
         cipher = new AES();
         cipher.setKey(aKey);
-        sendVersion = (short) ((((0xFFFF - nVersion) >> 8) & 0xFF) | (((0xFFFF - nVersion) << 8) & 0xFF00));
-        recvVersion = (short) (((nVersion >> 8) & 0xFF) | ((nVersion << 8) & 0xFF00));
     }
 
     public static byte[] Crypt(byte[] delta, int pSrc) {
@@ -81,43 +78,5 @@ public final class CAESCipher {
             ret[x] = iv[x % i];
         }
         return ret;
-    }
-
-    public static byte[] GetHeader(int nLen, int pSrc) {
-        byte[] pdwKey = new byte[]{
-            (byte) (pSrc & 0xFF), (byte) ((pSrc >> 8) & 0xFF), (byte) ((pSrc >> 16) & 0xFF), (byte) ((pSrc >> 24) & 0xFF)
-        };
-
-        int a = (pdwKey[3]) & 0xFF;
-        a |= (pdwKey[2] << 8) & 0xFF00;
-        a ^= sendVersion;
-        int b = ((nLen << 8) & 0xFF00) | (nLen >>> 8);
-        int c = a ^ b;
-        byte[] nRet = new byte[4];
-        nRet[0] = (byte) ((a >>> 8) & 0xFF);
-        nRet[1] = (byte) (a & 0xFF);
-        nRet[2] = (byte) ((c >>> 8) & 0xFF);
-        nRet[3] = (byte) (c & 0xFF);
-
-        return nRet;
-    }
-
-    public static int GetLength(int delta) {
-        int a = ((delta >>> 16) ^ (delta & 0xFFFF));
-        a = ((a << 8) & 0xFF00) | ((a >>> 8) & 0xFF);
-        return a;
-    }
-
-    public static boolean ValidateHeader(int delta, int pSrc) {
-        byte[] aDelta = new byte[2];
-        aDelta[0] = (byte) ((delta >> 24) & 0xFF);
-        aDelta[1] = (byte) ((delta >> 16) & 0xFF);
-
-        byte[] pdwKey = new byte[]{
-            (byte) (pSrc & 0xFF), (byte) ((pSrc >> 8) & 0xFF), (byte) ((pSrc >> 16) & 0xFF), (byte) ((pSrc >> 24) & 0xFF)
-        };
-
-        return ((((aDelta[0] ^ pdwKey[2]) & 0xFF) == ((recvVersion >> 8) & 0xFF))
-                && (((aDelta[1] ^ pdwKey[3]) & 0xFF) == (recvVersion & 0xFF)));
     }
 }

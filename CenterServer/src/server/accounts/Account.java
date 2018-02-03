@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import netty.OutPacket;
+import net.OutPacket;
 import user.AvatarData;
 import user.CharacterData;
 
@@ -57,8 +57,8 @@ public class Account {
     }
 
     public void Encode(OutPacket oPacket) {
-        oPacket.EncodeInteger(nAccountID);
-        oPacket.EncodeInteger(nSessionID);
+        oPacket.EncodeInt(nAccountID);
+        oPacket.EncodeInt(nSessionID);
         oPacket.EncodeString(sAccountName);
         oPacket.EncodeString(sIP);
         oPacket.EncodeString(sPIC);

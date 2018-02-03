@@ -20,9 +20,10 @@ import game.packet.GamePacket;
 import game.packet.LoopBackPacket;
 import io.netty.channel.Channel;
 import login.packet.LLogin;
-import netty.InPacket;
-import netty.Packet;
-import netty.Socket;
+import net.InPacket;
+import net.OutPacket;
+
+import net.Socket;
 import server.Configuration;
 
 /**
@@ -41,11 +42,11 @@ public class CGameServerSocket extends Socket {
     }
 
     @Override
-    public void SendPacket(Packet oPacket) {
+    public void SendPacket(OutPacket oPacket) {
         if (Configuration.SERVER_CHECK) {
             String sHead = "Unk";
             for (LoopBackPacket nPacketID : LoopBackPacket.values()) {
-                if (nPacketID.getValue() == (int) oPacket.GetHeader()) {
+                if (nPacketID.getValue() == (int) oPacket.nPacketID) {
                     sHead = nPacketID.name();
                     if (nPacketID.getValue() == 0xF0) {
                         sHead = "HandShake/" + sHead;

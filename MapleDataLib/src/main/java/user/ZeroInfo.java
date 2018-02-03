@@ -19,8 +19,8 @@ package user;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import netty.InPacket;
-import netty.OutPacket;
+import net.InPacket;
+import net.OutPacket;
 
 /**
  *
@@ -49,36 +49,36 @@ public class ZeroInfo {
 
     public void Encode(OutPacket oPacket) {
         if ((Flag & 1) > 0) {
-            oPacket.Encode(bIsBeta);
+            oPacket.EncodeBool(bIsBeta);
         }
         if ((Flag & 2) > 0) {
-            oPacket.EncodeInteger(nSubHP);
+            oPacket.EncodeInt(nSubHP);
         }
         if ((Flag & 4) > 0) {
-            oPacket.EncodeInteger(nSubMP);
+            oPacket.EncodeInt(nSubMP);
         }
         if ((Flag & 8) > 0) {
             oPacket.Encode(nSubSkin);
         }
         if ((Flag & 0x10) > 0) {
-            oPacket.EncodeInteger(nSubHair);
+            oPacket.EncodeInt(nSubHair);
         }
         if ((Flag & 0x20) > 0) {
-            oPacket.EncodeInteger(nSubFace);
+            oPacket.EncodeInt(nSubFace);
         }
         if ((Flag & 0x40) > 0) {
-            oPacket.EncodeInteger(nSubMHP);
+            oPacket.EncodeInt(nSubMHP);
         }
         if ((Flag & 0x80) > 0) {
-            oPacket.EncodeInteger(nSubMMP);
+            oPacket.EncodeInt(nSubMMP);
         }
         if ((Flag & 0x100) > 0) {
-            oPacket.EncodeInteger(dbcharZeroLinkCashPart);
+            oPacket.EncodeInt(dbcharZeroLinkCashPart);
         }
         if ((Flag & 0x200) > 0) {
-            oPacket.EncodeInteger(nMixBaseHairColor);
-            oPacket.EncodeInteger(nMixAddHairColor);
-            oPacket.EncodeInteger(nMixHairBaseProb);
+            oPacket.EncodeInt(nMixBaseHairColor);
+            oPacket.EncodeInt(nMixAddHairColor);
+            oPacket.EncodeInt(nMixHairBaseProb);
         }
     }
 

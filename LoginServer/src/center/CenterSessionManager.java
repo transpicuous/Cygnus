@@ -23,8 +23,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.ArrayList;
 import java.util.Random;
-import netty.InPacket;
-import netty.Packet;
+import net.InPacket;
+
 
 /**
  *

@@ -16,8 +16,8 @@
  */
 package client.packet;
 
-import netty.OutPacket;
-import netty.Packet;
+import net.OutPacket;
+
 
 /**
  *
@@ -25,10 +25,10 @@ import netty.Packet;
  */
 public class CLogin {
 
-    public static Packet AliveReq() {
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.AliveReq.getValue());
-        return oPacket.ToPacket();
+    public static OutPacket AliveReq() {
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.AliveReq.getValue());
+        return oPacket;
     }
 
 }

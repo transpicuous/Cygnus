@@ -16,7 +16,7 @@
  */
 package center;
 
-import netty.InPacket;
+import net.InPacket;
 
 /**
  *

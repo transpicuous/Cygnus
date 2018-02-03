@@ -14,10 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package netty;
+package net;
 
+import crypto.CAESCipher;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import util.HexUtils;
 
@@ -27,22 +31,19 @@ import util.HexUtils;
  */
 public class OutPacket {
 
-    private int nOffset;
-    private byte[] aData;
+    public int nPacketID;
+    private final ByteBuf pSendBuff;
     private static final Charset ASCII = Charset.forName("US-ASCII");
 
-    public OutPacket() {
-        aData = new byte[0x50000];
-        nOffset = 0;
+    public OutPacket(short nPacketID) {
+        this.pSendBuff = Unpooled.buffer().order(ByteOrder.LITTLE_ENDIAN);
+        this.nPacketID = nPacketID;
+        pSendBuff.writeShort(nPacketID);
     }
 
     public final OutPacket Encode(int nValue) {
-        aData[nOffset++] = (byte) nValue;
+        pSendBuff.writeByte(nValue);
         return this;
-    }
-
-    public final OutPacket Encode(boolean bData) {
-        return Encode(bData ? 1 : 0);
     }
 
     public final OutPacket Encode(long nValue) {
@@ -53,6 +54,10 @@ public class OutPacket {
         return Encode(aData, 0, aData.length);
     }
 
+    public final OutPacket EncodeBool(boolean bData) {
+        return Encode(bData ? 1 : 0);
+    }
+
     public final OutPacket Encode(byte[] aData, int nOffset, int nLength) {
         for (int i = nOffset; i < nLength; i++) {
             Encode(aData[i]);
@@ -61,33 +66,38 @@ public class OutPacket {
     }
 
     public final OutPacket EncodeShort(int nValue) {
-        return Encode(nValue & 0xFF).Encode(nValue >>> 8);
+        pSendBuff.writeShort(nValue);
+        return this;
     }
 
     public final OutPacket EncodeShort(short nValue) {
-        return Encode(nValue & 0xFF).Encode(nValue >>> 8);
+        pSendBuff.writeShort(nValue);
+        return this;
     }
 
     public final OutPacket EncodeChar(char cValue) {
-        return EncodeShort(cValue);
+        pSendBuff.writeChar(cValue);
+        return this;
     }
 
-    public final OutPacket EncodeInteger(int nValue) {
-        return Encode(nValue & 0xFF).Encode(nValue >>> 8).Encode(nValue >>> 16).Encode(nValue >>> 24);
+    public final OutPacket EncodeInt(int nValue) {
+        pSendBuff.writeInt(nValue);
+        return this;
     }
 
     public final OutPacket EncodeFloat(float nValue) {
-        return EncodeInteger(Float.floatToIntBits(nValue));
+        pSendBuff.writeFloat(nValue);
+        return this;
     }
 
     public final OutPacket EncodeLong(long nValue) {
-        return Encode(nValue & 0xFF).Encode(nValue >>> 8).Encode(nValue >>> 16).
-                Encode(nValue >>> 24).Encode(nValue >>> 32).Encode(nValue >>> 40).
-                Encode(nValue >>> 48).Encode(nValue >>> 56);
+        pSendBuff.writeLong(nValue);
+        return this;
     }
 
     public final OutPacket EncodeDouble(double nValue) {
-        return EncodeLong(Double.doubleToLongBits(nValue));
+        pSendBuff.writeDouble(nValue);
+        return this;
     }
 
     public final OutPacket EncodeString(String sData, int nLen) {
@@ -121,44 +131,25 @@ public class OutPacket {
     }
 
     public final OutPacket EncodeRectangle(Rectangle rData) {
-        return EncodeInteger(rData.x).EncodeInteger(rData.y)
-                .EncodeInteger(rData.x + rData.width).EncodeInteger(rData.y + rData.height);
+        return EncodeInt(rData.x).EncodeInt(rData.y)
+                .EncodeInt(rData.x + rData.width).EncodeInt(rData.y + rData.height);
     }
-
-    public final int GetOffset() {
-        return nOffset;
-    }
-
-    public final void Clear() {
-        nOffset = -1;
-        aData = null;
+    
+    public int GetLength() {
+        return pSendBuff.readableBytes();
     }
 
     @Override
     public final String toString() {
+        byte[] aData = new byte[pSendBuff.readableBytes()];
+        int nReaderIndex = pSendBuff.readerIndex();
+        pSendBuff.getBytes(nReaderIndex, aData);
         return HexUtils.ToHex(aData);
     }
 
-    private void Trim() {
-        byte[] aExpanded = new byte[nOffset];
-        System.arraycopy(aData, 0, aExpanded, 0, nOffset);
-        aData = aExpanded;
-    }
-
     public final byte[] GetData() {
-        if (aData != null) {
-            if (aData.length > nOffset) {
-                Trim();
-            }
-            return aData;
-        }
-        return null;
-    }
-
-    public final Packet ToPacket() {
-        if (aData != null) {
-            return new Packet(GetData());
-        }
-        return null;
+        byte[] aData = new byte[pSendBuff.readableBytes()];
+        pSendBuff.readBytes(aData);
+        return aData;
     }
 }

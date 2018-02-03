@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import login.CLoginServerSocket;
 import login.packet.LoopBackPacket;
-import netty.OutPacket;
+import net.OutPacket;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -79,17 +79,17 @@ public class APIFactory {
 
                     pSocket.mAccountStorage.put(nSessionID, pAccount);
 
-                    OutPacket oPacket = new OutPacket();
-                    oPacket.EncodeShort(LoopBackPacket.AccountInformation.getValue());
-                    oPacket.EncodeInteger(pAccount.nSessionID);
+                    
+                    OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInformation.getValue());
+                    oPacket.EncodeInt(pAccount.nSessionID);
                     pAccount.Encode(oPacket);
                     List<AvatarData> avatars = pAccount.GetAvatars(pAccount.nAccountID, Database.GetConnection(), true);
                     oPacket.Encode(avatars.size());
                     avatars.forEach((pAvatar) -> {
-                        oPacket.EncodeInteger(pAvatar.nCharlistPos);
+                        oPacket.EncodeInt(pAvatar.nCharlistPos);
                         pAvatar.Encode(oPacket, false);
                     });
-                    pSocket.SendPacket(oPacket.ToPacket());
+                    pSocket.SendPacket(oPacket);
                 } catch (ParseException ex) {
                     Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
                 }

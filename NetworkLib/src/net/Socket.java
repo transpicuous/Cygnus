@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package netty;
+package net;
 
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
@@ -29,9 +29,8 @@ public class Socket {
     public static final AttributeKey<Socket> SESSION_KEY = AttributeKey.valueOf("Session");
     public int uSeqSend, uSeqRcv;
     public int nCryptoMode = 1;
-    public int nLastState = -1;
+    public int nLastState = 0;
     public boolean bEncryptData = true;
-    public final InPacket pBuffer = new InPacket();
     private final ReentrantLock Lock;
     protected final Channel channel;
 
@@ -42,7 +41,7 @@ public class Socket {
         this.Lock = new ReentrantLock(true);
     }
 
-    public void SendPacket(Packet msg) {
+    public void SendPacket(OutPacket msg) {
         channel.writeAndFlush(msg);
     }
 

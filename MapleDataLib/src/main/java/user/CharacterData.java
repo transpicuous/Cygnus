@@ -19,7 +19,7 @@ package user;
 import inventory.GW_ItemSlotBase;
 import inventory.ItemSlotIndex;
 import java.sql.Connection;
-import netty.OutPacket;
+import net.OutPacket;
 
 /**
  *
@@ -75,13 +75,13 @@ public class CharacterData {
 
         byte nKey = 3;
         do {
-            oPacket.EncodeInteger(-20);//aPetActiveSkillCoolTime
+            oPacket.EncodeInt(-20);//aPetActiveSkillCoolTime
             --nKey;
         } while (nKey > 0);
 
         oPacket.Encode(0); //if > 0 nPvPExp
         oPacket.Encode(0); //if > 0 weird loop
-        oPacket.EncodeInteger(0); //if > 0 encode some filetime/willexp bs.
+        oPacket.EncodeInt(0); //if > 0 encode some filetime/willexp bs.
         oPacket.Encode(0); // (if byte > 0, decode a byte and an int. if int > 0, decodebuffer. after the loop, decode an int and if int > 0, decode buffer)
 
         if ((dbCharFlag & 1) != 0) {
@@ -98,11 +98,11 @@ public class CharacterData {
         }
 
         if ((dbCharFlag & 8) != 0 || (dbCharFlag & 0x2000000) != 0) {
-            oPacket.EncodeInteger(0);//if > 0 encode GW_ExpConsumeItem bs
+            oPacket.EncodeInt(0);//if > 0 encode GW_ExpConsumeItem bs
         }
 
         if ((dbCharFlag & 0x8000) != 0) {
-            oPacket.EncodeInteger(0);//if > 0 loop through array of GW_MonsterBattleMobInfo::Encode 's
+            oPacket.EncodeInt(0);//if > 0 loop through array of GW_MonsterBattleMobInfo::Encode 's
         }
 
     }

@@ -24,8 +24,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import netty.InPacket;
-import netty.OutPacket;
+import net.InPacket;
+import net.OutPacket;
 
 /**
  *
@@ -149,35 +149,35 @@ public class AvatarData {
 
     public void EncodeForClient(OutPacket oPacket, boolean bRank) {
         pCharacterStat.Encode(oPacket);
-        oPacket.EncodeInteger(0); //New, idk, burning?
+        oPacket.EncodeInt(0); //New, idk, burning?
         pAvatarLook.Encode(oPacket);
         if (GW_CharacterStat.IsZeroJob(pCharacterStat.nJob)) {
             pAvatarLook.Encode(oPacket, pZeroInfo);
         }
-        oPacket.Encode(false);//m_abOnFamily ?
-        oPacket.Encode(nRank != 0 && bRank);
+        oPacket.EncodeBool(false);//m_abOnFamily ?
+        oPacket.EncodeBool(nRank != 0 && bRank);
         if (nRank != 0 && bRank) {
-            oPacket.EncodeInteger(nRank);
-            oPacket.EncodeInteger(nRankMove);
-            oPacket.EncodeInteger(nOverallRank);
-            oPacket.EncodeInteger(nOverallRankMove);
+            oPacket.EncodeInt(nRank);
+            oPacket.EncodeInt(nRankMove);
+            oPacket.EncodeInt(nOverallRank);
+            oPacket.EncodeInt(nOverallRankMove);
         }
     }
     
     public void Encode(OutPacket oPacket, boolean bRank) {
         pCharacterStat.Encode(oPacket);
-        oPacket.EncodeInteger(0); //New, idk, burning?
+        oPacket.EncodeInt(0); //New, idk, burning?
         pAvatarLook.Encode(oPacket);
         if (GW_CharacterStat.IsZeroJob(pCharacterStat.nJob)) {
             pZeroInfo.Encode(oPacket);
         }
-        oPacket.Encode(false);//m_abOnFamily ?
-        oPacket.Encode(nRank != 0 && bRank);
+        oPacket.EncodeBool(false);//m_abOnFamily ?
+        oPacket.EncodeBool(nRank != 0 && bRank);
         if (nRank != 0 && bRank) {
-            oPacket.EncodeInteger(nRank);
-            oPacket.EncodeInteger(nRankMove);
-            oPacket.EncodeInteger(nOverallRank);
-            oPacket.EncodeInteger(nOverallRankMove);
+            oPacket.EncodeInt(nRank);
+            oPacket.EncodeInt(nRankMove);
+            oPacket.EncodeInt(nOverallRank);
+            oPacket.EncodeInt(nOverallRankMove);
         }
     }
 

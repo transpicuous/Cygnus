@@ -22,9 +22,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.Random;
 import login.packet.LoginPacket;
 import login.packet.LoopBackPacket;
-import netty.InPacket;
-import netty.OutPacket;
-import netty.Packet;
+import net.InPacket;
+import net.OutPacket;
+
 import server.Configuration;
 
 /**
@@ -47,16 +47,16 @@ public class LoginSessionManager extends ChannelInboundHandlerAdapter {
 
         System.out.printf("[Debug] Connected to Login Server at adress: %s%n", pClient.GetIP());
 
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.WorldInformation.getValue());
-        oPacket.EncodeInteger(Configuration.WORLD_ID);
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation.getValue());
+        oPacket.EncodeInt(Configuration.WORLD_ID);
         oPacket.EncodeString(Configuration.WORLD_NAME);
         oPacket.EncodeString(Configuration.EVENT_MESSAGE);
         oPacket.Encode(Configuration.EVENT_FLAG);
         oPacket.EncodeShort(Configuration.EVENT_EXP);
         oPacket.EncodeShort(Configuration.EVENT_DROP);
-        oPacket.Encode(Configuration.DISABLE_CHAR_CREATION);
-        pClient.SendPacket(oPacket.ToPacket());
+        oPacket.EncodeBool(Configuration.DISABLE_CHAR_CREATION);
+        pClient.SendPacket(oPacket);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class LoginSessionManager extends ChannelInboundHandlerAdapter {
             }
         }
         if (PacketID != LoginPacket.BeginSocket) {
-            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), "");
+            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), iPacket.toString());
         }
 
         pClient.ProcessPacket(PacketID, iPacket);

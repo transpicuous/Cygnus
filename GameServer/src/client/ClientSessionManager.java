@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import client.packet.CLogin;
 import java.util.concurrent.TimeUnit;
-import netty.InPacket;
-import netty.OutPacket;
-import netty.Packet;
+import net.InPacket;
+import net.OutPacket;
+
 import server.Configuration;
 
 /**
@@ -47,15 +47,14 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
 
         CClientSocket pClient = new CClientSocket(ch, SendSeq, RecvSeq);
 
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(0x0F);
+        OutPacket oPacket = new OutPacket((short) 0x0F);
         oPacket.EncodeShort(Configuration.MAPLE_VERSION);
         oPacket.EncodeString(Configuration.BUILD_VERSION);
-        oPacket.EncodeInteger(RecvSeq);
-        oPacket.EncodeInteger(SendSeq);
+        oPacket.EncodeInt(RecvSeq);
+        oPacket.EncodeInt(SendSeq);
         oPacket.Encode(Configuration.SERVER_TYPE);
         oPacket.Encode(0);
-        pClient.SendPacket(oPacket.ToPacket());
+        pClient.SendPacket(oPacket);
 
         ch.attr(CClientSocket.SESSION_KEY).set(pClient);
 

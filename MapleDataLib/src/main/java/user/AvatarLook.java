@@ -23,8 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import netty.InPacket;
-import netty.OutPacket;
+import net.InPacket;
+import net.OutPacket;
 
 /**
  *
@@ -151,10 +151,10 @@ public class AvatarLook {
     public void Encode(OutPacket oPacket, ZeroInfo pZero) {
         oPacket.Encode(pZero == null ? nGender : 1);
         oPacket.Encode(pZero == null ? nSkin : pZero.nSubSkin);
-        oPacket.EncodeInteger(pZero == null ? nFace : pZero.nSubFace);
-        oPacket.EncodeInteger(nJob);
-        oPacket.Encode(false);
-        oPacket.EncodeInteger(pZero == null ? nHair : pZero.nSubHair);
+        oPacket.EncodeInt(pZero == null ? nFace : pZero.nSubFace);
+        oPacket.EncodeInt(nJob);
+        oPacket.EncodeBool(false);
+        oPacket.EncodeInt(pZero == null ? nHair : pZero.nSubHair);
 
         int[] anHairEquip = new int[ItemSlotIndex.BP_COUNT];
         int[] anUnseenEquip = new int[ItemSlotIndex.BP_COUNT];
@@ -175,7 +175,7 @@ public class AvatarLook {
         int i = 1; //Starts at cap, not hair :3
         do {
             if (anHairEquip[i] != 0) {
-                oPacket.Encode(i).EncodeInteger(anHairEquip[i]);
+                oPacket.Encode(i).EncodeInt(anHairEquip[i]);
             }
             ++i;
         } while (i < ItemSlotIndex.BP_COUNT);
@@ -184,7 +184,7 @@ public class AvatarLook {
         i = 1;
         do {
             if (anUnseenEquip[i] != 0) {
-                oPacket.Encode(i).EncodeInteger(anUnseenEquip[i]);
+                oPacket.Encode(i).EncodeInt(anUnseenEquip[i]);
             }
             ++i;
         } while (i < ItemSlotIndex.BP_COUNT);
@@ -193,22 +193,22 @@ public class AvatarLook {
         i = 1;
         do {
             if (anVirtualEquip[i] != 0) {
-                oPacket.Encode(i).EncodeInteger(anVirtualEquip[i]);
+                oPacket.Encode(i).EncodeInt(anVirtualEquip[i]);
             }
             ++i;
         } while (i < ItemSlotIndex.BP_COUNT);
         oPacket.Encode(0xFF);
 
-        oPacket.EncodeInteger(nWeaponsStickerID);
-        oPacket.EncodeInteger(pZero == null ? anHairEquip[ItemSlotIndex.BP_WEAPON] : pZero.nLazuli);
-        oPacket.EncodeInteger(anHairEquip[ItemSlotIndex.BP_SHIELD]);
+        oPacket.EncodeInt(nWeaponsStickerID);
+        oPacket.EncodeInt(pZero == null ? anHairEquip[ItemSlotIndex.BP_WEAPON] : pZero.nLazuli);
+        oPacket.EncodeInt(anHairEquip[ItemSlotIndex.BP_SHIELD]);
 
-        oPacket.Encode(bDrawElfEar);
-        oPacket.Encode(false);//new
+        oPacket.EncodeBool(bDrawElfEar);
+        oPacket.EncodeBool(false);//new
 
         //TODO: Pets
         for (i = 0; i < 3; i++) {
-            oPacket.EncodeInteger(0); //Just pet ID lol.
+            oPacket.EncodeInt(0); //Just pet ID lol.
         }
 
         //TODO: make face acc. part of unseen equip inventory properly.
@@ -216,18 +216,18 @@ public class AvatarLook {
             if (nJob / 100 != 36 && nJob != 3002) {
                 if (nJob != 10000 && nJob != 10100 && nJob != 10110 && nJob != 10111 && nJob != 10112) {
                     if (GW_CharacterStat.IsBeastJob(nJob)) {
-                        oPacket.EncodeInteger(nBeastDefFaceAcc);
-                        oPacket.Encode(true).EncodeInteger(nBeastEars);
-                        oPacket.Encode(true).EncodeInteger(nBeastTail);
+                        oPacket.EncodeInt(nBeastDefFaceAcc);
+                        oPacket.EncodeBool(true).EncodeInt(nBeastEars);
+                        oPacket.EncodeBool(true).EncodeInt(nBeastTail);
                     }
                 } else {
-                    oPacket.Encode(pZero != null);
+                    oPacket.EncodeBool(pZero != null);
                 }
             } else {
-                oPacket.EncodeInteger(nXenonDefFaceAcc);
+                oPacket.EncodeInt(nXenonDefFaceAcc);
             }
         } else {
-            oPacket.EncodeInteger(nDemonSlayerDefFaceAcc);
+            oPacket.EncodeInt(nDemonSlayerDefFaceAcc);
         }
         oPacket.Encode(nMixedHairColor);
         oPacket.Encode(nMixHairPercent);

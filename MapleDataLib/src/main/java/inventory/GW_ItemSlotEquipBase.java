@@ -19,7 +19,7 @@ package inventory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.util.Pair;
-import netty.OutPacket;
+import net.OutPacket;
 
 /**
  *
@@ -182,14 +182,14 @@ public class GW_ItemSlotEquipBase {
             liItemStats.add(new Pair<>(mStats.get(Flags.niMDR), 1));
         }
 
-        oPacket.EncodeInteger(aSendBuff[0]);
+        oPacket.EncodeInt(aSendBuff[0]);
         for (Pair<Integer, Integer> stat : liItemStats) {
             if (stat.getValue() == 1) {
                 oPacket.Encode(stat.getKey().byteValue());
             } else if (stat.getValue() == 2) {
                 oPacket.EncodeShort(stat.getKey().shortValue());
             } else if (stat.getValue() == 4) {
-                oPacket.EncodeInteger(stat.getKey());
+                oPacket.EncodeInt(stat.getKey());
             } else if (stat.getValue() == 8) {
                 oPacket.EncodeLong(stat.getKey());
             }
@@ -221,14 +221,14 @@ public class GW_ItemSlotEquipBase {
             liItemStats.add(new Pair<>(mStats.get(Flags.nItemState), 4));
         }
 
-        oPacket.EncodeInteger(aSendBuff[1]);
+        oPacket.EncodeInt(aSendBuff[1]);
         for (Pair<Integer, Integer> stat : liItemStats) {
             if (stat.getValue() == 1) {
                 oPacket.Encode(stat.getKey().byteValue());
             } else if (stat.getValue() == 2) {
                 oPacket.EncodeShort(stat.getKey().shortValue());
             } else if (stat.getValue() == 4) {
-                oPacket.EncodeInteger(stat.getKey());
+                oPacket.EncodeInt(stat.getKey());
             } else if (stat.getValue() == 8) {
                 oPacket.EncodeLong(stat.getKey());
             }

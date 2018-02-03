@@ -22,9 +22,10 @@ import io.netty.channel.Channel;
 import center.CenterSessionManager;
 import center.packet.LCenter;
 import io.netty.util.concurrent.ScheduledFuture;
-import netty.InPacket;
-import netty.Packet;
-import netty.Socket;
+import net.InPacket;
+import net.OutPacket;
+
+import net.Socket;
 import server.Client;
 import server.Configuration;
 
@@ -42,11 +43,11 @@ public class CClientSocket extends Socket {
     }
 
     @Override
-    public void SendPacket(Packet oPacket) {
+    public void SendPacket(OutPacket oPacket) {
         if (Configuration.SERVER_CHECK) {
             String sHead = "Unk";
             for (LoopBackPacket nPacketID : LoopBackPacket.values()) {
-                if (nPacketID.getValue() == (int) oPacket.GetHeader()) {
+                if (nPacketID.getValue() == (int) oPacket.nPacketID) {
                     sHead = nPacketID.name();
                     if (nPacketID.getValue() == 0xF0) {
                         sHead = "HandShake/" + sHead;

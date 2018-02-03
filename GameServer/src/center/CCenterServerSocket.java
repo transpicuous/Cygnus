@@ -19,9 +19,10 @@ package center;
 import io.netty.channel.Channel;
 import center.packet.CenterPacket;
 import center.packet.LoopBackPacket;
-import netty.InPacket;
-import netty.Packet;
-import netty.Socket;
+import net.InPacket;
+import net.OutPacket;
+
+import net.Socket;
 import server.Configuration;
 
 /**
@@ -35,11 +36,11 @@ public class CCenterServerSocket extends Socket {
     }
 
     @Override
-    public void SendPacket(Packet oPacket) {
+    public void SendPacket(OutPacket oPacket) {
         if (Configuration.SERVER_CHECK) {
             String head = "Unk";
             for (LoopBackPacket packet : LoopBackPacket.values()) {
-                if (packet.getValue() == (int) oPacket.GetHeader()) {
+                if (packet.getValue() == (int) oPacket.nPacketID) {
                     head = packet.name();
                     if (packet.getValue() == 0xF0) {
                         head = "HandShake/" + head;

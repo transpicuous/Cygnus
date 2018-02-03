@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import netty.OutPacket;
+import net.OutPacket;
 import wz.item.EquipItem;
 import wz.item.InventoryType;
 import wz.item.ItemFactory;
@@ -285,14 +285,14 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
         oPacket.EncodeShort(nSocket3);
 
         if (cashOpt != null) {
-            oPacket.EncodeInteger(cashOpt.liCashItemSNLow);
-            oPacket.EncodeInteger(cashOpt.liCashItemSNHigh);
+            oPacket.EncodeInt(cashOpt.liCashItemSNLow);
+            oPacket.EncodeInt(cashOpt.liCashItemSNHigh);
         }
 
-        oPacket.EncodeInteger(ftEquippedLow);
-        oPacket.EncodeInteger(ftEquippedHigh);
+        oPacket.EncodeInt(ftEquippedLow);
+        oPacket.EncodeInt(ftEquippedHigh);
 
-        oPacket.EncodeInteger(nPrevBonusExpRate);
+        oPacket.EncodeInt(nPrevBonusExpRate);
 
         cashOpt.Encode(oPacket);
 

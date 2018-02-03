@@ -27,8 +27,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import login.CLoginServerSocket;
 import login.LoginSessionManager;
-import netty.InPacket;
-import netty.OutPacket;
+import net.InPacket;
+import net.OutPacket;
 import server.Server;
 import server.accounts.Account;
 import user.AvatarData;
@@ -41,16 +41,16 @@ import user.CharacterData;
 public class LLogin {
 
     public static void GameServerInformation() {
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.ChannelInformation.getValue());
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.ChannelInformation.getValue());
         oPacket.Encode(GameServerSessionManager.aSessions.size());
         GameServerSessionManager.aSessions.forEach((pGameServer) -> {
-            oPacket.EncodeInteger(pGameServer.nChannelID);
-            oPacket.EncodeInteger(pGameServer.nMaxUsers);
-            oPacket.EncodeInteger(pGameServer.nPort);
+            oPacket.EncodeInt(pGameServer.nChannelID);
+            oPacket.EncodeInt(pGameServer.nMaxUsers);
+            oPacket.EncodeInt(pGameServer.nPort);
             oPacket.EncodeString(pGameServer.GetIP());
         });
-        LoginSessionManager.pSession.SendPacket(oPacket.ToPacket());
+        LoginSessionManager.pSession.SendPacket(oPacket);
     }
 
     public static void OnCheckDuplicateID(CLoginServerSocket pSocket, InPacket iPacket) {
@@ -88,12 +88,11 @@ public class LLogin {
             pSocket.mReservedCharacterNames.put(sCharacterName, nSessionID);
         }
 
-        pSocket.SendPacket((new OutPacket())
-                .EncodeShort(LoopBackPacket.CheckDuplicatedIDResponse.getValue())
-                .EncodeInteger(nSessionID)
+        pSocket.SendPacket((new OutPacket(LoopBackPacket.CheckDuplicatedIDResponse.getValue()))
+                .EncodeInt(nSessionID)
                 .EncodeString(sCharacterName)
-                .Encode(bDuplicatedID)
-                .ToPacket()
+                .EncodeBool(bDuplicatedID)
+                
         );
     }
 
@@ -104,11 +103,11 @@ public class LLogin {
         String sCharacterName = iPacket.DecodeString();
         if (!pSocket.mReservedCharacterNames.containsKey(sCharacterName)
                 || (pSocket.mReservedCharacterNames.get(sCharacterName) != nSessionID)) {
-            OutPacket oPacket = new OutPacket();
-            oPacket.EncodeShort(LoopBackPacket.OnCreateCharacterResponse.getValue());
-            oPacket.EncodeInteger(nSessionID);
-            oPacket.Encode(false);
-            pSocket.SendPacket(oPacket.ToPacket());
+            
+            OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse.getValue());
+            oPacket.EncodeInt(nSessionID);
+            oPacket.EncodeBool(false);
+            pSocket.SendPacket(oPacket);
             return;
         }
 
@@ -294,20 +293,20 @@ public class LLogin {
                 pAvatar.pCharacterStat.nMP = 5;
                 break;
             default:
-                OutPacket oPacket = new OutPacket();
-                oPacket.EncodeShort(LoopBackPacket.OnCreateCharacterResponse.getValue());
-                oPacket.EncodeInteger(nSessionID);
-                oPacket.Encode(false);
-                pSocket.SendPacket(oPacket.ToPacket());
+                
+                OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse.getValue());
+                oPacket.EncodeInt(nSessionID);
+                oPacket.EncodeBool(false);
+                pSocket.SendPacket(oPacket);
                 return;
         }
 
         pAvatar.SaveNew(Database.GetConnection());
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.OnCreateCharacterResponse.getValue());
-        oPacket.EncodeInteger(nSessionID);
-        oPacket.Encode(true);
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse.getValue());
+        oPacket.EncodeInt(nSessionID);
+        oPacket.EncodeBool(true);
         pAvatar.Encode(oPacket, pAccount.nAdmin <= 0);
-        pSocket.SendPacket(oPacket.ToPacket());
+        pSocket.SendPacket(oPacket);
     }
 }

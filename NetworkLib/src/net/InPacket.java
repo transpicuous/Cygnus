@@ -14,14 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package netty;
+package net;
 
 import crypto.CAESCipher;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
+import util.HexUtils;
 
 /**
  *
@@ -30,7 +32,8 @@ import java.nio.charset.Charset;
 public class InPacket {
 
     private final ByteBuf pRecvBuff;
-    private int uLength = 0, uRawSeq = 0, uDataLen = 0, nState = 0;
+    private byte[] aRawData;
+    public int uRawSeq = 0, uDataLen = 0, nState = 0;
     private static Charset ASCII = Charset.forName("US-ASCII");
 
     public InPacket() {
@@ -38,54 +41,39 @@ public class InPacket {
     }
 
     public boolean DecryptData(int uSeqKey) {
-        if (uDataLen > 0) {
-            byte[] aData = new byte[uDataLen];
-            pRecvBuff.readBytes(aData);
-            CAESCipher.Crypt(aData, uSeqKey);
-            pRecvBuff.writeBytes(aData);
+        if (uDataLen > 0 && aRawData.length >= uDataLen) {
+            CAESCipher.Crypt(aRawData, uSeqKey);
+            pRecvBuff.writeBytes(aRawData);
             return true;
         }
         return false;
     }
 
-    public int AppendBuffer(ByteBuf pBuff, Socket pSocket) {
-        final int HEADER = Short.BYTES + Short.BYTES;// + uDataLen
-
-        pSocket.nLastState = nState;
+    public int AppendBuffer(ByteBuf pBuff, boolean bEncrypt) {
         int uSize = pBuff.readableBytes();
         if (nState == 0) {
-            int uLen = Math.min(uSize, HEADER - uLength);
-            RawAppendBuffer(pBuff, uLen);
-            if (uSize >= HEADER) {
+            if (uSize >= 4) {
                 nState = 1;
-                uRawSeq = DecodeShort();
-                uDataLen = DecodeShort();
-                if (pSocket.bEncryptData) {
+                uRawSeq = pBuff.readShort();
+                uDataLen = pBuff.readShort();
+                if (bEncrypt) {
                     uDataLen ^= uRawSeq;
                 }
             }
-            uSize -= uLen;
-            if (uSize == 0) {
-                return nState;
+            return nState;
+        }
+        if (nState == 1) {
+            if (uSize >= uDataLen) {
+                if (bEncrypt) {
+                    aRawData = new byte[uDataLen];
+                    pBuff.readBytes(aRawData);
+                } else {
+                    pRecvBuff.writeBytes(pBuff);
+                }
+                nState = 2;
             }
         }
-        int uAppend = Math.min(uSize, uDataLen + HEADER - uLength);
-        RawAppendBuffer(pBuff, uAppend);
-        if (uLength >= uDataLen + HEADER) {
-            nState = 2;
-        }
-        uSize -= uAppend;
-        if (uSize > 0) {
-
-        }
         return nState;
-    }
-
-    public void RawAppendBuffer(ByteBuf pBuff, int uSize) {
-        if (uSize + uLength > pRecvBuff.readableBytes()) {
-            pRecvBuff.writeBytes(pBuff);
-        }
-        uLength += uSize;
     }
 
     public short DecodeSeqBase(int uSeqKey) {
@@ -123,15 +111,15 @@ public class InPacket {
     }
 
     public short DecodeShort() {
-        return pRecvBuff.readShort();
+        return pRecvBuff.order(ByteOrder.LITTLE_ENDIAN).readShort();
     }
 
     public char DecodeChar() {
-        return pRecvBuff.readChar();
+        return pRecvBuff.order(ByteOrder.LITTLE_ENDIAN).readChar();
     }
 
     public int DecodeInteger() {
-        return pRecvBuff.readInt();
+        return pRecvBuff.order(ByteOrder.LITTLE_ENDIAN).readInt();
     }
 
     public float DecodeFloat() {
@@ -139,7 +127,7 @@ public class InPacket {
     }
 
     public long DecodeLong() {
-        return pRecvBuff.readLong();
+        return pRecvBuff.order(ByteOrder.LITTLE_ENDIAN).readLong();
     }
 
     public double DecodeDouble() {
@@ -181,13 +169,21 @@ public class InPacket {
         return this;
     }
 
-    public int GetDataLen() {
-        return pRecvBuff.readableBytes();
-    }
-    
     public byte[] GetRemainder() {
-        byte[] aData = new byte[GetDataLen()];
+        byte[] aData = new byte[pRecvBuff.readableBytes()];
         pRecvBuff.readBytes(aData);
         return aData;
+    }
+
+    @Override
+    public final String toString() {
+        if (pRecvBuff.readableBytes() > 0) {
+            byte[] aData = new byte[pRecvBuff.readableBytes()];
+            int nReaderIndex = pRecvBuff.readerIndex();
+            pRecvBuff.getBytes(nReaderIndex, aData);
+            return HexUtils.ToHex(aData);
+        } else {
+            return "";
+        }
     }
 }

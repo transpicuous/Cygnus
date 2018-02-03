@@ -1,6 +1,6 @@
 package client.packet;
 
-import netty.OutPacket;
+import net.OutPacket;
 
 public class JobOrder {
 
@@ -8,10 +8,10 @@ public class JobOrder {
     public static final byte nOrder = 6;
 
     public static void Encode(OutPacket oPacket) {
-        oPacket.Encode(bEnabled);
+        oPacket.EncodeBool(bEnabled);
         oPacket.Encode(nOrder);
         for (Categories cat : Categories.values()) {
-            oPacket.Encode(cat.IsEnabled());
+            oPacket.EncodeBool(cat.IsEnabled());
             oPacket.EncodeShort(cat.GetGender());
         }
     }

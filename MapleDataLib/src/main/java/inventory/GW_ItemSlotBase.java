@@ -16,7 +16,7 @@
  */
 package inventory;
 
-import netty.OutPacket;
+import net.OutPacket;
 
 /**
  *
@@ -40,14 +40,14 @@ public class GW_ItemSlotBase {
 
     public void RawEncode(OutPacket oPacket) {
         oPacket.Encode(type);
-        oPacket.EncodeInteger(nItemID);
-        oPacket.Encode(cashOpt != null);
+        oPacket.EncodeInt(nItemID);
+        oPacket.EncodeBool(cashOpt != null);
         if (cashOpt != null) {
-            oPacket.EncodeInteger(cashOpt.liCashItemSNLow);
-            oPacket.EncodeInteger(cashOpt.liCashItemSNHigh);
+            oPacket.EncodeInt(cashOpt.liCashItemSNLow);
+            oPacket.EncodeInt(cashOpt.liCashItemSNHigh);
         }
-        oPacket.EncodeInteger(dateExpireLow);
-        oPacket.EncodeInteger(dateExpireHigh);
-        oPacket.EncodeInteger(nBagIndex);
+        oPacket.EncodeInt(dateExpireLow);
+        oPacket.EncodeInt(dateExpireHigh);
+        oPacket.EncodeInt(nBagIndex);
     }
 }

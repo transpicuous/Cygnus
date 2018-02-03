@@ -22,9 +22,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.Random;
 import center.packet.CenterPacket;
 import center.packet.LoopBackPacket;
-import netty.InPacket;
-import netty.OutPacket;
-import netty.Packet;
+import net.InPacket;
+import net.OutPacket;
+
 import server.Configuration;
 
 /**
@@ -47,12 +47,12 @@ public class CenterSessionManager extends ChannelInboundHandlerAdapter {
 
         System.out.printf("[Debug] Connected to Center Server at adress: %s%n", pClient.GetIP());
 
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.GameServerInformation.getValue());
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.GameServerInformation.getValue());
         oPacket.Encode(Configuration.CHANNEL_ID);
-        oPacket.EncodeInteger(Configuration.MAXIMUM_CONNECTIONS);
-        oPacket.EncodeInteger(Configuration.PORT);
-        pClient.SendPacket(oPacket.ToPacket());
+        oPacket.EncodeInt(Configuration.MAXIMUM_CONNECTIONS);
+        oPacket.EncodeInt(Configuration.PORT);
+        pClient.SendPacket(oPacket);
     }
 
     @Override

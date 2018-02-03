@@ -16,7 +16,7 @@
  */
 package inventory;
 
-import netty.OutPacket;
+import net.OutPacket;
 
 /**
  *
@@ -35,15 +35,15 @@ public class GW_CashItemOption {
     }
 
     public void Encode(OutPacket oPacket) {
-        oPacket.EncodeInteger(liCashItemSNLow);
-        oPacket.EncodeInteger(liCashItemSNHigh);
+        oPacket.EncodeInt(liCashItemSNLow);
+        oPacket.EncodeInt(liCashItemSNHigh);
 
-        oPacket.EncodeInteger(ftEquippedLow);
-        oPacket.EncodeInteger(ftEquippedHigh);
+        oPacket.EncodeInt(ftEquippedLow);
+        oPacket.EncodeInt(ftEquippedHigh);
 
-        oPacket.EncodeInteger(nGrade);
+        oPacket.EncodeInt(nGrade);
         for (int i = 0; i < 3; i++) {
-            oPacket.EncodeInteger(aCashStats[i]);
+            oPacket.EncodeInt(aCashStats[i]);
         }
     }
 }

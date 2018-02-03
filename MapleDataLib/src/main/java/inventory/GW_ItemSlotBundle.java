@@ -16,7 +16,7 @@
  */
 package inventory;
 
-import netty.OutPacket;
+import net.OutPacket;
 
 /**
  *
@@ -40,8 +40,8 @@ public class GW_ItemSlotBundle extends GW_ItemSlotBase {
         oPacket.EncodeShort(nAttribute);
         int v6 = nItemID / 100000;
         if (v6 == 207 || v6 == 233) {
-            oPacket.EncodeInteger(cashOpt.liCashItemSNLow);
-            oPacket.EncodeInteger(cashOpt.liCashItemSNHigh);
+            oPacket.EncodeInt(cashOpt.liCashItemSNLow);
+            oPacket.EncodeInt(cashOpt.liCashItemSNHigh);
         }
     }
 

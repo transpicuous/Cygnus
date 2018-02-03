@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import login.LoginSessionManager;
 import login.packet.LLogin;
-import netty.InPacket;
-import netty.Packet;
+import net.InPacket;
+
 
 /**
  *

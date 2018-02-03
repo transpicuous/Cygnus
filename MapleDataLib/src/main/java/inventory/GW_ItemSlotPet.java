@@ -16,7 +16,7 @@
  */
 package inventory;
 
-import netty.OutPacket;
+import net.OutPacket;
 
 /**
  *
@@ -52,11 +52,11 @@ public class GW_ItemSlotPet extends GW_ItemSlotBase {
         oPacket.EncodeLong(dateDead);
         oPacket.EncodeShort(nPetAttribute);
         oPacket.EncodeShort(usPetSkill);
-        oPacket.EncodeInteger(nRemainLife);
-        oPacket.EncodeInteger(nAttribute);
+        oPacket.EncodeInt(nRemainLife);
+        oPacket.EncodeInt(nAttribute);
         oPacket.Encode(nActiveStat);
-        oPacket.EncodeInteger(nAutoBuffSkill);
-        oPacket.EncodeInteger(nPetHue);
+        oPacket.EncodeInt(nAutoBuffSkill);
+        oPacket.EncodeInt(nPetHue);
         oPacket.EncodeShort(nGiantRate);
     }
 

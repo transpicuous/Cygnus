@@ -20,8 +20,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Arrays;
-import netty.InPacket;
-import netty.OutPacket;
+import net.InPacket;
+import net.OutPacket;
 
 /**
  *
@@ -222,14 +222,14 @@ public class GW_CharacterStat {
     }
 
     public void Encode(OutPacket oPacket) {
-        oPacket.EncodeInteger(dwCharacterID);
-        oPacket.EncodeInteger(dwCharacterIDForLog);
-        oPacket.EncodeInteger(dwWorldIDForLog);
+        oPacket.EncodeInt(dwCharacterID);
+        oPacket.EncodeInt(dwCharacterIDForLog);
+        oPacket.EncodeInt(dwWorldIDForLog);
         oPacket.EncodeString(sCharacterName, 13);
         oPacket.Encode(nGender);
         oPacket.Encode((byte) nSkin);
-        oPacket.EncodeInteger(nFace);
-        oPacket.EncodeInteger(nHair);
+        oPacket.EncodeInt(nFace);
+        oPacket.EncodeInt(nHair);
         oPacket.Encode(nMixBaseHairColor);
         oPacket.Encode(nMixAddHairColor);
         oPacket.Encode(nMixHairBaseProb);
@@ -239,10 +239,10 @@ public class GW_CharacterStat {
         oPacket.EncodeShort(nDEX);
         oPacket.EncodeShort(nINT);
         oPacket.EncodeShort(nLUK);
-        oPacket.EncodeInteger(nHP);
-        oPacket.EncodeInteger(nMHP);
-        oPacket.EncodeInteger(nMP);
-        oPacket.EncodeInteger(nMMP);
+        oPacket.EncodeInt(nHP);
+        oPacket.EncodeInt(nMHP);
+        oPacket.EncodeInt(nMP);
+        oPacket.EncodeInt(nMMP);
         oPacket.EncodeShort(nAP);
 
         if (IsExtendSPJob(nJob)) {
@@ -252,51 +252,51 @@ public class GW_CharacterStat {
         }
 
         oPacket.EncodeLong(nExp64);
-        oPacket.EncodeInteger(nPop);
-        oPacket.EncodeInteger(nWP);
-        oPacket.EncodeInteger(0); //Gach exp?? - not in KMST
-        oPacket.EncodeInteger(dwPosMap);
+        oPacket.EncodeInt(nPop);
+        oPacket.EncodeInt(nWP);
+        oPacket.EncodeInt(0); //Gach exp?? - not in KMST
+        oPacket.EncodeInt(dwPosMap);
         oPacket.Encode(nPortal);
-        oPacket.EncodeInteger(0);//playtime in some srcs, idfk, not in kmst
+        oPacket.EncodeInt(0);//playtime in some srcs, idfk, not in kmst
         oPacket.EncodeShort(nSubJob);
 
         if (nJob / 100 == 31 || nJob == 3001 || nJob / 100 == 36 || nJob == 3002 || nJob / 100 == 112 || nJob == 11000) {
-            oPacket.EncodeInteger(nDefFaceAcc);
+            oPacket.EncodeInt(nDefFaceAcc);
         }
 
         oPacket.EncodeShort(nFatigue); //Became Short
-        oPacket.EncodeInteger(nLastFatigureUpdateTime);
-        oPacket.EncodeInteger(nCharismaEXP);
-        oPacket.EncodeInteger(nInsightExp);
-        oPacket.EncodeInteger(nWillExp);
-        oPacket.EncodeInteger(nCraftExp);
-        oPacket.EncodeInteger(nSenseExp);
-        oPacket.EncodeInteger(nCharmExp);
+        oPacket.EncodeInt(nLastFatigureUpdateTime);
+        oPacket.EncodeInt(nCharismaEXP);
+        oPacket.EncodeInt(nInsightExp);
+        oPacket.EncodeInt(nWillExp);
+        oPacket.EncodeInt(nCraftExp);
+        oPacket.EncodeInt(nSenseExp);
+        oPacket.EncodeInt(nCharmExp);
         oPacket.EncodeString(DayLimit, 21);
-        oPacket.EncodeInteger(nPvPExp);
+        oPacket.EncodeInt(nPvPExp);
         oPacket.Encode(nPVPGrade);
-        oPacket.EncodeInteger(nPvpPoint);
+        oPacket.EncodeInt(nPvpPoint);
         oPacket.Encode(nPvpModeLevel);
         oPacket.Encode(nPvpModeType);
-        oPacket.EncodeInteger(nEventPoint);//kmst is byte
+        oPacket.EncodeInt(nEventPoint);//kmst is byte
 
         //CharacterCard Decode here...
         for (int i = 0; i < 9; i++) {
-            oPacket.EncodeInteger(0).Encode(0).EncodeInteger(0);
+            oPacket.EncodeInt(0).Encode(0).EncodeInt(0);
         }
 
-        oPacket.EncodeInteger(ftLastLogoutTimeHigh);
-        oPacket.EncodeInteger(ftLastLogoutTimeLow);
+        oPacket.EncodeInt(ftLastLogoutTimeHigh);
+        oPacket.EncodeInt(ftLastLogoutTimeLow);
 
         //Legion?
         oPacket.EncodeLong(0);
         oPacket.EncodeLong(0);
-        oPacket.EncodeInteger(0);
-        oPacket.EncodeInteger(0);
-        oPacket.EncodeInteger(0);
+        oPacket.EncodeInt(0);
+        oPacket.EncodeInt(0);
+        oPacket.EncodeInt(0);
         oPacket.Encode(0);
-        oPacket.EncodeInteger(0);
-        oPacket.EncodeInteger(0);
+        oPacket.EncodeInt(0);
+        oPacket.EncodeInt(0);
     }
 
     public static GW_CharacterStat Decode(InPacket iPacket) {
@@ -394,7 +394,7 @@ public class GW_CharacterStat {
         for (int i = 0; i < aSP.length; i++) {
             if (aSP[i] > 0) {
                 oPacket.Encode(i + 1);
-                oPacket.EncodeInteger(aSP[i]);
+                oPacket.EncodeInt(aSP[i]);
             }
         }
     }

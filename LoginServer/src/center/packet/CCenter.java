@@ -16,8 +16,8 @@
  */
 package center.packet;
 
-import netty.OutPacket;
-import netty.Packet;
+import net.OutPacket;
+
 
 /**
  *
@@ -25,29 +25,29 @@ import netty.Packet;
  */
 public class CCenter {
 
-    public static Packet ProcessLogin(int nSessionID, String sToken) {
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.ProcessLogin.getValue());
-        oPacket.EncodeInteger(nSessionID);
+    public static OutPacket ProcessLogin(int nSessionID, String sToken) {
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.ProcessLogin.getValue());
+        oPacket.EncodeInt(nSessionID);
         oPacket.EncodeString(sToken);
-        return oPacket.ToPacket();
+        return oPacket;
     }
 
-    public static Packet CheckDuplicatedID(int nSessionID, String sCharacterName) {
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.CheckDuplicateID.getValue());
-        oPacket.EncodeInteger(nSessionID);
+    public static OutPacket CheckDuplicatedID(int nSessionID, String sCharacterName) {
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckDuplicateID.getValue());
+        oPacket.EncodeInt(nSessionID);
         oPacket.EncodeString(sCharacterName);
-        return oPacket.ToPacket();
+        return oPacket;
     }
 
-    public static Packet CreateNewCharacter(int nSessionID, int nCharlistPosition, byte[] aData) {
-        OutPacket oPacket = new OutPacket();
-        oPacket.EncodeShort(LoopBackPacket.CreateNewCharacter.getValue());
-        oPacket.EncodeInteger(nSessionID);
-        oPacket.EncodeInteger(nCharlistPosition);
+    public static OutPacket CreateNewCharacter(int nSessionID, int nCharlistPosition, byte[] aData) {
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CreateNewCharacter.getValue());
+        oPacket.EncodeInt(nSessionID);
+        oPacket.EncodeInt(nCharlistPosition);
         oPacket.Encode(aData);
-        return oPacket.ToPacket();
+        return oPacket;
     }
 
 }

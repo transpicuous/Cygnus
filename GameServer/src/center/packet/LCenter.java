@@ -18,7 +18,7 @@ package center.packet;
 
 import client.ClientSessionManager;
 import center.CCenterServerSocket;
-import netty.OutPacket;
+import net.OutPacket;
 
 /**
  *

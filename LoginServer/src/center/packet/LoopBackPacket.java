@@ -31,8 +31,8 @@ public enum LoopBackPacket {
         value = val;
     }
 
-    public int getValue() {
-        return value;
+    public short getValue() {
+        return (short) value;
     }
 
     public void setValue(int val) {

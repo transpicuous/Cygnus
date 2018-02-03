@@ -22,7 +22,7 @@ package client;
  */
 import java.util.LinkedList;
 import java.util.List;
-import netty.InPacket;
+import net.InPacket;
 import user.AvatarData;
 
 public class Account {

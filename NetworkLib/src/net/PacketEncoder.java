@@ -22,6 +22,7 @@ import crypto.CIGCipher;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import java.nio.ByteOrder;
 
 /**
  *
@@ -29,10 +30,11 @@ import io.netty.handler.codec.MessageToByteEncoder;
  */
 public class PacketEncoder extends MessageToByteEncoder<OutPacket> {
 
+    private static final int uSeqBase = (short) ((((0xFFFF - nVersion) >> 8) & 0xFF) | (((0xFFFF - nVersion) << 8) & 0xFF00));
+
     @Override
     protected void encode(ChannelHandlerContext chc, OutPacket oPacket, ByteBuf out) throws Exception {
         Socket pSocket = chc.channel().attr(Socket.SESSION_KEY).get();
-        byte[] pHeader = new byte[4];
         byte[] pBuffer = oPacket.GetData();
 
         if (pSocket != null) {
@@ -40,7 +42,6 @@ public class PacketEncoder extends MessageToByteEncoder<OutPacket> {
             try {
                 int uSeqSend = pSocket.uSeqSend;
                 int uDataLen = (((pBuffer.length << 8) & 0xFF00) | (pBuffer.length >>> 8));
-                int uSeqBase = (short) ((((0xFFFF - nVersion) >> 8) & 0xFF) | (((0xFFFF - nVersion) << 8) & 0xFF00));
                 int uRawSeq = (short) ((((uSeqSend >> 24) & 0xFF) | (((uSeqSend >> 16) << 8) & 0xFF00)) ^ uSeqBase);
 
                 if (pSocket.bEncryptData) {
@@ -48,18 +49,16 @@ public class PacketEncoder extends MessageToByteEncoder<OutPacket> {
                     if (pSocket.nCryptoMode == 1) {
                         CAESCipher.Crypt(pBuffer, uSeqSend);
                     } else if (pSocket.nCryptoMode == 2) {
-                        CIGCipher.Encrypt(pBuffer, uSeqSend);
+                        CIGCipher.Crypt(pBuffer, uSeqSend);
                     }
                 }
 
-                pHeader[0] = (byte) ((uRawSeq >>> 8) & 0xFF);
-                pHeader[1] = (byte) (uRawSeq & 0xFF);
-                pHeader[2] = (byte) ((uDataLen >>> 8) & 0xFF);
-                pHeader[3] = (byte) (uDataLen & 0xFF);
+                out.order(ByteOrder.LITTLE_ENDIAN);
+                out.writeShort(uRawSeq);
+                out.writeShort(uDataLen);
+                out.writeBytes(pBuffer);
 
                 pSocket.uSeqSend = CIGCipher.InnoHash(uSeqSend, 4, 0);
-                out.writeBytes(pHeader);
-                out.writeBytes(pBuffer);
             } finally {
                 pSocket.Unlock();
             }

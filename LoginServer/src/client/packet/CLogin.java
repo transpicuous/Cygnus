@@ -46,7 +46,7 @@ public class CLogin {
     }
 
     public static OutPacket RecommendWorldMessage(int world) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.RecommendWorldMessage.getValue());
         oPacket.Encode(1);
         oPacket.EncodeInt(world);
@@ -55,14 +55,14 @@ public class CLogin {
     }
 
     public static OutPacket UserLimitResult(int status) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.UserLimitResult.getValue());
         oPacket.EncodeShort(status);
         return oPacket;
     }
 
     public static OutPacket GetLoginFailed(int reason) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.CheckPasswordResult.getValue());
         oPacket.Encode(reason);
         oPacket.Encode(0);
@@ -71,7 +71,7 @@ public class CLogin {
     }
 
     public static OutPacket GetBanMessage(int reason, long time) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.CheckPasswordResult.getValue());
         oPacket.Encode(2);
         oPacket.Encode(0);
@@ -82,7 +82,7 @@ public class CLogin {
     }
 
     public static OutPacket CharacterBurning(byte nType, int dwCharacterID) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.CharacterBurning.getValue());
         oPacket.Encode(nType);
         oPacket.EncodeInt(dwCharacterID);
@@ -90,14 +90,14 @@ public class CLogin {
     }
 
     public static OutPacket SelectWorldResult() {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.SelectWorldResult.getValue());
         oPacket.EncodeBool(true);
         return oPacket;
     }
 
     public static OutPacket DuplicateIDResponse(String name, boolean taken) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.CheckDuplicatedIDResult.getValue());
         oPacket.EncodeString(name);
         oPacket.EncodeBool(taken);
@@ -105,14 +105,14 @@ public class CLogin {
     }
 
     public static OutPacket SecurityPacket() {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.SecurityPacket.getValue());
         oPacket.Encode(0x01); //0x04 to request response.
         return oPacket;
     }
 
     public static OutPacket AuthenMessage() {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.AuthenMessage.getValue());
         oPacket.EncodeInt(0);
         oPacket.Encode(0);
@@ -120,21 +120,21 @@ public class CLogin {
     }
 
     public static OutPacket ApplyHotFix() {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.ApplyHotFix.getValue());
         oPacket.EncodeBool(true);
         return oPacket;
     }
 
     public static OutPacket NCMOResult() {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.NMCOResult.getValue());
         oPacket.EncodeBool(true);
         return oPacket;
     }
 
     public static OutPacket PrivateServerPacket(int dwCurrentThreadID) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.PrivateServerPacket.getValue());
 
         int response = dwCurrentThreadID ^ LoopBackPacket.PrivateServerPacket.getValue();
@@ -149,14 +149,14 @@ public class CLogin {
      * @return Job Order packet.
      */
     public static OutPacket JobOrder() {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.JOB_ORDER.getValue());
         JobOrder.Encode(oPacket);
         return oPacket;
     }
 
     public static OutPacket CreateNewCharacterResult(AvatarData avatar, boolean success) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.CreateCharacterResult.getValue());
 
         oPacket.EncodeBool(!success);
@@ -168,7 +168,7 @@ public class CLogin {
     }
 
     public static OutPacket DeleteCharacterResult(int cid, int state) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.DeleteCharacterResult.getValue());
 
         oPacket.EncodeInt(cid);
@@ -193,7 +193,7 @@ public class CLogin {
      */
     public static void OnWorldInformationRequest(CClientSocket pClient) {
         CenterSessionManager.aCenterSessions.forEach((pWorld) -> {
-            
+
             OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation.getValue());
 
             oPacket.Encode(pWorld.nWorldID);
@@ -218,7 +218,6 @@ public class CLogin {
             pClient.SendPacket(oPacket);
         });
 
-        
         OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation.getValue());
         oPacket.Encode(0xFF).Encode(0).Encode(0).Encode(0);
         pClient.SendPacket(oPacket);
@@ -242,7 +241,7 @@ public class CLogin {
     }
 
     public static OutPacket AccountInfoResult(Account pAccount) {
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInfoResult.getValue());
         oPacket.Encode(0x00);
         oPacket.EncodeInt(pAccount.nAccountID);
@@ -268,7 +267,7 @@ public class CLogin {
 
     public static OutPacket SelectWorldResult(CClientSocket pSocket, boolean bIsEditedList) {
         List<AvatarData> liAvatarData = pSocket.pAccount.liAvatarData;
-        
+
         OutPacket oPacket = new OutPacket(LoopBackPacket.SelectWorldResult.getValue());
 
         byte nDay = 0;
@@ -343,8 +342,7 @@ public class CLogin {
                         CCenter.CreateNewCharacter(
                                 pSocket.nSessionID,
                                 pSocket.pAccount.liAvatarData.size() + 1,
-                                iPacket.Decode(iPacket.uDataLen
-                                )
+                                iPacket.Decode(iPacket.GetRemainder())
                         )
                 );
             }
@@ -373,8 +371,7 @@ public class CLogin {
             int tTimeStamp = iPacket.DecodeInteger();
             short nPacketID = iPacket.DecodeShort();
 
-
-            String sData = HexUtils.ToHex(iPacket.GetRemainder());
+            String sData = HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder()));
 
             System.out.println(String.format("[Debug] Report type: %s \r\n\t   Error Num: %d, Data Length: %d \r\n\t   Account: %s \r\n\t   Opcode: %s, %d | %s \r\n\t   Data: %s",
                     sType, nError, nLen, "//", "", nPacketID, "0x" + Integer.toHexString(nPacketID), sData

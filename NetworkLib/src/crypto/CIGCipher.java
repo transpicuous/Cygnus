@@ -82,7 +82,7 @@ public class CIGCipher {
         return dwKey;
     }
 
-    public static byte[] Encrypt(byte[] pSrc, int dwKey) {
+    public static byte[] Crypt(byte[] pSrc, int dwKey) {
         byte[] pDest = new byte[pSrc.length];
 
         for (int i = 0; i < pSrc.length; ++i) {

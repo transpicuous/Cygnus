@@ -169,10 +169,8 @@ public class InPacket {
         return this;
     }
 
-    public byte[] GetRemainder() {
-        byte[] aData = new byte[pRecvBuff.readableBytes()];
-        pRecvBuff.readBytes(aData);
-        return aData;
+    public int GetRemainder() {
+        return pRecvBuff.readableBytes();
     }
 
     @Override

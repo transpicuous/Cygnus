@@ -20,21 +20,8 @@ package game.packet;
  *
  * @author Kaz Voeten
  */
-public enum GamePacket {
-    BeginSocket(0),
-    GameServerInformation(1),;
+public class GamePacket {
 
-    private int value;
-
-    private GamePacket(int val) {
-        value = val;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short BeginSocket = 0,
+            GameServerInformation = 1;
 }

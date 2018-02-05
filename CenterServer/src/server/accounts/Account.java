@@ -62,9 +62,9 @@ public class Account {
         oPacket.EncodeString(sAccountName);
         oPacket.EncodeString(sIP);
         oPacket.EncodeString(sPIC);
-        oPacket.Encode(nState);
-        oPacket.Encode(nGender);
-        oPacket.Encode(nAdmin);
+        oPacket.EncodeByte(nState);
+        oPacket.EncodeByte(nGender);
+        oPacket.EncodeByte(nAdmin);
     }
 
     public List<AvatarData> GetAvatars(int nAccountID, Connection con, boolean bReload) {

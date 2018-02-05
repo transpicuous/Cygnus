@@ -20,20 +20,7 @@ package center.packet;
  *
  * @author Kaz Voeten
  */
-public enum CenterPacket {
-    BeginSocket(0),;
+public class CenterPacket {
 
-    private int value;
-
-    private CenterPacket(int val) {
-        value = val;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short BeginSocket = 0;
 }

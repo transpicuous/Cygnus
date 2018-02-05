@@ -17,9 +17,9 @@
 package client.packet;
 
 import center.CenterSessionManager;
-import center.packet.CCenter;
+import center.packet.Center;
 import client.Account;
-import client.CClientSocket;
+import client.ClientSocket;
 import java.util.Collections;
 import java.util.List;
 import net.InPacket;
@@ -32,148 +32,121 @@ import util.HexUtils;
  *
  * @author Kaz Voeten
  */
-public class CLogin {
+public class Login {
 
     public static OutPacket AliveReq() {
-        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckAliveAck.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckAliveAck);
         return oPacket;
     }
 
-    public static OutPacket LastConnectedWorld(int world) {
-        OutPacket oPacket = new OutPacket(LoopBackPacket.LastConnectedWorld.getValue());
-        oPacket.EncodeInt(world);
+    public static OutPacket LastConnectedWorld(int nWorldID) {
+        OutPacket oPacket = new OutPacket(LoopBackPacket.LastConnectedWorld);
+        oPacket.EncodeInt(nWorldID);
         return oPacket;
     }
 
-    public static OutPacket RecommendWorldMessage(int world) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.RecommendWorldMessage.getValue());
-        oPacket.Encode(1);
-        oPacket.EncodeInt(world);
+    public static OutPacket RecommendWorldMessage(int nWorldID) {
+        OutPacket oPacket = new OutPacket(LoopBackPacket.RecommendWorldMessage);
+        oPacket.EncodeByte(1);
+        oPacket.EncodeInt(nWorldID);
         oPacket.EncodeString("The greatest world for starting anew!");
         return oPacket;
     }
 
-    public static OutPacket UserLimitResult(int status) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.UserLimitResult.getValue());
-        oPacket.EncodeShort(status);
+    public static OutPacket UserLimitResult(int nStatus) {
+        OutPacket oPacket = new OutPacket(LoopBackPacket.UserLimitResult);
+        oPacket.EncodeShort(nStatus);
         return oPacket;
     }
 
-    public static OutPacket GetLoginFailed(int reason) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckPasswordResult.getValue());
-        oPacket.Encode(reason);
-        oPacket.Encode(0);
+    public static OutPacket GetLoginFailed(int nReason) {
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckPasswordResult);
+        oPacket.EncodeByte(nReason);
+        oPacket.EncodeByte(0);
         oPacket.EncodeInt(0);
         return oPacket;
     }
 
-    public static OutPacket GetBanMessage(int reason, long time) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckPasswordResult.getValue());
-        oPacket.Encode(2);
-        oPacket.Encode(0);
+    public static OutPacket GetBanMessage(int nReason, long lTime) {
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckPasswordResult);
+        oPacket.EncodeByte(2);
+        oPacket.EncodeByte(0);
         oPacket.EncodeInt(0x00);
-        oPacket.Encode(reason);
-        oPacket.EncodeLong(time);
+        oPacket.EncodeByte(nReason);
+        oPacket.EncodeLong(lTime);
         return oPacket;
     }
 
     public static OutPacket CharacterBurning(byte nType, int dwCharacterID) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.CharacterBurning.getValue());
-        oPacket.Encode(nType);
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CharacterBurning);
+        oPacket.EncodeByte(nType);
         oPacket.EncodeInt(dwCharacterID);
         return oPacket;
     }
 
     public static OutPacket SelectWorldResult() {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.SelectWorldResult.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.SelectWorldResult);
         oPacket.EncodeBool(true);
         return oPacket;
     }
 
-    public static OutPacket DuplicateIDResponse(String name, boolean taken) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckDuplicatedIDResult.getValue());
-        oPacket.EncodeString(name);
-        oPacket.EncodeBool(taken);
+    public static OutPacket DuplicateIDResponse(String sName, boolean bTaken) {
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckDuplicatedIDResult);
+        oPacket.EncodeString(sName);
+        oPacket.EncodeBool(bTaken);
         return oPacket;
     }
 
     public static OutPacket SecurityPacket() {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.SecurityPacket.getValue());
-        oPacket.Encode(0x01); //0x04 to request response.
+        OutPacket oPacket = new OutPacket(LoopBackPacket.SecurityPacket);
+        oPacket.EncodeByte(0x01); //0x04 to request response.
         return oPacket;
     }
 
     public static OutPacket AuthenMessage() {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.AuthenMessage.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.AuthenMessage);
         oPacket.EncodeInt(0);
-        oPacket.Encode(0);
+        oPacket.EncodeByte(0);
         return oPacket;
     }
 
     public static OutPacket ApplyHotFix() {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.ApplyHotFix.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.ApplyHotFix);
         oPacket.EncodeBool(true);
         return oPacket;
     }
 
     public static OutPacket NCMOResult() {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.NMCOResult.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.NMCOResult);
         oPacket.EncodeBool(true);
         return oPacket;
     }
 
     public static OutPacket PrivateServerPacket(int dwCurrentThreadID) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.PrivateServerPacket.getValue());
-
-        int response = dwCurrentThreadID ^ LoopBackPacket.PrivateServerPacket.getValue();
-        oPacket.EncodeInt(response);
-
+        OutPacket oPacket = new OutPacket(LoopBackPacket.PrivateServerPacket);
+        oPacket.EncodeInt(dwCurrentThreadID ^ LoopBackPacket.PrivateServerPacket);
         return oPacket;
     }
 
-    /**
-     * Send the available JobOrder, seems no longer needed though.
-     *
-     * @return Job Order packet.
-     */
     public static OutPacket JobOrder() {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.JOB_ORDER.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.JOB_ORDER);
         JobOrder.Encode(oPacket);
         return oPacket;
     }
 
-    public static OutPacket CreateNewCharacterResult(AvatarData avatar, boolean success) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.CreateCharacterResult.getValue());
-
-        oPacket.EncodeBool(!success);
-        if (success) {
-            avatar.EncodeForClient(oPacket, false);
+    public static OutPacket CreateNewCharacterResult(AvatarData pAvatar, boolean bSuccess) {
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CreateCharacterResult);
+        oPacket.EncodeBool(!bSuccess);
+        if (bSuccess) {
+            pAvatar.EncodeForClient(oPacket, false);
         }
-
         return oPacket;
     }
 
     public static OutPacket DeleteCharacterResult(int cid, int state) {
-
-        OutPacket oPacket = new OutPacket(LoopBackPacket.DeleteCharacterResult.getValue());
-
+        OutPacket oPacket = new OutPacket(LoopBackPacket.DeleteCharacterResult);
         oPacket.EncodeInt(cid);
-        oPacket.Encode(state);
-
+        oPacket.EncodeByte(state);
         return oPacket;
     }
 
@@ -191,41 +164,41 @@ public class CLogin {
         return oPacket;
     } 
      */
-    public static void OnWorldInformationRequest(CClientSocket pClient) {
+    public static void OnWorldInformationRequest(ClientSocket pClient) {
         CenterSessionManager.aCenterSessions.forEach((pWorld) -> {
 
-            OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation.getValue());
+            OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation);
 
-            oPacket.Encode(pWorld.nWorldID);
+            oPacket.EncodeByte(pWorld.nWorldID);
             oPacket.EncodeString(pWorld.sWorldName);
-            oPacket.Encode(pWorld.nState);
+            oPacket.EncodeByte(pWorld.nState);
             oPacket.EncodeString(pWorld.sMessage);
             oPacket.EncodeBool(pWorld.bCreateChar);
 
-            oPacket.Encode(pWorld.aChannels.size());
+            oPacket.EncodeByte(pWorld.aChannels.size());
             pWorld.aChannels.forEach((pChannel) -> {
                 oPacket.EncodeString(pWorld.sWorldName + "-" + pChannel.nChannelID);
                 oPacket.EncodeInt(0);//pChannel.nGaugePx
-                oPacket.Encode(pWorld.nWorldID);
-                oPacket.Encode(pChannel.nChannelID - 1);
-                oPacket.Encode(0);//bIsAdultChannel
+                oPacket.EncodeByte(pWorld.nWorldID);
+                oPacket.EncodeByte(pChannel.nChannelID - 1);
+                oPacket.EncodeByte(0);//bIsAdultChannel
             });
 
             oPacket.EncodeShort(0); //Balloons lel
             oPacket.EncodeInt(0);
-            oPacket.Encode(0);
+            oPacket.EncodeByte(0);
 
             pClient.SendPacket(oPacket);
         });
 
-        OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation.getValue());
-        oPacket.Encode(0xFF).Encode(0).Encode(0).Encode(0);
+        OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation);
+        oPacket.EncodeByte(0xFF).EncodeByte(0).EncodeByte(0).EncodeByte(0);
         pClient.SendPacket(oPacket);
         pClient.SendPacket(LastConnectedWorld(CenterSessionManager.aCenterSessions.get(0).nWorldID));
-        pClient.SendPacket((new OutPacket(LoopBackPacket.OnAliveReq.getValue())));
+        pClient.SendPacket((new OutPacket(LoopBackPacket.OnAliveReq)));
     }
 
-    public static void OnSelectWorld(CClientSocket pSocket, InPacket iPacket) {
+    public static void OnSelectWorld(ClientSocket pSocket, InPacket iPacket) {
         if (!iPacket.DecodeBool()) {
             return;
         }
@@ -235,24 +208,24 @@ public class CLogin {
         pSocket.nChannelID = iPacket.Decode() + 1;
         CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
             if (pCenterSocket.nWorldID == pSocket.nWorldID) {
-                pCenterSocket.SendPacket(CCenter.ProcessLogin(pSocket.nSessionID, sToken));
+                pCenterSocket.SendPacket(Center.ProcessLogin(pSocket.nSessionID, sToken));
             }
         });
     }
 
     public static OutPacket AccountInfoResult(Account pAccount) {
 
-        OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInfoResult.getValue());
-        oPacket.Encode(0x00);
+        OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInfoResult);
+        oPacket.EncodeByte(0x00);
         oPacket.EncodeInt(pAccount.nAccountID);
-        oPacket.Encode(0);//?
-        oPacket.Encode(pAccount.nAdmin); //nGradeCode
+        oPacket.EncodeByte(0);//?
+        oPacket.EncodeByte(pAccount.nAdmin); //nGradeCode
         oPacket.EncodeInt(0);//nGrade
         oPacket.EncodeInt(0);//nVIPGrade
-        oPacket.Encode(0); //nAge (removed in v191)
+        oPacket.EncodeByte(0); //nAge (removed in v191)
         oPacket.EncodeString(pAccount.sAccountName);
-        oPacket.Encode(0);//nPurchaseExp
-        oPacket.Encode(0);//nChatBlockReason
+        oPacket.EncodeByte(0);//nPurchaseExp
+        oPacket.EncodeByte(0);//nChatBlockReason
         oPacket.EncodeLong(0);//dtChatUnblockDate
         oPacket.EncodeString(pAccount.sAccountName);
         oPacket.EncodeLong(0);
@@ -265,13 +238,13 @@ public class CLogin {
         return oPacket;
     }
 
-    public static OutPacket SelectWorldResult(CClientSocket pSocket, boolean bIsEditedList) {
-        List<AvatarData> liAvatarData = pSocket.pAccount.liAvatarData;
+    public static OutPacket SelectWorldResult(ClientSocket pSocket, boolean bIsEditedList) {
+        List<AvatarData> liAvatarData = pSocket.pAccount.aAvatarData;
 
-        OutPacket oPacket = new OutPacket(LoopBackPacket.SelectWorldResult.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.SelectWorldResult);
 
         byte nDay = 0;
-        oPacket.Encode(nDay);
+        oPacket.EncodeByte(nDay);
         if (nDay == 61) {
             boolean SendOTPForWebLaunching = false;
             oPacket.EncodeBool(SendOTPForWebLaunching);
@@ -301,20 +274,20 @@ public class CLogin {
             oPacket.EncodeInt(0);//0 chars edited
         }
 
-        oPacket.Encode((byte) liAvatarData.size());
+        oPacket.EncodeByte((byte) liAvatarData.size());
         for (AvatarData pAvatar : liAvatarData) {
             pAvatar.EncodeForClient(oPacket, false); //no ranking for now.
         }
 
-        oPacket.Encode((byte) 0); //bHasPic
+        oPacket.EncodeByte((byte) 0); //bHasPic
         oPacket.EncodeBool(false); //bQuerrySSNOnCreateNewCharacter LMAO LEZ STEAL THOSE NUMBERS
         oPacket.EncodeInt(pSocket.nCharacterSlots);
         oPacket.EncodeInt(0);//amount of chars bought with CS coupons? nBuyCharCount
         oPacket.EncodeInt(-1);//event new char job (maybe can be used for pinkbean)
         oPacket.EncodeInt(0);//highTimeStamp
         oPacket.EncodeInt(0);//lowTimeStamp
-        oPacket.Encode((byte) 0); //enables the name change UI. value is count of names allowed to change
-        oPacket.Encode((byte) 0); //idk what this is.
+        oPacket.EncodeByte((byte) 0); //enables the name change UI. value is count of names allowed to change
+        oPacket.EncodeByte((byte) 0); //idk what this is.
         oPacket.EncodeBool(pSocket.nWorldID == 45); //based on world ID so might be reboot related
         oPacket.EncodeInt(0);
         oPacket.EncodeInt(0);
@@ -322,26 +295,25 @@ public class CLogin {
         return oPacket;
     }
 
-    public static void OnCheckDuplicatedID(CClientSocket pSocket, InPacket iPacket) {
+    public static void OnCheckDuplicatedID(ClientSocket pSocket, InPacket iPacket) {
         CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
             if (pCenterSocket.nWorldID == pSocket.nWorldID) {
-                pCenterSocket.SendPacket(CCenter.CheckDuplicatedID(pSocket.nSessionID, iPacket.DecodeString()));
+                pCenterSocket.SendPacket(Center.CheckDuplicatedID(pSocket.nSessionID, iPacket.DecodeString()));
             }
         });
     }
 
-    public static void OnCreateNewCharacter(CClientSocket pSocket, InPacket iPacket) {
-        if (pSocket.pAccount.liAvatarData.size() + 1 > pSocket.nCharacterSlots) {
+    public static void OnCreateNewCharacter(ClientSocket pSocket, InPacket iPacket) {
+        if (pSocket.pAccount.aAvatarData.size() + 1 > pSocket.nCharacterSlots) {
             pSocket.SendPacket(CreateNewCharacterResult(null, false));
             return;
         }
 
         CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
             if (pCenterSocket.nWorldID == pSocket.nWorldID) {
-                pCenterSocket.SendPacket(
-                        CCenter.CreateNewCharacter(
+                pCenterSocket.SendPacket(Center.CreateNewCharacter(
                                 pSocket.nSessionID,
-                                pSocket.pAccount.liAvatarData.size() + 1,
+                                pSocket.pAccount.aAvatarData.size() + 1,
                                 iPacket.Decode(iPacket.GetRemainder())
                         )
                 );
@@ -380,12 +352,12 @@ public class CLogin {
         }
     }
 
-    public static void OnCreateNewCharacterResult(CClientSocket pSocket, InPacket iPacket) {
+    public static void OnCreateNewCharacterResult(ClientSocket pSocket, InPacket iPacket) {
         boolean bSuccess = iPacket.DecodeBool();
         AvatarData pAvatar = null;
         if (bSuccess) {
             pAvatar = AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket);
-            pSocket.pAccount.liAvatarData.add(pAvatar);
+            pSocket.pAccount.aAvatarData.add(pAvatar);
         }
         pSocket.SendPacket(CreateNewCharacterResult(pAvatar, bSuccess));
     }

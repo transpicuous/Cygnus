@@ -40,13 +40,13 @@ public class OutPacket {
         pSendBuff.writeShort(nPacketID);
     }
 
-    public final OutPacket Encode(int nValue) {
+    public final OutPacket EncodeByte(int nValue) {
         pSendBuff.writeByte(nValue);
         return this;
     }
 
-    public final OutPacket Encode(long nValue) {
-        return Encode((int) nValue);
+    public final OutPacket EncodeByte(long nValue) {
+        return EncodeByte((int) nValue);
     }
 
     public final OutPacket Encode(byte[] aData) {
@@ -54,12 +54,12 @@ public class OutPacket {
     }
 
     public final OutPacket EncodeBool(boolean bData) {
-        return Encode(bData ? 1 : 0);
+        return EncodeByte(bData ? 1 : 0);
     }
 
     public final OutPacket Encode(byte[] aData, int nOffset, int nLength) {
         for (int i = nOffset; i < nLength; i++) {
-            Encode(aData[i]);
+            EncodeByte(aData[i]);
         }
         return this;
     }
@@ -120,7 +120,7 @@ public class OutPacket {
 
     public final OutPacket Fill(int nValue, int nLenth) {
         for (int i = 0; i < nLenth; i++) {
-            Encode(nValue);
+            EncodeByte(nValue);
         }
         return this;
     }

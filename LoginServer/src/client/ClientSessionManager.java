@@ -16,7 +16,7 @@
  */
 package client;
 
-import client.packet.CLogin;
+import client.packet.Login;
 import client.packet.ClientPacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,7 +35,7 @@ import server.Configuration;
  */
 public class ClientSessionManager extends ChannelInboundHandlerAdapter {
 
-    public static ArrayList<CClientSocket> aSessions = new ArrayList<>();
+    public static ArrayList<ClientSocket> aSessions = new ArrayList<>();
     private static final Random rand = new Random();
 
     @Override
@@ -45,21 +45,21 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
         int RecvSeq = rand.nextInt();
         int SendSeq = rand.nextInt();
 
-        CClientSocket pClient = new CClientSocket(ch, SendSeq, RecvSeq);
+        ClientSocket pClient = new ClientSocket(ch, SendSeq, RecvSeq);
 
         OutPacket oPacket = new OutPacket((short) 0x0F);
         oPacket.EncodeShort(Configuration.MAPLE_VERSION);
         oPacket.EncodeString(Configuration.BUILD_VERSION);
         oPacket.EncodeInt(RecvSeq);
         oPacket.EncodeInt(SendSeq);
-        oPacket.Encode(Configuration.SERVER_TYPE);
-        oPacket.Encode(0);
+        oPacket.EncodeByte(Configuration.SERVER_TYPE);
+        oPacket.EncodeByte(0);
         pClient.SendPacket(oPacket);
 
-        ch.attr(CClientSocket.SESSION_KEY).set(pClient);
+        ch.attr(ClientSocket.SESSION_KEY).set(pClient);
 
         pClient.PingTask = ctx.channel().eventLoop().scheduleAtFixedRate(()
-                -> pClient.SendPacket(CLogin.AliveReq()), 5, 5, TimeUnit.SECONDS);
+                -> pClient.SendPacket(Login.AliveReq()), 5, 5, TimeUnit.SECONDS);
 
         aSessions.add(pClient);
         pClient.nSessionID = aSessions.size();
@@ -71,7 +71,7 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CClientSocket pClient = (CClientSocket) ch.attr(CClientSocket.SESSION_KEY).get();
+        ClientSocket pClient = (ClientSocket) ch.attr(ClientSocket.SESSION_KEY).get();
         aSessions.remove(pClient);
 
         if (pClient.PingTask != null) {
@@ -86,33 +86,15 @@ public class ClientSessionManager extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object in) {
         Channel ch = ctx.channel();
 
-        CClientSocket pClient = (CClientSocket) ch.attr(CClientSocket.SESSION_KEY).get();
+        ClientSocket pClient = (ClientSocket) ch.attr(ClientSocket.SESSION_KEY).get();
         InPacket iPacket = (InPacket) in;
-
-        short nPacketID = iPacket.DecodeShort();
-
-        ClientPacket PacketID = ClientPacket.BeginSocket;
-        boolean handle = false;
-        for (ClientPacket cp : ClientPacket.values()) {
-            if (cp.getValue() == nPacketID) {
-                PacketID = cp;
-                handle = true;
-            }
-        }
-
-        if (!handle) {
-            System.out.println("[ERROR] Non declared Recv from Client: " + nPacketID + "\r\n" );
-        } else {
-            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), iPacket.toString());
-        }
-
-        pClient.ProcessPacket(PacketID, iPacket);
+        pClient.ProcessPacket(iPacket);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
         t.printStackTrace();
-        CClientSocket client = (CClientSocket) ctx.channel().attr(CClientSocket.SESSION_KEY).get();
+        ClientSocket client = (ClientSocket) ctx.channel().attr(ClientSocket.SESSION_KEY).get();
         if (client != null) {
             client.Close();
         }

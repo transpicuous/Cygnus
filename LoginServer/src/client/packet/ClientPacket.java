@@ -20,72 +20,58 @@ package client.packet;
  *
  * @author Kaz Voeten
  */
-public enum ClientPacket {
-    DummyCode(100),
-    BeginSocket(101),
-    SecurityPacket(102),
-    PermissionRequest(103),
-    LoginBasicInfo(104),
-    CheckLoginAuthInfo(105),
-    SelectWorld(106),
-    CheckSPWRequest(107),
-    SelectCharacter(108),
-    CheckSPWExistRequest(109),
-    MigrateIn(110),
-    WorldInfoLogoutRequest(114),
-    WorldInfoForShiningRequest(115),
-    CheckDuplicatedID(116),
-    LogoutWorld(117),
-    PermissionRequest_Fake(118),
-    CheckLoginAuthInfo_Fake(119),
-    CreateMapleAccount_Fake(120),
-    SelectAccount_Fake(121),
-    SelectWorld_Fake(122),
-    SelectCharacter_Fake(123),
-    CreateNewCharacter_Fake(124),
-    CreateNewCharacter(125),
-    CreateNewCharacterInCS(126),
-    CreateNewCharacter_PremiumAdventurer(127),
-    DeleteCharacter(128),
-    ReservedDeleteCharacterConfirm(129),
-    ReservedDeleteCharacterCancel(130),
-    RenameCharacter(131),
-    AliveAck_Fake(132),
-    ExceptionLog(157), //v188 unsure
-    PrivateServerPacket(134),
-    ResetLoginStateOnCheckOTP(135),
-    AlbaRequest(142),
-    UpdateCharacterCard(143),
-    CheckCenterAndGameAreConnected(144),
-    ResponseToCheckAliveAck_Fake(145),
-    CreateMapleAccount(146),
-    AliveAck(152), // v188
-    ResponseToCheckAliveAck(148),
-    ClientDumpLog(153), // v188
-    CrcErrorLog(154), // v188
-    PerformanceInfoProvidedConsent(155), // v188
-    CheckHotfix(156), // v188
-    ClientLoadingState(158), // v188
-    WorldInfoRequest(162),
-    SetSPW(166),
-    UserLimitRequest(167), //v188
-    ChangeSPWRequest(170),
-    NMCORequest(171),
-    EndSocket(173),
-    CharacterBurning(537), //needed but officially not in this scope lol
-    ;
+public class ClientPacket {
 
-    private int value;
-
-    private ClientPacket(int val) {
-        value = val;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short DummyCode = 100,
+            BeginSocket = 101,
+            SecurityPacket = 102,
+            PermissionRequest = 103,
+            LoginBasicInfo = 104,
+            CheckLoginAuthInfo = 105,
+            SelectWorld = 106,
+            CheckSPWRequest = 107,
+            SelectCharacter = 108,
+            CheckSPWExistRequest = 109,
+            MigrateIn = 110,
+            WorldInfoLogoutRequest = 114,
+            WorldInfoForShiningRequest = 115,
+            CheckDuplicatedID = 116,
+            LogoutWorld = 117,
+            PermissionRequest_Fake = 118,
+            CheckLoginAuthInfo_Fake = 119,
+            CreateMapleAccount_Fake = 120,
+            SelectAccount_Fake = 121,
+            SelectWorld_Fake = 122,
+            SelectCharacter_Fake = 123,
+            CreateNewCharacter_Fake = 124,
+            CreateNewCharacter = 125,
+            CreateNewCharacterInCS = 126,
+            CreateNewCharacter_PremiumAdventurer = 127,
+            DeleteCharacter = 128,
+            ReservedDeleteCharacterConfirm = 129,
+            ReservedDeleteCharacterCancel = 130,
+            RenameCharacter = 131,
+            AliveAck_Fake = 132,
+            ExceptionLog = 157, //v188 unsure
+            PrivateServerPacket = 134,
+            ResetLoginStateOnCheckOTP = 135,
+            AlbaRequest = 142,
+            UpdateCharacterCard = 143,
+            CheckCenterAndGameAreConnected = 144,
+            ResponseToCheckAliveAck_Fake = 145,
+            CreateMapleAccount = 146,
+            AliveAck = 152, // v188
+            ResponseToCheckAliveAck = 148,
+            ClientDumpLog = 153, // v188
+            CrcErrorLog = 154, // v188
+            PerformanceInfoProvidedConsent = 155, // v188
+            CheckHotfix = 156, // v188
+            ClientLoadingState = 158, // v188
+            WorldInfoRequest = 162,
+            SetSPW = 166,
+            UserLimitRequest = 167, //v188
+            ChangeSPWRequest = 170,
+            NMCORequest = 171,
+            EndSocket = 173,
+            CharacterBurning = 537; //needed but officially not in this scope lol
 }

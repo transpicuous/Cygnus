@@ -9,7 +9,7 @@ public class JobOrder {
 
     public static void Encode(OutPacket oPacket) {
         oPacket.EncodeBool(bEnabled);
-        oPacket.Encode(nOrder);
+        oPacket.EncodeByte(nOrder);
         for (Categories cat : Categories.values()) {
             oPacket.EncodeBool(cat.IsEnabled());
             oPacket.EncodeShort(cat.GetGender());

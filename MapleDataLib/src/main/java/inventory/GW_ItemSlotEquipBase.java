@@ -185,7 +185,7 @@ public class GW_ItemSlotEquipBase {
         oPacket.EncodeInt(aSendBuff[0]);
         for (Pair<Integer, Integer> stat : liItemStats) {
             if (stat.getValue() == 1) {
-                oPacket.Encode(stat.getKey().byteValue());
+                oPacket.EncodeByte(stat.getKey().byteValue());
             } else if (stat.getValue() == 2) {
                 oPacket.EncodeShort(stat.getKey().shortValue());
             } else if (stat.getValue() == 4) {
@@ -224,7 +224,7 @@ public class GW_ItemSlotEquipBase {
         oPacket.EncodeInt(aSendBuff[1]);
         for (Pair<Integer, Integer> stat : liItemStats) {
             if (stat.getValue() == 1) {
-                oPacket.Encode(stat.getKey().byteValue());
+                oPacket.EncodeByte(stat.getKey().byteValue());
             } else if (stat.getValue() == 2) {
                 oPacket.EncodeShort(stat.getKey().shortValue());
             } else if (stat.getValue() == 4) {

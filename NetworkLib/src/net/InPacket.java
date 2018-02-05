@@ -140,12 +140,12 @@ public class InPacket {
         return Double.longBitsToDouble(DecodeLong());
     }
 
-    public String DecodeString(int len) {
-        byte[] sd = new byte[len];
-        for (int i = 0; i < len; i++) {
-            sd[i] = DecodeByte();
+    public String DecodeString(int nLen) {
+        byte[] aData = new byte[nLen];
+        for (int i = 0; i < nLen; i++) {
+            aData[i] = DecodeByte();
         }
-        return new String(sd, ASCII);
+        return new String(aData, ASCII);
     }
 
     public String DecodeString() {

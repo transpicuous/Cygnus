@@ -46,15 +46,15 @@ public class GW_ItemSlotPet extends GW_ItemSlotBase {
     public void RawEncode(OutPacket oPacket) {
         super.RawEncode(oPacket);
         oPacket.EncodeString(sPetName, 13);
-        oPacket.Encode(nLevel);
+        oPacket.EncodeByte(nLevel);
         oPacket.EncodeShort(nTameness);
-        oPacket.Encode(nRepleteness);
+        oPacket.EncodeByte(nRepleteness);
         oPacket.EncodeLong(dateDead);
         oPacket.EncodeShort(nPetAttribute);
         oPacket.EncodeShort(usPetSkill);
         oPacket.EncodeInt(nRemainLife);
         oPacket.EncodeInt(nAttribute);
-        oPacket.Encode(nActiveStat);
+        oPacket.EncodeByte(nActiveStat);
         oPacket.EncodeInt(nAutoBuffSkill);
         oPacket.EncodeInt(nPetHue);
         oPacket.EncodeShort(nGiantRate);

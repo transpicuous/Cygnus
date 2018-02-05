@@ -19,18 +19,19 @@ package center;
 import center.packet.CenterPacket;
 import client.Account;
 import client.ClientSessionManager;
-import client.packet.CLogin;
+import client.packet.Login;
 import io.netty.channel.Channel;
 import java.util.ArrayList;
 import net.InPacket;
 import net.Socket;
 import user.AvatarData;
+import util.HexUtils;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class CCenterSocket extends Socket {
+public class CenterSocket extends Socket {
 
     public int nWorldID;
     public String sWorldName, sMessage;
@@ -39,14 +40,15 @@ public class CCenterSocket extends Socket {
     public boolean bCreateChar;
     public ArrayList<GameServer> aChannels = new ArrayList<>();
 
-    public CCenterSocket(Channel channel, int uSeqSend, int uSeqRcv) {
+    public CenterSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
 
-    public void ProcessPacket(CenterPacket nPacketID, InPacket iPacket) {
+    public void ProcessPacket(InPacket iPacket) {
+        int nPacketID = iPacket.DecodeShort();
         int nSessionID;
         switch (nPacketID) {
-            case WorldInformation:
+            case CenterPacket.WorldInformation:
                 this.nWorldID = iPacket.DecodeInt(); //Max 44 atm
                 this.sWorldName = iPacket.DecodeString();
                 this.sMessage = iPacket.DecodeString();
@@ -56,7 +58,7 @@ public class CCenterSocket extends Socket {
                 this.bCreateChar = iPacket.DecodeBool();
                 System.out.println("[Info] Registered world : " + sWorldName + ".");
                 break;
-            case ChannelInformation:
+            case CenterPacket.ChannelInformation:
                 aChannels.clear();
                 System.out.println("[Info] Cleared channel cache.");
                 byte nSize = iPacket.DecodeByte();
@@ -66,7 +68,7 @@ public class CCenterSocket extends Socket {
                             + aChannels.get(i).nChannelID + " to world " + this.sWorldName + ".");
                 }
                 break;
-            case AccountInformation:
+            case CenterPacket.AccountInformation:
                 nSessionID = iPacket.DecodeInt();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
@@ -75,33 +77,36 @@ public class CCenterSocket extends Socket {
                             int nCharListPosition = iPacket.DecodeInt();
                             AvatarData pAvatar = AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket);
                             pAvatar.nCharlistPos = nCharListPosition;
-                            pSocket.pAccount.liAvatarData.add(pAvatar);
+                            pSocket.pAccount.aAvatarData.add(pAvatar);
                         }
-                        pSocket.SendPacket(CLogin.AccountInfoResult(pSocket.pAccount));
-                        pSocket.SendPacket(CLogin.SelectWorldResult(pSocket, false));
+                        pSocket.SendPacket(Login.AccountInfoResult(pSocket.pAccount));
+                        pSocket.SendPacket(Login.SelectWorldResult(pSocket, false));
                     }
                 });
                 break;
-            case CheckDuplicatedIDResponse:
+            case CenterPacket.CheckDuplicatedIDResponse:
                 nSessionID = iPacket.DecodeInt();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
-                        pSocket.SendPacket(CLogin.DuplicateIDResponse(
+                        pSocket.SendPacket(Login.DuplicateIDResponse(
                                 iPacket.DecodeString(),
                                 iPacket.DecodeBool()
                         ));
                     }
                 });
                 break;
-            case OnCreateCharacterResponse:
+            case CenterPacket.OnCreateCharacterResponse:
                 nSessionID = iPacket.DecodeInt();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
-                        CLogin.OnCreateNewCharacterResult(pSocket, iPacket);
+                        Login.OnCreateNewCharacterResult(pSocket, iPacket);
                     }
                 });
                 break;
             default:
+                System.out.println("[DEBUG] Received unhandled Center packet. nPacketID: " 
+                        + nPacketID + ". Data: " 
+                        + HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder())));
                 break;
         }
     }

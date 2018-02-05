@@ -18,7 +18,7 @@ package login;
 
 import io.netty.channel.Channel;
 import java.util.HashMap;
-import login.packet.LLogin;
+import login.packet.Login;
 import login.packet.LoginPacket;
 import login.packet.LoopBackPacket;
 import net.InPacket;
@@ -28,48 +28,37 @@ import net.Socket;
 import server.Configuration;
 import server.accounts.APIFactory;
 import server.accounts.Account;
+import util.HexUtils;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class CLoginServerSocket extends Socket {
+public class LoginServerSocket extends Socket {
 
     public HashMap<String, Integer> mReservedCharacterNames = new HashMap<>();
     public HashMap<Integer, Account> mAccountStorage = new HashMap<>();
 
-    public CLoginServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
+    public LoginServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
 
-    @Override
-    public void SendPacket(OutPacket oPacket) {
-        if (Configuration.SERVER_CHECK) {
-            String head = "Unk";
-            for (LoopBackPacket packet : LoopBackPacket.values()) {
-                if (packet.getValue() == (int) oPacket.nPacketID) {
-                    head = packet.name();
-                    if (packet.getValue() == 0xF0) {
-                        head = "HandShake/" + head;
-                    }
-                }
-            }
-            System.out.printf("[Debug] Sent %s: %s%n", head, oPacket.toString());
-        }
-        super.SendPacket(oPacket);
-    }
-
-    public void ProcessPacket(LoginPacket nPacketID, InPacket iPacket) {
+    public void ProcessPacket(InPacket iPacket) {
+        short nPacketID = iPacket.DecodeShort();
         switch (nPacketID) {
-            case ProcessLogin:
+            case LoginPacket.ProcessLogin:
                 APIFactory.GetInstance().RequestAccount(this, iPacket.DecodeInt(), iPacket.DecodeString());
                 break;
-            case CheckDuplicateID:
-                LLogin.OnCheckDuplicateID(this, iPacket);
+            case LoginPacket.CheckDuplicateID:
+                Login.OnCheckDuplicateID(this, iPacket);
                 break;
-            case CreateNewCharacter:
-                LLogin.OnCreateNewCharacter(this, iPacket);
+            case LoginPacket.CreateNewCharacter:
+                Login.OnCreateNewCharacter(this, iPacket);
                 break;
+            default:
+                System.out.println("[DEBUG] Received unhandled Login packet. nPacketID: "
+                        + nPacketID + ". Data: "
+                        + HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder())));
         }
     }
 }

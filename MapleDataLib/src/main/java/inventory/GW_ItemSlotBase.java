@@ -39,7 +39,7 @@ public class GW_ItemSlotBase {
     }
 
     public void RawEncode(OutPacket oPacket) {
-        oPacket.Encode(type);
+        oPacket.EncodeByte(type);
         oPacket.EncodeInt(nItemID);
         oPacket.EncodeBool(cashOpt != null);
         if (cashOpt != null) {

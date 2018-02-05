@@ -19,54 +19,43 @@ package game;
 import game.packet.GamePacket;
 import game.packet.LoopBackPacket;
 import io.netty.channel.Channel;
-import login.packet.LLogin;
+import login.packet.Login;
 import net.InPacket;
 import net.OutPacket;
 
 import net.Socket;
 import server.Configuration;
+import util.HexUtils;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class CGameServerSocket extends Socket {
+public class GameServerSocket extends Socket {
 
     public byte nChannelID;
     public int nMaxUsers;
     public int nPort;
     //public HashMap<Integer, User> mUsers = new HashMap<>();
 
-    public CGameServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
+    public GameServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
 
-    @Override
-    public void SendPacket(OutPacket oPacket) {
-        if (Configuration.SERVER_CHECK) {
-            String sHead = "Unk";
-            for (LoopBackPacket nPacketID : LoopBackPacket.values()) {
-                if (nPacketID.getValue() == (int) oPacket.nPacketID) {
-                    sHead = nPacketID.name();
-                    if (nPacketID.getValue() == 0xF0) {
-                        sHead = "HandShake/" + sHead;
-                    }
-                }
-            }
-            System.out.printf("[Debug] Sent %s: %s%n", sHead, oPacket.toString());
-        }
-        super.SendPacket(oPacket);
-    }
-
-    public void ProcessPacket(GamePacket nPacketID, InPacket iPacket) {
+    public void ProcessPacket(InPacket iPacket) {
+        short nPacketID = iPacket.DecodeShort();
         switch (nPacketID) {
-            case GameServerInformation:
+            case GamePacket.GameServerInformation:
                 this.nChannelID = iPacket.DecodeByte();
                 this.nMaxUsers = iPacket.DecodeInt();
                 this.nPort = iPacket.DecodeInt();
-                LLogin.GameServerInformation();
+                Login.GameServerInformation();
                 System.out.println("[Info] Registered GameServer with channel id: " + nChannelID);
                 break;
+            default:
+                System.out.println("[DEBUG] Received unhandled Game packet. nPacketID: "
+                        + nPacketID + ". Data: "
+                        + HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder())));
         }
     }
 }

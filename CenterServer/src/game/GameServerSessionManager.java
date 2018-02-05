@@ -23,7 +23,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.ArrayList;
 import java.util.Random;
 import login.LoginSessionManager;
-import login.packet.LLogin;
+import login.packet.Login;
 import net.InPacket;
 
 
@@ -33,7 +33,7 @@ import net.InPacket;
  */
 public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
 
-    public static ArrayList<CGameServerSocket> aSessions = new ArrayList<>();
+    public static ArrayList<GameServerSocket> aSessions = new ArrayList<>();
     private static final Random rand = new Random();
 
     @Override
@@ -43,9 +43,9 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
         int RecvSeq = 0;
         int SendSeq = 0;
 
-        CGameServerSocket pClient = new CGameServerSocket(ch, SendSeq, RecvSeq);
+        GameServerSocket pClient = new GameServerSocket(ch, SendSeq, RecvSeq);
         pClient.bEncryptData = false;
-        ch.attr(CGameServerSocket.SESSION_KEY).set(pClient);
+        ch.attr(GameServerSocket.SESSION_KEY).set(pClient);
         aSessions.add(pClient);
 
         System.out.printf("[Debug] GameServer connected! IP: %s nChannelID: %s%n", pClient.GetIP(), pClient.nChannelID);
@@ -55,9 +55,9 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CGameServerSocket pClient = (CGameServerSocket) ch.attr(CGameServerSocket.SESSION_KEY).get();
+        GameServerSocket pClient = (GameServerSocket) ch.attr(GameServerSocket.SESSION_KEY).get();
         aSessions.remove(pClient);
-        LLogin.GameServerInformation();
+        Login.GameServerInformation();
         System.out.printf("[Debug] GameServer disconnected! IP: %s nChannelID: %s%n", pClient.GetIP(), pClient.nChannelID);
 
         pClient.Close();
@@ -67,27 +67,15 @@ public class GameServerSessionManager extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object in) {
         Channel ch = ctx.channel();
 
-        CGameServerSocket pClient = (CGameServerSocket) ch.attr(CGameServerSocket.SESSION_KEY).get();
+        GameServerSocket pClient = (GameServerSocket) ch.attr(GameServerSocket.SESSION_KEY).get();
         InPacket iPacket = (InPacket) in;
 
-        short nPacketID = iPacket.DecodeShort();
-
-        GamePacket PacketID = GamePacket.BeginSocket;
-        for (GamePacket cp : GamePacket.values()) {
-            if (cp.getValue() == nPacketID) {
-                PacketID = cp;
-            }
-        }
-        if (PacketID != GamePacket.BeginSocket) {
-            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), "");
-        }
-
-        pClient.ProcessPacket(PacketID, iPacket);
+        pClient.ProcessPacket(iPacket);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
-        CGameServerSocket client = (CGameServerSocket) ctx.channel().attr(CGameServerSocket.SESSION_KEY).get();
+        GameServerSocket client = (GameServerSocket) ctx.channel().attr(GameServerSocket.SESSION_KEY).get();
         if (client != null) {
             client.Close();
         }

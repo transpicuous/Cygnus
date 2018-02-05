@@ -20,21 +20,8 @@ package client.packet;
  *
  * @author Kaz Voeten
  */
-public enum ClientPacket {
-    BeginSocket(0),
-    GameServerInformation(1),;
+public class ClientPacket {
 
-    private int value;
-
-    private ClientPacket(int val) {
-        value = val;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short BeginSocket = 0,
+            GameServerInformation = 1;
 }

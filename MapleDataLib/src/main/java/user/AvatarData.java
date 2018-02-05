@@ -149,7 +149,7 @@ public class AvatarData {
 
     public void EncodeForClient(OutPacket oPacket, boolean bRank) {
         pCharacterStat.Encode(oPacket);
-        oPacket.EncodeInt(0); //New, idk, burning?
+        oPacket.EncodeInt(this.nCharlistPos);
         pAvatarLook.Encode(oPacket);
         if (GW_CharacterStat.IsZeroJob(pCharacterStat.nJob)) {
             pAvatarLook.Encode(oPacket, pZeroInfo);

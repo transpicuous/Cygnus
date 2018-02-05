@@ -20,23 +20,10 @@ package login.packet;
  *
  * @author Kaz Voeten
  */
-public enum LoginPacket {
-    BeginSocket(0),
-    ProcessLogin(1),
-    CheckDuplicateID(2),
-    CreateNewCharacter(3);
+public class LoginPacket {
 
-    private int value;
-
-    private LoginPacket(int val) {
-        value = val;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short BeginSocket = 0,
+            ProcessLogin = 1,
+            CheckDuplicateID = 2,
+            CreateNewCharacter = 3;
 }

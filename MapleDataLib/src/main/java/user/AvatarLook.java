@@ -126,7 +126,7 @@ public class AvatarLook {
                 rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    int nSlot = rs.getByte("nSlot");
+                    int nSlot = rs.getInt("nSlot");
                     int nItemID = rs.getInt("nItemID");
                     if (nSlot > 0) {
                         ret.anEquip.put((byte) nSlot, nItemID);
@@ -149,8 +149,8 @@ public class AvatarLook {
     }
 
     public void Encode(OutPacket oPacket, ZeroInfo pZero) {
-        oPacket.Encode(pZero == null ? nGender : 1);
-        oPacket.Encode(pZero == null ? nSkin : pZero.nSubSkin);
+        oPacket.EncodeByte(pZero == null ? nGender : 1);
+        oPacket.EncodeByte(pZero == null ? nSkin : pZero.nSubSkin);
         oPacket.EncodeInt(pZero == null ? nFace : pZero.nSubFace);
         oPacket.EncodeInt(nJob);
         oPacket.EncodeBool(false);
@@ -175,29 +175,29 @@ public class AvatarLook {
         int i = 1; //Starts at cap, not hair :3
         do {
             if (anHairEquip[i] != 0) {
-                oPacket.Encode(i).EncodeInt(anHairEquip[i]);
+                oPacket.EncodeByte(i).EncodeInt(anHairEquip[i]);
             }
             ++i;
         } while (i < ItemSlotIndex.BP_COUNT);
-        oPacket.Encode(0xFF);
+        oPacket.EncodeByte(0xFF);
 
         i = 1;
         do {
             if (anUnseenEquip[i] != 0) {
-                oPacket.Encode(i).EncodeInt(anUnseenEquip[i]);
+                oPacket.EncodeByte(i).EncodeInt(anUnseenEquip[i]);
             }
             ++i;
         } while (i < ItemSlotIndex.BP_COUNT);
-        oPacket.Encode(0xFF);
+        oPacket.EncodeByte(0xFF);
 
         i = 1;
         do {
             if (anVirtualEquip[i] != 0) {
-                oPacket.Encode(i).EncodeInt(anVirtualEquip[i]);
+                oPacket.EncodeByte(i).EncodeInt(anVirtualEquip[i]);
             }
             ++i;
         } while (i < ItemSlotIndex.BP_COUNT);
-        oPacket.Encode(0xFF);
+        oPacket.EncodeByte(0xFF);
 
         oPacket.EncodeInt(nWeaponsStickerID);
         oPacket.EncodeInt(pZero == null ? anHairEquip[ItemSlotIndex.BP_WEAPON] : pZero.nLazuli);
@@ -229,8 +229,8 @@ public class AvatarLook {
         } else {
             oPacket.EncodeInt(nDemonSlayerDefFaceAcc);
         }
-        oPacket.Encode(nMixedHairColor);
-        oPacket.Encode(nMixHairPercent);
+        oPacket.EncodeByte(nMixedHairColor);
+        oPacket.EncodeByte(nMixHairPercent);
     }
 
     public static AvatarLook Decode(int nCharacterID, InPacket iPacket) {

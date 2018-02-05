@@ -14,16 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package center.packet;
+package client.packet;
 
-import client.ClientSessionManager;
-import center.CCenterServerSocket;
 import net.OutPacket;
+
 
 /**
  *
  * @author Kaz Voeten
  */
-public class LCenter {
+public class Login {
+
+    public static OutPacket AliveReq() {
+        
+        OutPacket oPacket = new OutPacket(LoopBackPacket.AliveReq);
+        return oPacket;
+    }
 
 }

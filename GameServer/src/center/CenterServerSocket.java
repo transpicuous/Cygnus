@@ -14,18 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package center.packet;
+package center;
+
+import io.netty.channel.Channel;
+import net.InPacket;
+
+import net.Socket;
+import util.HexUtils;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class CenterPacket {
+public class CenterServerSocket extends Socket {
 
-    public static final short AliveAck = 0,
-            AccountInformation = 1,
-            WorldInformation = 2,
-            ChannelInformation = 3,
-            CheckDuplicatedIDResponse = 4,
-            OnCreateCharacterResponse = 5;
+    public CenterServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
+        super(channel, uSeqSend, uSeqRcv);
+    }
+
+    public void ProcessPacket(InPacket iPacket) {
+        int nPacketID = iPacket.DecodeShort();
+        switch (nPacketID) {
+            default:
+                System.out.println("[DEBUG] Received unhandled Center packet. nPacketID: "
+                        + nPacketID + ". Data: "
+                        + HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder())));
+        }
+    }
 }

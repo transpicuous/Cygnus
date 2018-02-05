@@ -226,14 +226,14 @@ public class GW_CharacterStat {
         oPacket.EncodeInt(dwCharacterIDForLog);
         oPacket.EncodeInt(dwWorldIDForLog);
         oPacket.EncodeString(sCharacterName, 13);
-        oPacket.Encode(nGender);
-        oPacket.Encode((byte) nSkin);
+        oPacket.EncodeByte(nGender);
+        oPacket.EncodeByte((byte) nSkin);
         oPacket.EncodeInt(nFace);
         oPacket.EncodeInt(nHair);
-        oPacket.Encode(nMixBaseHairColor);
-        oPacket.Encode(nMixAddHairColor);
-        oPacket.Encode(nMixHairBaseProb);
-        oPacket.Encode(nLevel);
+        oPacket.EncodeByte(nMixBaseHairColor);
+        oPacket.EncodeByte(nMixAddHairColor);
+        oPacket.EncodeByte(nMixHairBaseProb);
+        oPacket.EncodeByte(nLevel);
         oPacket.EncodeShort(nJob);
         oPacket.EncodeShort(nSTR);
         oPacket.EncodeShort(nDEX);
@@ -256,7 +256,7 @@ public class GW_CharacterStat {
         oPacket.EncodeInt(nWP);
         oPacket.EncodeInt(0); //Gach exp?? - not in KMST
         oPacket.EncodeInt(dwPosMap);
-        oPacket.Encode(nPortal);
+        oPacket.EncodeByte(nPortal);
         oPacket.EncodeInt(0);//playtime in some srcs, idfk, not in kmst
         oPacket.EncodeShort(nSubJob);
 
@@ -274,15 +274,15 @@ public class GW_CharacterStat {
         oPacket.EncodeInt(nCharmExp);
         oPacket.EncodeString(DayLimit, 21);
         oPacket.EncodeInt(nPvPExp);
-        oPacket.Encode(nPVPGrade);
+        oPacket.EncodeByte(nPVPGrade);
         oPacket.EncodeInt(nPvpPoint);
-        oPacket.Encode(nPvpModeLevel);
-        oPacket.Encode(nPvpModeType);
+        oPacket.EncodeByte(nPvpModeLevel);
+        oPacket.EncodeByte(nPvpModeType);
         oPacket.EncodeInt(nEventPoint);//kmst is byte
 
         //CharacterCard Decode here...
         for (int i = 0; i < 9; i++) {
-            oPacket.EncodeInt(0).Encode(0).EncodeInt(0);
+            oPacket.EncodeInt(0).EncodeByte(0).EncodeInt(0);
         }
 
         oPacket.EncodeInt(ftLastLogoutTimeHigh);
@@ -294,7 +294,7 @@ public class GW_CharacterStat {
         oPacket.EncodeInt(0);
         oPacket.EncodeInt(0);
         oPacket.EncodeInt(0);
-        oPacket.Encode(0);
+        oPacket.EncodeByte(0);
         oPacket.EncodeInt(0);
         oPacket.EncodeInt(0);
     }
@@ -390,10 +390,10 @@ public class GW_CharacterStat {
                 nSize++;
             }
         }
-        oPacket.Encode(nSize);
+        oPacket.EncodeByte(nSize);
         for (int i = 0; i < aSP.length; i++) {
             if (aSP[i] > 0) {
-                oPacket.Encode(i + 1);
+                oPacket.EncodeByte(i + 1);
                 oPacket.EncodeInt(aSP[i]);
             }
         }

@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import login.CLoginServerSocket;
+import login.LoginServerSocket;
 import login.packet.LoopBackPacket;
 import net.OutPacket;
 import okhttp3.Call;
@@ -45,7 +45,7 @@ public class APIFactory {
     private static APIFactory instance;
     private final OkHttpClient client = new OkHttpClient();
 
-    public void RequestAccount(CLoginServerSocket pSocket, int nSessionID, String sToken) {
+    public void RequestAccount(LoginServerSocket pSocket, int nSessionID, String sToken) {
         Request request = new Request.Builder()
                 .url(Configuration.AUTH_API_URL + "/account?token=" + sToken)
                 .build();
@@ -80,11 +80,11 @@ public class APIFactory {
                     pSocket.mAccountStorage.put(nSessionID, pAccount);
 
                     
-                    OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInformation.getValue());
+                    OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInformation);
                     oPacket.EncodeInt(pAccount.nSessionID);
                     pAccount.Encode(oPacket);
                     List<AvatarData> avatars = pAccount.GetAvatars(pAccount.nAccountID, Database.GetConnection(), true);
-                    oPacket.Encode(avatars.size());
+                    oPacket.EncodeByte(avatars.size());
                     avatars.forEach((pAvatar) -> {
                         oPacket.EncodeInt(pAvatar.nCharlistPos);
                         pAvatar.Encode(oPacket, false);

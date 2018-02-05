@@ -30,7 +30,7 @@ public class Account {
     public final int nAccountID, nSessionID;
     public final String sAccountName, sIP, sPIC;
     public final byte nState, nGender, nAdmin;
-    public List<AvatarData> liAvatarData = new LinkedList<>();
+    public List<AvatarData> aAvatarData = new LinkedList<>();
 
     private Account(int nAccountID, int nSessionID, String sAccountName, String sIP, String sPIC,
             byte nState, byte nGender, byte nAdmin) {
@@ -45,7 +45,7 @@ public class Account {
     }
 
     public static Account Decode(InPacket iPacket) {
-        Account ret = new Account(
+        Account pRet = new Account(
                 iPacket.DecodeInt(),
                 iPacket.DecodeInt(),
                 iPacket.DecodeString(),
@@ -55,7 +55,7 @@ public class Account {
                 iPacket.DecodeByte(),
                 iPacket.DecodeByte()
         );
-        return ret;
+        return pRet;
     }
 
 }

@@ -20,25 +20,12 @@ package login.packet;
  *
  * @author Kaz Voeten
  */
-public enum LoopBackPacket {
-    AliveAck(0),
-    AccountInformation(1),
-    WorldInformation(2),
-    ChannelInformation(3),
-    CheckDuplicatedIDResponse(4),
-    OnCreateCharacterResponse(5);
+public class LoopBackPacket {
 
-    private int value;
-
-    private LoopBackPacket(int val) {
-        value = val;
-    }
-
-    public short getValue() {
-        return (short) value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short AliveAck = 0,
+            AccountInformation = 1,
+            WorldInformation = 2,
+            ChannelInformation = 3,
+            CheckDuplicatedIDResponse = 4,
+            OnCreateCharacterResponse = 5;
 }

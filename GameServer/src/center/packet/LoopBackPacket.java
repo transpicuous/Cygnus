@@ -20,21 +20,8 @@ package center.packet;
  *
  * @author Kaz Voeten
  */
-public enum LoopBackPacket {
-    AliveAck(0),
-    GameServerInformation(1),;
+public class LoopBackPacket {
 
-    private int value;
-
-    private LoopBackPacket(int val) {
-        value = val;
-    }
-
-    public short getValue() {
-        return (short) value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short AliveAck = 0,
+            GameServerInformation = 1;
 }

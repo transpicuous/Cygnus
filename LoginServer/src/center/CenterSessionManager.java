@@ -16,7 +16,7 @@
  */
 package center;
 
-import client.CClientSocket;
+import client.ClientSocket;
 import center.packet.CenterPacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,16 +32,16 @@ import net.InPacket;
  */
 public class CenterSessionManager extends ChannelInboundHandlerAdapter {
 
-    public static ArrayList<CCenterSocket> aCenterSessions = new ArrayList<>();
+    public static ArrayList<CenterSocket> aCenterSessions = new ArrayList<>();
     private static final Random rand = new Random();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CCenterSocket pCenter = new CCenterSocket(ch, 0, 0);
+        CenterSocket pCenter = new CenterSocket(ch, 0, 0);
         pCenter.bEncryptData = false;
-        ch.attr(CClientSocket.SESSION_KEY).set(pCenter);
+        ch.attr(ClientSocket.SESSION_KEY).set(pCenter);
         aCenterSessions.add(pCenter);
 
         System.out.printf("[Debug] Center Server connected with %s%n", pCenter.GetIP());
@@ -51,7 +51,7 @@ public class CenterSessionManager extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CCenterSocket pCenter = (CCenterSocket) ch.attr(CClientSocket.SESSION_KEY).get();
+        CenterSocket pCenter = (CenterSocket) ch.attr(ClientSocket.SESSION_KEY).get();
         aCenterSessions.remove(pCenter);
         pCenter.Close();
 
@@ -61,26 +61,15 @@ public class CenterSessionManager extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object in) {
         Channel ch = ctx.channel();
-
-        CCenterSocket pCenter = (CCenterSocket) ch.attr(CClientSocket.SESSION_KEY).get();
+        CenterSocket pCenter = (CenterSocket) ch.attr(ClientSocket.SESSION_KEY).get();
         InPacket iPacket = (InPacket) in;
-
-        int nPacketID = iPacket.DecodeShort();
-
-        CenterPacket PacketID = CenterPacket.AliveAck;
-        for (CenterPacket cp : CenterPacket.values()) {
-            if (cp.getValue() == (int) nPacketID) {
-                PacketID = cp;
-            }
-        }
-
-        pCenter.ProcessPacket(PacketID, iPacket);
+        pCenter.ProcessPacket(iPacket);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
         t.printStackTrace();
-        CCenterSocket pCenter = (CCenterSocket) ctx.channel().attr(CClientSocket.SESSION_KEY).get();
+        CenterSocket pCenter = (CenterSocket) ctx.channel().attr(ClientSocket.SESSION_KEY).get();
         if (pCenter != null) {
             pCenter.Close();
         }

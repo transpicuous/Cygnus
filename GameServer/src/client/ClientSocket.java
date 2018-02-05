@@ -16,52 +16,33 @@
  */
 package client;
 
-import client.packet.ClientPacket;
-import client.packet.LoopBackPacket;
 import io.netty.channel.Channel;
-import center.CenterSessionManager;
-import center.packet.LCenter;
 import io.netty.util.concurrent.ScheduledFuture;
 import net.InPacket;
-import net.OutPacket;
 
 import net.Socket;
-import server.Client;
-import server.Configuration;
+import util.HexUtils;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class CClientSocket extends Socket {
+public class ClientSocket extends Socket {
 
     public ScheduledFuture<?> PingTask;
     //public HashMap<Integer, User> mUsers = new HashMap<>();
 
-    public CClientSocket(Channel channel, int uSeqSend, int uSeqRcv) {
+    public ClientSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);
     }
-
-    @Override
-    public void SendPacket(OutPacket oPacket) {
-        if (Configuration.SERVER_CHECK) {
-            String sHead = "Unk";
-            for (LoopBackPacket nPacketID : LoopBackPacket.values()) {
-                if (nPacketID.getValue() == (int) oPacket.nPacketID) {
-                    sHead = nPacketID.name();
-                    if (nPacketID.getValue() == 0xF0) {
-                        sHead = "HandShake/" + sHead;
-                    }
-                }
-            }
-            System.out.printf("[Debug] Sent %s: %s%n", sHead, oPacket.toString());
-        }
-        super.SendPacket(oPacket);
-    }
-
-    public void ProcessPacket(ClientPacket nPacketID, InPacket iPacket) {
+    
+    public void ProcessPacket(InPacket iPacket) {
+        int nPacketID = iPacket.DecodeShort();
         switch (nPacketID) {
-
+            default:
+                System.out.println("[DEBUG] Received unhandled Client packet. nPacketID: " 
+                        + nPacketID + ". Data: " 
+                        + HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder())));
         }
     }
 }

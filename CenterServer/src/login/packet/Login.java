@@ -25,25 +25,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import login.CLoginServerSocket;
+import login.LoginServerSocket;
 import login.LoginSessionManager;
 import net.InPacket;
 import net.OutPacket;
 import server.Server;
 import server.accounts.Account;
 import user.AvatarData;
-import user.CharacterData;
 
 /**
  *
  * @author Kaz Voeten
  */
-public class LLogin {
+public class Login {
 
     public static void GameServerInformation() {
         
-        OutPacket oPacket = new OutPacket(LoopBackPacket.ChannelInformation.getValue());
-        oPacket.Encode(GameServerSessionManager.aSessions.size());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.ChannelInformation);
+        oPacket.EncodeByte(GameServerSessionManager.aSessions.size());
         GameServerSessionManager.aSessions.forEach((pGameServer) -> {
             oPacket.EncodeInt(pGameServer.nChannelID);
             oPacket.EncodeInt(pGameServer.nMaxUsers);
@@ -53,7 +52,7 @@ public class LLogin {
         LoginSessionManager.pSession.SendPacket(oPacket);
     }
 
-    public static void OnCheckDuplicateID(CLoginServerSocket pSocket, InPacket iPacket) {
+    public static void OnCheckDuplicateID(LoginServerSocket pSocket, InPacket iPacket) {
         int nSessionID = iPacket.DecodeInt();
         String sCharacterName = iPacket.DecodeString();
         boolean bDuplicatedID = false;
@@ -88,7 +87,7 @@ public class LLogin {
             pSocket.mReservedCharacterNames.put(sCharacterName, nSessionID);
         }
 
-        pSocket.SendPacket((new OutPacket(LoopBackPacket.CheckDuplicatedIDResponse.getValue()))
+        pSocket.SendPacket((new OutPacket(LoopBackPacket.CheckDuplicatedIDResponse))
                 .EncodeInt(nSessionID)
                 .EncodeString(sCharacterName)
                 .EncodeBool(bDuplicatedID)
@@ -96,7 +95,7 @@ public class LLogin {
         );
     }
 
-    public static void OnCreateNewCharacter(CLoginServerSocket pSocket, InPacket iPacket) {
+    public static void OnCreateNewCharacter(LoginServerSocket pSocket, InPacket iPacket) {
         //TODO: pCharacterData, Specifically inventories. Do them before sending back to login ya lazy cunt.
         int nSessionID = iPacket.DecodeInt();
         int nCharListPosition = iPacket.DecodeInt();
@@ -104,7 +103,7 @@ public class LLogin {
         if (!pSocket.mReservedCharacterNames.containsKey(sCharacterName)
                 || (pSocket.mReservedCharacterNames.get(sCharacterName) != nSessionID)) {
             
-            OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse.getValue());
+            OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse);
             oPacket.EncodeInt(nSessionID);
             oPacket.EncodeBool(false);
             pSocket.SendPacket(oPacket);
@@ -294,7 +293,7 @@ public class LLogin {
                 break;
             default:
                 
-                OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse.getValue());
+                OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse);
                 oPacket.EncodeInt(nSessionID);
                 oPacket.EncodeBool(false);
                 pSocket.SendPacket(oPacket);
@@ -303,7 +302,7 @@ public class LLogin {
 
         pAvatar.SaveNew(Database.GetConnection());
         
-        OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse);
         oPacket.EncodeInt(nSessionID);
         oPacket.EncodeBool(true);
         pAvatar.Encode(oPacket, pAccount.nAdmin <= 0);

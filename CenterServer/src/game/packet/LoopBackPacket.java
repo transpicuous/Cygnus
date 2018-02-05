@@ -20,20 +20,7 @@ package game.packet;
  *
  * @author Kaz Voeten
  */
-public enum LoopBackPacket {
-    ;
+public class LoopBackPacket {
 
-    private int value;
-
-    private LoopBackPacket(int val) {
-        value = val;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short BeginSocket = 0;
 }

@@ -71,7 +71,7 @@ public class CharacterData {
 
     public void Encode(OutPacket oPacket) {
         oPacket.EncodeLong(dbCharFlag);
-        oPacket.Encode(nCombatOrders);
+        oPacket.EncodeByte(nCombatOrders);
 
         byte nKey = 3;
         do {
@@ -79,18 +79,18 @@ public class CharacterData {
             --nKey;
         } while (nKey > 0);
 
-        oPacket.Encode(0); //if > 0 nPvPExp
-        oPacket.Encode(0); //if > 0 weird loop
+        oPacket.EncodeByte(0); //if > 0 nPvPExp
+        oPacket.EncodeByte(0); //if > 0 weird loop
         oPacket.EncodeInt(0); //if > 0 encode some filetime/willexp bs.
-        oPacket.Encode(0); // (if byte > 0, decode a byte and an int. if int > 0, decodebuffer. after the loop, decode an int and if int > 0, decode buffer)
+        oPacket.EncodeByte(0); // (if byte > 0, decode a byte and an int. if int > 0, decodebuffer. after the loop, decode an int and if int > 0, decode buffer)
 
         if ((dbCharFlag & 1) != 0) {
             pAvatar.pCharacterStat.Encode(oPacket);
-            oPacket.Encode(0); //might be buddylist capacity
+            oPacket.EncodeByte(0); //might be buddylist capacity
 
-            oPacket.Encode(0); // if > 0 encode string
-            oPacket.Encode(0); // if > 0 encode string
-            oPacket.Encode(0); // if > 0 encode string
+            oPacket.EncodeByte(0); // if > 0 encode string
+            oPacket.EncodeByte(0); // if > 0 encode string
+            oPacket.EncodeByte(0); // if > 0 encode string
         }
 
         if ((dbCharFlag & 2) != 0) {

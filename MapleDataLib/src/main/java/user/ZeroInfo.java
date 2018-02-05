@@ -58,7 +58,7 @@ public class ZeroInfo {
             oPacket.EncodeInt(nSubMP);
         }
         if ((Flag & 8) > 0) {
-            oPacket.Encode(nSubSkin);
+            oPacket.EncodeByte(nSubSkin);
         }
         if ((Flag & 0x10) > 0) {
             oPacket.EncodeInt(nSubHair);

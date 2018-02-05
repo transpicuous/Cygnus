@@ -20,22 +20,9 @@ package center.packet;
  *
  * @author Kaz Voeten
  */
-public enum LoopBackPacket {
-    ProcessLogin(1),
-    CheckDuplicateID(2),
-    CreateNewCharacter(3);
+public class LoopBackPacket {
 
-    private int value;
-
-    private LoopBackPacket(int val) {
-        value = val;
-    }
-
-    public short getValue() {
-        return (short) value;
-    }
-
-    public void setValue(int val) {
-        value = val;
-    }
+    public static final short ProcessLogin = 1,
+            CheckDuplicateID = 2,
+            CreateNewCharacter = 3;
 }

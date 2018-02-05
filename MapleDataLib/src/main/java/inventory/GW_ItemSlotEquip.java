@@ -269,8 +269,8 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
 
         oPacket.EncodeString(sTitle);
 
-        oPacket.Encode(nGrade);
-        oPacket.Encode(nCHUC);
+        oPacket.EncodeByte(nGrade);
+        oPacket.EncodeByte(nCHUC);
         oPacket.EncodeShort(nOption1);
         oPacket.EncodeShort(nOption2);
         oPacket.EncodeShort(nOption3);

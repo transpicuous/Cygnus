@@ -32,9 +32,10 @@ public final class HexUtils {
     }
 
     public static String ToHex(byte[] aData) {
+        if (aData.length <= 0) return "";
         StringBuilder sRet = new StringBuilder();
         for (int i = 0; i < aData.length; i++) {
-            sRet.append(HexUtils.ToHex(aData[i]));
+            sRet.append(ToHex(aData[i]));
             sRet.append(' ');
         }
         return sRet.substring(0, sRet.length() - 1);

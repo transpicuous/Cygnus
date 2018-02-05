@@ -23,11 +23,11 @@ import net.OutPacket;
  *
  * @author Kaz Voeten
  */
-public class CCenter {
+public class Center {
 
     public static OutPacket ProcessLogin(int nSessionID, String sToken) {
         
-        OutPacket oPacket = new OutPacket(LoopBackPacket.ProcessLogin.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.ProcessLogin);
         oPacket.EncodeInt(nSessionID);
         oPacket.EncodeString(sToken);
         return oPacket;
@@ -35,7 +35,7 @@ public class CCenter {
 
     public static OutPacket CheckDuplicatedID(int nSessionID, String sCharacterName) {
         
-        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckDuplicateID.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CheckDuplicateID);
         oPacket.EncodeInt(nSessionID);
         oPacket.EncodeString(sCharacterName);
         return oPacket;
@@ -43,7 +43,7 @@ public class CCenter {
 
     public static OutPacket CreateNewCharacter(int nSessionID, int nCharlistPosition, byte[] aData) {
         
-        OutPacket oPacket = new OutPacket(LoopBackPacket.CreateNewCharacter.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.CreateNewCharacter);
         oPacket.EncodeInt(nSessionID);
         oPacket.EncodeInt(nCharlistPosition);
         oPacket.Encode(aData);

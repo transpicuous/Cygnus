@@ -33,26 +33,25 @@ import server.Configuration;
  */
 public class LoginSessionManager extends ChannelInboundHandlerAdapter {
 
-    public static CLoginServerSocket pSession;
+    public static LoginServerSocket pSession;
     private static final Random rand = new Random();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CLoginServerSocket pClient = new CLoginServerSocket(ch, 0, 0);
+        LoginServerSocket pClient = new LoginServerSocket(ch, 0, 0);
         pClient.bEncryptData = false;
-        ch.attr(CLoginServerSocket.SESSION_KEY).set(pClient);
+        ch.attr(LoginServerSocket.SESSION_KEY).set(pClient);
         pSession = pClient;
 
         System.out.printf("[Debug] Connected to Login Server at adress: %s%n", pClient.GetIP());
-
         
-        OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation.getValue());
+        OutPacket oPacket = new OutPacket(LoopBackPacket.WorldInformation);
         oPacket.EncodeInt(Configuration.WORLD_ID);
         oPacket.EncodeString(Configuration.WORLD_NAME);
         oPacket.EncodeString(Configuration.EVENT_MESSAGE);
-        oPacket.Encode(Configuration.EVENT_FLAG);
+        oPacket.EncodeByte(Configuration.EVENT_FLAG);
         oPacket.EncodeShort(Configuration.EVENT_EXP);
         oPacket.EncodeShort(Configuration.EVENT_DROP);
         oPacket.EncodeBool(Configuration.DISABLE_CHAR_CREATION);
@@ -63,7 +62,7 @@ public class LoginSessionManager extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
 
-        CLoginServerSocket pClient = (CLoginServerSocket) ch.attr(CLoginServerSocket.SESSION_KEY).get();
+        LoginServerSocket pClient = (LoginServerSocket) ch.attr(LoginServerSocket.SESSION_KEY).get();
         pSession = null;
 
         pClient.Close();
@@ -73,29 +72,15 @@ public class LoginSessionManager extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object in) {
         Channel ch = ctx.channel();
-
-        CLoginServerSocket pClient = (CLoginServerSocket) ch.attr(CLoginServerSocket.SESSION_KEY).get();
+        LoginServerSocket pClient = (LoginServerSocket) ch.attr(LoginServerSocket.SESSION_KEY).get();
         InPacket iPacket = (InPacket) in;
-
-        short nPacketID = iPacket.DecodeShort();
-
-        LoginPacket PacketID = LoginPacket.BeginSocket;
-        for (LoginPacket cp : LoginPacket.values()) {
-            if (cp.getValue() == nPacketID) {
-                PacketID = cp;
-            }
-        }
-        if (PacketID != LoginPacket.BeginSocket) {
-            System.out.printf("[Debug] Received %s: %s%n", PacketID.name(), iPacket.toString());
-        }
-
-        pClient.ProcessPacket(PacketID, iPacket);
+        pClient.ProcessPacket(iPacket);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
         t.printStackTrace();
-        CLoginServerSocket client = (CLoginServerSocket) ctx.channel().attr(CLoginServerSocket.SESSION_KEY).get();
+        LoginServerSocket client = (LoginServerSocket) ctx.channel().attr(LoginServerSocket.SESSION_KEY).get();
         if (client != null) {
             client.Close();
         }

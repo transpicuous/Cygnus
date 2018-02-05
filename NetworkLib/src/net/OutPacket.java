@@ -16,7 +16,6 @@
  */
 package net;
 
-import crypto.CAESCipher;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.awt.Point;

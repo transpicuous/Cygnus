@@ -366,9 +366,9 @@ public class CLogin {
                     break;
             }
 
-            int nError = iPacket.DecodeInteger();
+            int nError = iPacket.DecodeInt();
             short nLen = iPacket.DecodeShort();
-            int tTimeStamp = iPacket.DecodeInteger();
+            int tTimeStamp = iPacket.DecodeInt();
             short nPacketID = iPacket.DecodeShort();
 
             String sData = HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder()));

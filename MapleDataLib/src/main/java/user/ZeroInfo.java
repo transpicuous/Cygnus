@@ -88,33 +88,33 @@ public class ZeroInfo {
             ret.bIsBeta = iPacket.DecodeBool();
         }
         if ((Flag & 2) > 0) {
-            ret.nSubHP = iPacket.DecodeInteger();
+            ret.nSubHP = iPacket.DecodeInt();
         }
         if ((Flag & 4) > 0) {
-            ret.nSubMP = iPacket.DecodeInteger();
+            ret.nSubMP = iPacket.DecodeInt();
         }
         if ((Flag & 8) > 0) {
             ret.nSubSkin = iPacket.DecodeByte();
         }
         if ((Flag & 0x10) > 0) {
-            ret.nSubHair = iPacket.DecodeInteger();
+            ret.nSubHair = iPacket.DecodeInt();
         }
         if ((Flag & 0x20) > 0) {
-            ret.nSubFace = iPacket.DecodeInteger();
+            ret.nSubFace = iPacket.DecodeInt();
         }
         if ((Flag & 0x40) > 0) {
-            ret.nSubMHP = iPacket.DecodeInteger();
+            ret.nSubMHP = iPacket.DecodeInt();
         }
         if ((Flag & 0x80) > 0) {
-            ret.nSubMMP = iPacket.DecodeInteger();
+            ret.nSubMMP = iPacket.DecodeInt();
         }
         if ((Flag & 0x100) > 0) {
-            ret.dbcharZeroLinkCashPart = iPacket.DecodeInteger();
+            ret.dbcharZeroLinkCashPart = iPacket.DecodeInt();
         }
         if ((Flag & 0x200) > 0) {
-            ret.nMixBaseHairColor = iPacket.DecodeInteger();
-            ret.nMixAddHairColor = iPacket.DecodeInteger();
-            ret.nMixHairBaseProb = iPacket.DecodeInteger();
+            ret.nMixBaseHairColor = iPacket.DecodeInt();
+            ret.nMixAddHairColor = iPacket.DecodeInt();
+            ret.nMixHairBaseProb = iPacket.DecodeInt();
         }
         return ret;
     }

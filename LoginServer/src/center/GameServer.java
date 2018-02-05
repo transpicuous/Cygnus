@@ -37,9 +37,9 @@ public class GameServer {
     }
 
     public static GameServer Decode(InPacket iPacket) {
-        return new GameServer(iPacket.DecodeInteger(),
-                iPacket.DecodeInteger(),
-                iPacket.DecodeInteger(),
+        return new GameServer(iPacket.DecodeInt(),
+                iPacket.DecodeInt(),
+                iPacket.DecodeInt(),
                 iPacket.DecodeString());
     }
 }

@@ -47,7 +47,7 @@ public class CCenterSocket extends Socket {
         int nSessionID;
         switch (nPacketID) {
             case WorldInformation:
-                this.nWorldID = iPacket.DecodeInteger(); //Max 44 atm
+                this.nWorldID = iPacket.DecodeInt(); //Max 44 atm
                 this.sWorldName = iPacket.DecodeString();
                 this.sMessage = iPacket.DecodeString();
                 this.nState = iPacket.DecodeByte();
@@ -67,12 +67,12 @@ public class CCenterSocket extends Socket {
                 }
                 break;
             case AccountInformation:
-                nSessionID = iPacket.DecodeInteger();
+                nSessionID = iPacket.DecodeInt();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
                         pSocket.pAccount = Account.Decode(iPacket);
                         for (int i = iPacket.Decode(); i > 0; --i) {
-                            int nCharListPosition = iPacket.DecodeInteger();
+                            int nCharListPosition = iPacket.DecodeInt();
                             AvatarData pAvatar = AvatarData.Decode(pSocket.pAccount.nAccountID, iPacket);
                             pAvatar.nCharlistPos = nCharListPosition;
                             pSocket.pAccount.liAvatarData.add(pAvatar);
@@ -83,7 +83,7 @@ public class CCenterSocket extends Socket {
                 });
                 break;
             case CheckDuplicatedIDResponse:
-                nSessionID = iPacket.DecodeInteger();
+                nSessionID = iPacket.DecodeInt();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
                         pSocket.SendPacket(CLogin.DuplicateIDResponse(
@@ -94,7 +94,7 @@ public class CCenterSocket extends Socket {
                 });
                 break;
             case OnCreateCharacterResponse:
-                nSessionID = iPacket.DecodeInteger();
+                nSessionID = iPacket.DecodeInt();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
                         CLogin.OnCreateNewCharacterResult(pSocket, iPacket);

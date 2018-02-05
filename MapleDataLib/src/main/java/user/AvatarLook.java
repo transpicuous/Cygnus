@@ -237,55 +237,55 @@ public class AvatarLook {
         AvatarLook ret = new AvatarLook(nCharacterID);
         ret.nGender = iPacket.DecodeByte();
         ret.nSkin = iPacket.DecodeByte();
-        ret.nFace = iPacket.DecodeInteger();
-        ret.nJob = iPacket.DecodeInteger();
+        ret.nFace = iPacket.DecodeInt();
+        ret.nJob = iPacket.DecodeInt();
         iPacket.DecodeByte();
-        ret.nHair = iPacket.DecodeInteger();
+        ret.nHair = iPacket.DecodeInt();
 
         byte nPos = iPacket.DecodeByte();
         while (nPos != (byte) 0xFF) {
-            ret.anEquip.put(nPos, iPacket.DecodeInteger());
+            ret.anEquip.put(nPos, iPacket.DecodeInt());
             nPos = iPacket.DecodeByte();
         }
         nPos = iPacket.DecodeByte();
         while (nPos != (byte) 0xFF) {
-            ret.anEquip.put(nPos, iPacket.DecodeInteger());
+            ret.anEquip.put(nPos, iPacket.DecodeInt());
             nPos = iPacket.DecodeByte();
         }
         nPos = iPacket.DecodeByte();
         while (nPos != (byte) 0xFF) {
-            ret.anEquip.put(nPos, iPacket.DecodeInteger());
+            ret.anEquip.put(nPos, iPacket.DecodeInt());
             nPos = iPacket.DecodeByte();
         }
 
-        ret.nWeaponsStickerID = iPacket.DecodeInteger();
-        ret.nWeaponID = iPacket.DecodeInteger();
-        ret.nSubWeaponID = iPacket.DecodeInteger();
+        ret.nWeaponsStickerID = iPacket.DecodeInt();
+        ret.nWeaponID = iPacket.DecodeInt();
+        ret.nSubWeaponID = iPacket.DecodeInt();
         ret.bDrawElfEar = iPacket.DecodeBool();
         iPacket.DecodeBool(); //Welp, which job has a new thing?
 
         for (int i = 0; i < 3; i++) {
-            iPacket.DecodeInteger();
+            iPacket.DecodeInt();
         }
 
         if (ret.nJob / 100 != 31 && ret.nJob != 3001) {
             if (ret.nJob / 100 != 36 && ret.nJob != 3002) {
                 if (ret.nJob != 10000 && ret.nJob != 10100 && ret.nJob != 10110 && ret.nJob != 10111 && ret.nJob != 10112) {
                     if (GW_CharacterStat.IsBeastJob(ret.nJob)) {
-                        ret.nBeastDefFaceAcc = iPacket.DecodeInteger();
+                        ret.nBeastDefFaceAcc = iPacket.DecodeInt();
                         iPacket.DecodeByte();
-                        ret.nBeastEars = iPacket.DecodeInteger();
+                        ret.nBeastEars = iPacket.DecodeInt();
                         iPacket.DecodeByte();
-                        ret.nBeastTail = iPacket.DecodeInteger();
+                        ret.nBeastTail = iPacket.DecodeInt();
                     }
                 } else {
                     iPacket.DecodeBool();//True if zero char.
                 }
             } else {
-                ret.nXenonDefFaceAcc = iPacket.DecodeInteger();
+                ret.nXenonDefFaceAcc = iPacket.DecodeInt();
             }
         } else {
-            ret.nDemonSlayerDefFaceAcc = iPacket.DecodeInteger();
+            ret.nDemonSlayerDefFaceAcc = iPacket.DecodeInt();
         }
         ret.nMixedHairColor = iPacket.DecodeByte();
         ret.nMixHairPercent = iPacket.DecodeByte();

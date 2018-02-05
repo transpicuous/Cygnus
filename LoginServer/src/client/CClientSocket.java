@@ -69,7 +69,7 @@ public class CClientSocket extends Socket {
                 SendPacket(CLogin.NCMOResult());
                 break;
             case PrivateServerPacket:
-                SendPacket(CLogin.PrivateServerPacket(iPacket.DecodeInteger()));
+                SendPacket(CLogin.PrivateServerPacket(iPacket.DecodeInt()));
                 break;
             case CheckHotfix:
                 SendPacket(CLogin.ApplyHotFix());

@@ -54,7 +54,7 @@ public class LLogin {
     }
 
     public static void OnCheckDuplicateID(CLoginServerSocket pSocket, InPacket iPacket) {
-        int nSessionID = iPacket.DecodeInteger();
+        int nSessionID = iPacket.DecodeInt();
         String sCharacterName = iPacket.DecodeString();
         boolean bDuplicatedID = false;
 
@@ -98,8 +98,8 @@ public class LLogin {
 
     public static void OnCreateNewCharacter(CLoginServerSocket pSocket, InPacket iPacket) {
         //TODO: pCharacterData, Specifically inventories. Do them before sending back to login ya lazy cunt.
-        int nSessionID = iPacket.DecodeInteger();
-        int nCharListPosition = iPacket.DecodeInteger();
+        int nSessionID = iPacket.DecodeInt();
+        int nCharListPosition = iPacket.DecodeInt();
         String sCharacterName = iPacket.DecodeString();
         if (!pSocket.mReservedCharacterNames.containsKey(sCharacterName)
                 || (pSocket.mReservedCharacterNames.get(sCharacterName) != nSessionID)) {
@@ -117,25 +117,25 @@ public class LLogin {
         AvatarData pAvatar = AvatarData.CreateAvatar(Database.GetConnection(), pAccount.nAccountID, nCharListPosition);
         pAvatar.pCharacterStat.sCharacterName = sCharacterName;
 
-        int nFKMOption = iPacket.DecodeInteger();
-        iPacket.DecodeInteger();
-        int nCurSelectedRace = iPacket.DecodeInteger();
+        int nFKMOption = iPacket.DecodeInt();
+        iPacket.DecodeInt();
+        int nCurSelectedRace = iPacket.DecodeInt();
         int nCurSelectedSubJob = iPacket.DecodeShort();
         int nGender = iPacket.DecodeByte();
         int nSkin = iPacket.DecodeByte();
         int nSize = iPacket.DecodeByte(); //num ints after this byte.
-        int nFace = iPacket.DecodeInteger();
-        int nHair = iPacket.DecodeInteger();
+        int nFace = iPacket.DecodeInt();
+        int nHair = iPacket.DecodeInt();
 
         pAvatar.SetFace(nFace);
         pAvatar.SetGender((byte) nGender);
         pAvatar.SetHair(nHair);
         pAvatar.SetSkin(nSkin);
-        iPacket.DecodeInteger();
+        iPacket.DecodeInt();
 
         HashMap<Byte, Integer> mBody = new HashMap<>();
         for (int i = 0; i < (nSize - 3); i++) {
-            int nItemID = iPacket.DecodeInteger();
+            int nItemID = iPacket.DecodeInt();
             int nItemGender = ItemSlotIndex.GetGenderFromID(nItemID);
             if (nItemGender != 2 && nItemGender != nGender) {
                 continue;

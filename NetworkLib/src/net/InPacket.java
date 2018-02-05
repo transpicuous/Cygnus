@@ -37,7 +37,13 @@ public class InPacket {
     private static Charset ASCII = Charset.forName("US-ASCII");
 
     public InPacket() {
-        this.pRecvBuff = Unpooled.buffer();
+        this.pRecvBuff = Unpooled.buffer().order(ByteOrder.LITTLE_ENDIAN);
+    }
+    
+    public InPacket(int uDataLen) {
+        this.pRecvBuff = Unpooled.buffer().order(ByteOrder.LITTLE_ENDIAN);
+        this.uDataLen = uDataLen;
+        this.nState = 1;
     }
 
     public boolean DecryptData(int uSeqKey) {
@@ -111,23 +117,23 @@ public class InPacket {
     }
 
     public short DecodeShort() {
-        return pRecvBuff.order(ByteOrder.LITTLE_ENDIAN).readShort();
+        return pRecvBuff.readShort();
     }
 
     public char DecodeChar() {
-        return pRecvBuff.order(ByteOrder.LITTLE_ENDIAN).readChar();
+        return pRecvBuff.readChar();
     }
 
-    public int DecodeInteger() {
-        return pRecvBuff.order(ByteOrder.LITTLE_ENDIAN).readInt();
+    public int DecodeInt() {
+        return pRecvBuff.readInt();
     }
 
     public float DecodeFloat() {
-        return Float.intBitsToFloat(DecodeInteger());
+        return Float.intBitsToFloat(DecodeInt());
     }
 
     public long DecodeLong() {
-        return pRecvBuff.order(ByteOrder.LITTLE_ENDIAN).readLong();
+        return pRecvBuff.readLong();
     }
 
     public double DecodeDouble() {

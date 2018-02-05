@@ -184,17 +184,17 @@ public class AvatarData {
     public static AvatarData Decode(int nAccountID, InPacket iPacket) {
         AvatarData ret = new AvatarData(nAccountID);
         ret.pCharacterStat = GW_CharacterStat.Decode(iPacket);
-        iPacket.DecodeInteger(); //?
+        iPacket.DecodeInt(); //?
         ret.pAvatarLook = AvatarLook.Decode(ret.pCharacterStat.dwCharacterID, iPacket);
         if (GW_CharacterStat.IsZeroJob(ret.pCharacterStat.nJob)) {
             ret.pZeroInfo = ZeroInfo.Decode(iPacket);
         }
         iPacket.DecodeBool();
         if (iPacket.DecodeBool()) {
-            ret.nRank = iPacket.DecodeInteger();
-            ret.nRankMove = iPacket.DecodeInteger();
-            ret.nOverallRank = iPacket.DecodeInteger();
-            ret.nOverallRankMove = iPacket.DecodeInteger();
+            ret.nRank = iPacket.DecodeInt();
+            ret.nRankMove = iPacket.DecodeInt();
+            ret.nOverallRank = iPacket.DecodeInt();
+            ret.nOverallRankMove = iPacket.DecodeInt();
         }
         return ret;
     }

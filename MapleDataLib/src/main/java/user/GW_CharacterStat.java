@@ -300,14 +300,14 @@ public class GW_CharacterStat {
     }
 
     public static GW_CharacterStat Decode(InPacket iPacket) {
-        GW_CharacterStat ret = new GW_CharacterStat(iPacket.DecodeInteger());
-        ret.dwCharacterIDForLog = iPacket.DecodeInteger();
-        ret.dwWorldIDForLog = iPacket.DecodeInteger();
+        GW_CharacterStat ret = new GW_CharacterStat(iPacket.DecodeInt());
+        ret.dwCharacterIDForLog = iPacket.DecodeInt();
+        ret.dwWorldIDForLog = iPacket.DecodeInt();
         ret.sCharacterName = iPacket.DecodeString(13);
         ret.nGender = iPacket.DecodeByte();
         ret.nSkin = iPacket.DecodeByte();
-        ret.nFace = iPacket.DecodeInteger();
-        ret.nHair = iPacket.DecodeInteger();
+        ret.nFace = iPacket.DecodeInt();
+        ret.nHair = iPacket.DecodeInt();
         ret.nMixBaseHairColor = iPacket.DecodeByte();
         ret.nMixAddHairColor = iPacket.DecodeByte();
         ret.nMixHairBaseProb = iPacket.DecodeByte();
@@ -317,69 +317,69 @@ public class GW_CharacterStat {
         ret.nDEX = iPacket.DecodeShort();
         ret.nINT = iPacket.DecodeShort();
         ret.nLUK = iPacket.DecodeShort();
-        ret.nHP = iPacket.DecodeInteger();
-        ret.nMHP = iPacket.DecodeInteger();
-        ret.nMP = iPacket.DecodeInteger();
-        ret.nMMP = iPacket.DecodeInteger();
+        ret.nHP = iPacket.DecodeInt();
+        ret.nMHP = iPacket.DecodeInt();
+        ret.nMP = iPacket.DecodeInt();
+        ret.nMMP = iPacket.DecodeInt();
         ret.nAP = iPacket.DecodeShort();
 
         if (IsExtendSPJob(ret.nJob)) {
             byte nSize = iPacket.DecodeByte();
             for (int i = 0; i < nSize; i++) {
                 iPacket.DecodeByte();
-                ret.aSP[i] = iPacket.DecodeInteger();
+                ret.aSP[i] = iPacket.DecodeInt();
             }
         } else {
             ret.aSP[0] = iPacket.DecodeShort();
         }
 
         ret.nExp64 = iPacket.DecodeLong();
-        ret.nPop = iPacket.DecodeInteger();
-        ret.nWP = iPacket.DecodeInteger();
-        iPacket.DecodeInteger();
-        ret.dwPosMap = iPacket.DecodeInteger();
+        ret.nPop = iPacket.DecodeInt();
+        ret.nWP = iPacket.DecodeInt();
+        iPacket.DecodeInt();
+        ret.dwPosMap = iPacket.DecodeInt();
         ret.nPortal = iPacket.DecodeByte();
-        iPacket.DecodeInteger();
+        iPacket.DecodeInt();
         ret.nSubJob = iPacket.DecodeShort();
 
         if (ret.nJob / 100 == 31 || ret.nJob == 3001 || ret.nJob / 100 == 36 || ret.nJob == 3002 || ret.nJob / 100 == 112 || ret.nJob == 11000) {
-            ret.nDefFaceAcc = iPacket.DecodeInteger();
+            ret.nDefFaceAcc = iPacket.DecodeInt();
         }
 
         ret.nFatigue = iPacket.DecodeShort();
-        ret.nLastFatigureUpdateTime = iPacket.DecodeInteger();
-        ret.nCharismaEXP = iPacket.DecodeInteger();
-        ret.nInsightExp = iPacket.DecodeInteger();
-        ret.nWillExp = iPacket.DecodeInteger();
-        ret.nCraftExp = iPacket.DecodeInteger();
-        ret.nSenseExp = iPacket.DecodeInteger();
-        ret.nCharmExp = iPacket.DecodeInteger();
+        ret.nLastFatigureUpdateTime = iPacket.DecodeInt();
+        ret.nCharismaEXP = iPacket.DecodeInt();
+        ret.nInsightExp = iPacket.DecodeInt();
+        ret.nWillExp = iPacket.DecodeInt();
+        ret.nCraftExp = iPacket.DecodeInt();
+        ret.nSenseExp = iPacket.DecodeInt();
+        ret.nCharmExp = iPacket.DecodeInt();
         ret.DayLimit = iPacket.DecodeString(21);
-        ret.nPvPExp = iPacket.DecodeInteger();
+        ret.nPvPExp = iPacket.DecodeInt();
         ret.nPVPGrade = iPacket.DecodeByte();
-        ret.nPvpPoint = iPacket.DecodeInteger();
+        ret.nPvpPoint = iPacket.DecodeInt();
         ret.nPvpModeLevel = iPacket.DecodeByte();
         ret.nPvpModeType = iPacket.DecodeByte();
-        ret.nEventPoint = iPacket.DecodeInteger();
+        ret.nEventPoint = iPacket.DecodeInt();
 
         for (int i = 0; i < 9; i++) {
-            iPacket.DecodeInteger();
+            iPacket.DecodeInt();
             iPacket.DecodeByte();
-            iPacket.DecodeInteger();
+            iPacket.DecodeInt();
         }
 
-        ret.ftLastLogoutTimeHigh = iPacket.DecodeInteger();
-        ret.ftLastLogoutTimeLow = iPacket.DecodeInteger();
+        ret.ftLastLogoutTimeHigh = iPacket.DecodeInt();
+        ret.ftLastLogoutTimeLow = iPacket.DecodeInt();
 
         //Legion?
         iPacket.DecodeLong();
         iPacket.DecodeLong();
-        iPacket.DecodeInteger();
-        iPacket.DecodeInteger();
-        iPacket.DecodeInteger();
+        iPacket.DecodeInt();
+        iPacket.DecodeInt();
+        iPacket.DecodeInt();
         iPacket.DecodeByte();
-        iPacket.DecodeInteger();
-        iPacket.DecodeInteger();
+        iPacket.DecodeInt();
+        iPacket.DecodeInt();
         return ret;
     }
 

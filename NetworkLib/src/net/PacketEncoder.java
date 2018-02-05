@@ -41,8 +41,8 @@ public class PacketEncoder extends MessageToByteEncoder<OutPacket> {
             pSocket.Lock();
             try {
                 int uSeqSend = pSocket.uSeqSend;
-                int uDataLen = (((pBuffer.length << 8) & 0xFF00) | (pBuffer.length >>> 8));
-                int uRawSeq = (short) ((((uSeqSend >> 24) & 0xFF) | (((uSeqSend >> 16) << 8) & 0xFF00)) ^ uSeqBase);
+                short uDataLen = (short) (((pBuffer.length << 8) & 0xFF00) | (pBuffer.length >>> 8));
+                short uRawSeq = (short) ((((uSeqSend >> 24) & 0xFF) | (((uSeqSend >> 16) << 8) & 0xFF00)) ^ uSeqBase);
 
                 if (pSocket.bEncryptData) {
                     uDataLen ^= uRawSeq;
@@ -53,7 +53,6 @@ public class PacketEncoder extends MessageToByteEncoder<OutPacket> {
                     }
                 }
 
-                out.order(ByteOrder.LITTLE_ENDIAN);
                 out.writeShort(uRawSeq);
                 out.writeShort(uDataLen);
                 out.writeBytes(pBuffer);

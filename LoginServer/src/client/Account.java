@@ -46,8 +46,8 @@ public class Account {
 
     public static Account Decode(InPacket iPacket) {
         Account ret = new Account(
-                iPacket.DecodeInteger(),
-                iPacket.DecodeInteger(),
+                iPacket.DecodeInt(),
+                iPacket.DecodeInt(),
                 iPacket.DecodeString(),
                 iPacket.DecodeString(),
                 iPacket.DecodeString(),

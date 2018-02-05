@@ -62,7 +62,7 @@ public class CLoginServerSocket extends Socket {
     public void ProcessPacket(LoginPacket nPacketID, InPacket iPacket) {
         switch (nPacketID) {
             case ProcessLogin:
-                APIFactory.GetInstance().RequestAccount(this, iPacket.DecodeInteger(), iPacket.DecodeString());
+                APIFactory.GetInstance().RequestAccount(this, iPacket.DecodeInt(), iPacket.DecodeString());
                 break;
             case CheckDuplicateID:
                 LLogin.OnCheckDuplicateID(this, iPacket);

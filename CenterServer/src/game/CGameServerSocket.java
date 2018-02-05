@@ -62,8 +62,8 @@ public class CGameServerSocket extends Socket {
         switch (nPacketID) {
             case GameServerInformation:
                 this.nChannelID = iPacket.DecodeByte();
-                this.nMaxUsers = iPacket.DecodeInteger();
-                this.nPort = iPacket.DecodeInteger();
+                this.nMaxUsers = iPacket.DecodeInt();
+                this.nPort = iPacket.DecodeInt();
                 LLogin.GameServerInformation();
                 System.out.println("[Info] Registered GameServer with channel id: " + nChannelID);
                 break;

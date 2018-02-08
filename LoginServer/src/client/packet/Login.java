@@ -25,7 +25,7 @@ import java.util.List;
 import net.InPacket;
 import net.OutPacket;
 
-import user.AvatarData;
+import client.avatar.AvatarData;
 import util.HexUtils;
 
 /**
@@ -138,7 +138,7 @@ public class Login {
         OutPacket oPacket = new OutPacket(LoopBackPacket.CreateCharacterResult);
         oPacket.EncodeBool(!bSuccess);
         if (bSuccess) {
-            pAvatar.EncodeForClient(oPacket, false);
+            pAvatar.Encode(oPacket, false);
         }
         return oPacket;
     }
@@ -239,7 +239,7 @@ public class Login {
     }
 
     public static OutPacket SelectWorldResult(ClientSocket pSocket, boolean bIsEditedList) {
-        List<AvatarData> liAvatarData = pSocket.pAccount.aAvatarData;
+        List<AvatarData> aAvatarData = pSocket.pAccount.aAvatarData;
 
         OutPacket oPacket = new OutPacket(LoopBackPacket.SelectWorldResult);
 
@@ -264,22 +264,22 @@ public class Login {
 
         //ReservedChar loops here after Long for time.
         oPacket.EncodeBool(bIsEditedList); //bIsEditedList for after you reorganize the charlist
-        Collections.sort(liAvatarData, (AvatarData o1, AvatarData o2) -> o1.nCharlistPos - o2.nCharlistPos);
+        Collections.sort(aAvatarData, (AvatarData o1, AvatarData o2) -> o1.nCharlistPos - o2.nCharlistPos);
         if (bIsEditedList) {
-            oPacket.EncodeInt(liAvatarData.size());
-            for (AvatarData avatar : liAvatarData) {
+            oPacket.EncodeInt(aAvatarData.size());
+            for (AvatarData avatar : aAvatarData) {
                 oPacket.EncodeInt(avatar.dwCharacterID);
             }
         } else {
             oPacket.EncodeInt(0);//0 chars edited
         }
 
-        oPacket.EncodeByte((byte) liAvatarData.size());
-        for (AvatarData pAvatar : liAvatarData) {
-            pAvatar.EncodeForClient(oPacket, false); //no ranking for now.
+        oPacket.EncodeByte((byte) aAvatarData.size());
+        for (AvatarData pAvatar : aAvatarData) {
+            pAvatar.Encode(oPacket, false); //no ranking for now.
         }
 
-        oPacket.EncodeByte((byte) 0); //bHasPic
+        oPacket.EncodeByte((byte) 0);
         oPacket.EncodeBool(false); //bQuerrySSNOnCreateNewCharacter LMAO LEZ STEAL THOSE NUMBERS
         oPacket.EncodeInt(pSocket.nCharacterSlots);
         oPacket.EncodeInt(0);//amount of chars bought with CS coupons? nBuyCharCount

@@ -18,8 +18,8 @@ package login.packet;
 
 import database.Database;
 import game.GameServerSessionManager;
-import inventory.GW_ItemSlotEquip;
-import inventory.ItemSlotIndex;
+import character.inventory.GW_ItemSlotEquip;
+import character.inventory.ItemSlotIndex;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,8 +30,8 @@ import login.LoginSessionManager;
 import net.InPacket;
 import net.OutPacket;
 import server.Server;
-import server.accounts.Account;
-import user.AvatarData;
+import account.Account;
+import character.AvatarData;
 
 /**
  *
@@ -58,7 +58,7 @@ public class Login {
         boolean bDuplicatedID = false;
 
         if (sCharacterName.length() < 13
-                || !Server.GetInstance().pDataFactory.pETCFactory.isLegalName(sCharacterName)
+                || !Server.GetInstance().pDataFactory.pETCFactory.IsLegalName(sCharacterName)
                 || (pSocket.mReservedCharacterNames.containsKey(sCharacterName) && (pSocket.mReservedCharacterNames.get(sCharacterName) != nSessionID))) {
             bDuplicatedID = true;
         }
@@ -84,7 +84,7 @@ public class Login {
         }
 
         if (!bDuplicatedID) {
-            pSocket.mReservedCharacterNames.put(sCharacterName, nSessionID);
+            pSocket.mReservedCharacterNames.putIfAbsent(sCharacterName, nSessionID);
         }
 
         pSocket.SendPacket((new OutPacket(LoopBackPacket.CheckDuplicatedIDResponse))

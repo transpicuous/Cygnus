@@ -18,16 +18,14 @@ package login;
 
 import io.netty.channel.Channel;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import login.packet.Login;
 import login.packet.LoginPacket;
-import login.packet.LoopBackPacket;
 import net.InPacket;
-import net.OutPacket;
 
 import net.Socket;
-import server.Configuration;
-import server.accounts.APIFactory;
-import server.accounts.Account;
+import account.APIFactory;
+import account.Account;
 import util.HexUtils;
 
 /**
@@ -36,7 +34,7 @@ import util.HexUtils;
  */
 public class LoginServerSocket extends Socket {
 
-    public HashMap<String, Integer> mReservedCharacterNames = new HashMap<>();
+    public ConcurrentHashMap<String, Integer> mReservedCharacterNames = new ConcurrentHashMap<>();
     public HashMap<Integer, Account> mAccountStorage = new HashMap<>();
 
     public LoginServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {

@@ -50,7 +50,7 @@ public class Server extends Thread {
         System.out.println("[Info] Booting up CenterServer for world " + Configuration.WORLD_NAME);
 
         Database.Initialize();
-        pDataFactory.loadData(1); //1 = Center
+        pDataFactory.Initialize();
 
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();

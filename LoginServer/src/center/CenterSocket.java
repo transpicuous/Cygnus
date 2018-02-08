@@ -24,7 +24,7 @@ import io.netty.channel.Channel;
 import java.util.ArrayList;
 import net.InPacket;
 import net.Socket;
-import user.AvatarData;
+import client.avatar.AvatarData;
 import util.HexUtils;
 
 /**

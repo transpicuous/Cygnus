@@ -16,6 +16,7 @@
  */
 package character.inventory;
 
+import database.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -73,10 +74,10 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
         pBase.eqStats.mStats.forEach((nFlag, nValue) -> this.eqBase.mStats.put(nFlag, nValue));
     }
 
-    public static GW_ItemSlotEquip Create(int dwCharacterID, int nItemID, Connection con) {
+    public static GW_ItemSlotEquip Create(int dwCharacterID, int nItemID) {
         GW_ItemSlotEquip pRet = new GW_ItemSlotEquip(nItemID);
         if (pRet != null) {
-            try {
+            try (Connection con = Database.GetConnection()) {
                 PreparedStatement ps = con.prepareStatement("INSERT INTO gw_itemslotequip (dwCharacterID, nItemID)  Values (?, ?)",
                         Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, dwCharacterID);
@@ -97,19 +98,13 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
                 ps.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-            } finally {
-                try {
-                    con.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GW_ItemSlotEquip.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
         }
         return pRet;
     }
 
-    public void Save(int dwCharacterID, Connection con) {
-        try {
+    public void Save(int dwCharacterID) {
+        try (Connection con = Database.GetConnection()) {
             PreparedStatement ps = con.prepareStatement("UPDATE gw_itemslotequip SET "
                     + "dwCharacterID = ?,"
                     + "nItemID = ?,"
@@ -253,12 +248,6 @@ public class GW_ItemSlotEquip extends GW_ItemSlotBase {
             ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(GW_ItemSlotEquip.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 

@@ -16,6 +16,7 @@
  */
 package character;
 
+import database.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -119,8 +120,8 @@ public class ZeroInfo {
         return ret;
     }
 
-    public void Update(Connection c, int dwCharacterID) {
-        try {
+    public void Update(int dwCharacterID) {
+        try (Connection c = Database.GetConnection()){
             PreparedStatement ps = c.prepareStatement("UPDATE ZeroInfo SET nSubHP = ?, nSubMP = ?, nSubSkin = ?,"
                     + " nSubHair = ?, nSubFace = ?, nSubMHP = ?, nSubMMP = ?, dbcharZeroLinkCashPart = ?, "
                     + "nMixBaseHairColor = ?, nMixAddHairColor = ?, nMixHairBaseProb = ?, bIsBeta = ?, nLapis = ?, nLazuli = ? "
@@ -148,8 +149,8 @@ public class ZeroInfo {
         }
     }
 
-    public void SaveNew(Connection c, int dwCharacterID) {
-        try {
+    public void SaveNew(int dwCharacterID) {
+        try (Connection c = Database.GetConnection()){
             PreparedStatement ps = c.prepareStatement("INSERT INTO ZeroInfo (dwCharacterID, nSubHP, nSubMP, nSubSkin, nSubHair, nSubFace, nSubMHP, nSubMMP, "
                     + "dbcharZeroLinkCashPart, nMixBaseHairColor, nMixAddHairColor, nMixHairBaseProb, bIsBeta, nLapis, nLazuli) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -176,8 +177,8 @@ public class ZeroInfo {
         }
     }
 
-    public void Load(Connection c, int dwCharacterID) {
-        try {
+    public void Load(int dwCharacterID) {
+        try (Connection c = Database.GetConnection()){
             PreparedStatement ps = c.prepareStatement("SELECT * FROM ZeroInfo WHERE dwCharacterID = ?");
             ps.setInt(1, dwCharacterID);
             ResultSet rs = ps.executeQuery();

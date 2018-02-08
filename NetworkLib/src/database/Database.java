@@ -61,12 +61,11 @@ public class Database {
     }
 
     public static Connection GetConnection() {
-        Connection con = null;
-        try {
-            con = ds.getConnection();
+        try (Connection con = ds.getConnection()){
+            return con;
         } catch (Exception ex) {
             ex.printStackTrace();
+            return null;
         }
-        return con;
     }
 }

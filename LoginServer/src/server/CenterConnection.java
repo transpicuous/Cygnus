@@ -37,7 +37,7 @@ public class CenterConnection extends Thread {
 
     private ServerBootstrap sb;
     private Channel serverChannel;
-    private static CenterConnection instance;
+    private static CenterConnection pInstance;
     private EventLoopGroup bossGroup, workerGroup;
 
     @Override
@@ -74,7 +74,7 @@ public class CenterConnection extends Thread {
         }
     }
 
-    public void shutdown(boolean planned) {
+    public void Shutdown(boolean bPlanned) {
         /*
         for (World w : activeWorlds.values()) {
             w.write(PacketCreator.getShutdown(planned));
@@ -85,10 +85,10 @@ public class CenterConnection extends Thread {
         f.awaitUninterruptibly();
     }
 
-    public static CenterConnection getInstance() {
-        if (instance == null) {
-            instance = new CenterConnection();
+    public static CenterConnection GetInstance() {
+        if (pInstance == null) {
+            pInstance = new CenterConnection();
         }
-        return instance;
+        return pInstance;
     }
 }

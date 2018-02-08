@@ -17,6 +17,7 @@
 package character;
 
 import character.inventory.GW_ItemSlotEquip;
+import database.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,8 +51,8 @@ public class AvatarData {
         this.nAccountID = nAccountID;
     }
 
-    public void SaveNew(Connection con) {
-        try {
+    public void SaveNew() {
+        try (Connection con = Database.GetConnection()) {
             PreparedStatement ps = con.prepareStatement("UPDATE AvatarData SET nAccountID = ?, nCharListPos = ?, nWorld = ?, nRank = ?, nRankMove = ?, nOverallRank = ?, nOverallRankMove = ? WHERE dwCharacterID = ?");
             ps.setInt(1, nAccountID);
             ps.setInt(2, nCharlistPos);
@@ -63,24 +64,18 @@ public class AvatarData {
             ps.setInt(8, dwCharacterID);
             ps.executeUpdate();
 
-            pCharacterStat.SaveNew(con);
-            pAvatarLook.SaveNew(con);
-            pZeroInfo.SaveNew(con, dwCharacterID);
+            pCharacterStat.SaveNew();
+            pAvatarLook.SaveNew();
+            pZeroInfo.SaveNew(dwCharacterID);
             ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(GW_ItemSlotEquip.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
-    public static AvatarData CreateAvatar(Connection con, int nAccountID, int nCharlistPos) {
+    public static AvatarData CreateAvatar(int nAccountID, int nCharlistPos) {
         AvatarData ret = new AvatarData(nAccountID);
-        try {
+        try (Connection con = Database.GetConnection()) {
             PreparedStatement ps = con.prepareStatement("INSERT INTO avatardata (nAccountID, nCharListPos)  Values (?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, nAccountID);
             ps.setInt(2, nCharlistPos);
@@ -108,19 +103,13 @@ public class AvatarData {
             return ret;
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(GW_ItemSlotEquip.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return null;
     }
 
-    public static AvatarData LoadAvatar(Connection c, int dwCharacterID) {
+    public static AvatarData LoadAvatar(int dwCharacterID) {
         AvatarData ret = new AvatarData(dwCharacterID);
-        try {
+        try (Connection c = Database.GetConnection()) {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM AvatarData WHERE dwCharacterID = ?");
             ps.setInt(1, dwCharacterID);
             ResultSet rs = ps.executeQuery();
@@ -134,9 +123,9 @@ public class AvatarData {
                 ret.nOverallRank = rs.getInt("nOverallRank");
                 ret.nOverallRankMove = rs.getInt("nOverallRankMove");
 
-                ret.pCharacterStat = GW_CharacterStat.Load(c, dwCharacterID);
-                ret.pAvatarLook = AvatarLook.LoadAvatarLook(c, dwCharacterID);
-                ret.pZeroInfo.Load(c, dwCharacterID);
+                ret.pCharacterStat = GW_CharacterStat.Load(dwCharacterID);
+                ret.pAvatarLook = AvatarLook.LoadAvatarLook(dwCharacterID);
+                ret.pZeroInfo.Load(dwCharacterID);
                 int nJob = ret.pCharacterStat.nJob;
             }
             ps.close();
@@ -163,7 +152,7 @@ public class AvatarData {
             oPacket.EncodeInt(nOverallRankMove);
         }
     }
-    
+
     public void Encode(OutPacket oPacket, boolean bRank) {
         pCharacterStat.Encode(oPacket);
         oPacket.EncodeInt(0); //New, idk, burning?

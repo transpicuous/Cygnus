@@ -84,9 +84,7 @@ public class Database {
      * @return LoginResponseCode operation result.
      */
     public static LoginResponseCode processLogin(String name, String password) {
-        Connection connection = null;
-        try {
-            connection = ds.getConnection();
+        try (Connection connection = ds.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE name = ? OR email = ?");
             ps.setString(1, name);
             ps.setString(2, name);
@@ -128,14 +126,6 @@ public class Database {
         } catch (Exception ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
             return LoginResponseCode.SERVICE_UNAVAILABLE;
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 
@@ -166,9 +156,7 @@ public class Database {
     }
 
     public static CreationResponseCode verifyAccountName(String name, String email) {
-        Connection connection = null;
-        try {
-            connection = ds.getConnection();
+        try (Connection connection = ds.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE name = ? OR email = ?");
             ps.setString(1, name);
             ps.setString(2, email);
@@ -182,14 +170,6 @@ public class Database {
             return CreationResponseCode.SUCCESS;
         } catch (Exception ex) {
             return CreationResponseCode.FAILED;
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 
@@ -205,9 +185,7 @@ public class Database {
      * @return
      */
     public static CreationResponseCode createAccount(String email, String name, String password, String birthday, String gender, String ip) {
-        Connection connection = null;
-        try {
-            connection = ds.getConnection();
+        try (Connection connection = ds.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(""
                     + "INSERT INTO accounts (name, email, password, birthday, creation, history, gender, ip) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -231,14 +209,6 @@ public class Database {
         } catch (Exception ex) {
             ex.printStackTrace();
             return CreationResponseCode.FAILED;
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 
@@ -274,9 +244,7 @@ public class Database {
     }
 
     public static boolean verifyAccount(String email) {
-        Connection connection = null;
-        try {
-            connection = ds.getConnection();
+        try (Connection connection = ds.getConnection()){
             PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET verified=true WHERE email=?");
             ps.setString(1, email);
             ps.execute();
@@ -284,14 +252,6 @@ public class Database {
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 }

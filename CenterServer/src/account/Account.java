@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import net.OutPacket;
 import character.AvatarData;
 import character.CharacterData;
+import database.Database;
 
 /**
  *
@@ -67,30 +68,24 @@ public class Account {
         oPacket.EncodeByte(nAdmin);
     }
 
-    public List<AvatarData> GetAvatars(int nAccountID, Connection con, boolean bReload) {
+    public List<AvatarData> GetAvatars(int nAccountID, boolean bReload) {
         if (!bReload) {
             return avatars;
         }
         LinkedList<AvatarData> ret = new LinkedList<>();
-        try {
+        try (Connection con = Database.GetConnection()){
             PreparedStatement ps = con.prepareStatement("SELECT dwCharacterID FROM AvatarData WHERE nAccountID = ?");
             ps.setInt(1, nAccountID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ret.add(AvatarData.LoadAvatar(con, rs.getInt("dwCharacterID")));
+                ret.add(AvatarData.LoadAvatar(rs.getInt("dwCharacterID")));
             }
             ps.close();
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return avatars;
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Account.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        } 
         return avatars = ret;
     }
 }

@@ -17,6 +17,7 @@
 package character;
 
 import character.inventory.ItemSlotIndex;
+import database.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,8 +57,8 @@ public class AvatarLook {
         this.dwCharacterID = dwCharacterID;
     }
 
-    public void SaveNew(Connection c) {
-        try {
+    public void SaveNew() {
+        try (Connection c = Database.GetConnection()) {
             PreparedStatement ps = c.prepareStatement("INSERT INTO AvatarLook (dwCharacterID, nGender, nSkin, nFace, nHair, "
                     + "nJob, nWeaponsStickerID, nWeaponID, nSubWeaponID, bDrawElfEar, nXenonDefFaceAcc, nDemonSlayerDefFaceAcc, nBeastDefFaceAcc, nBeastEars, nBeastTail, nMixedHairColor, nMixHairPercent) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -86,9 +87,9 @@ public class AvatarLook {
         }
     }
 
-    public static AvatarLook LoadAvatarLook(Connection c, int dwCharacterID) {
+    public static AvatarLook LoadAvatarLook(int dwCharacterID) {
         AvatarLook ret = new AvatarLook(dwCharacterID);
-        try {
+        try (Connection c = Database.GetConnection()) {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM AvatarLook WHERE dwCharacterID = ?");
             ps.setInt(1, dwCharacterID);
             ResultSet rs = ps.executeQuery();

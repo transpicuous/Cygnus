@@ -83,7 +83,7 @@ public class APIFactory {
                     OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInformation);
                     oPacket.EncodeInt(pAccount.nSessionID);
                     pAccount.Encode(oPacket);
-                    List<AvatarData> avatars = pAccount.GetAvatars(pAccount.nAccountID, Database.GetConnection(), true);
+                    List<AvatarData> avatars = pAccount.GetAvatars(pAccount.nAccountID, true);
                     oPacket.EncodeByte(avatars.size());
                     avatars.forEach((pAvatar) -> {
                         oPacket.EncodeInt(pAvatar.nCharlistPos);

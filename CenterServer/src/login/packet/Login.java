@@ -63,9 +63,9 @@ public class Login {
             bDuplicatedID = true;
         }
 
-        Connection conn = Database.GetConnection();
-        try {
-            PreparedStatement ps = conn.prepareStatement("SELECT dwCharacterID FROM gw_characterstat WHERE sCharacterName = ?");
+        
+        try (Connection con = Database.GetConnection()){
+            PreparedStatement ps = con.prepareStatement("SELECT dwCharacterID FROM gw_characterstat WHERE sCharacterName = ?");
             ps.setString(1, sCharacterName);
 
             ResultSet rs = ps.executeQuery();
@@ -75,12 +75,6 @@ public class Login {
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
 
         if (!bDuplicatedID) {
@@ -113,7 +107,7 @@ public class Login {
         pSocket.mReservedCharacterNames.remove(sCharacterName); //Only remove once claimed.
 
         Account pAccount = pSocket.mAccountStorage.get(nSessionID);
-        AvatarData pAvatar = AvatarData.CreateAvatar(Database.GetConnection(), pAccount.nAccountID, nCharListPosition);
+        AvatarData pAvatar = AvatarData.CreateAvatar(pAccount.nAccountID, nCharListPosition);
         pAvatar.pCharacterStat.sCharacterName = sCharacterName;
 
         int nFKMOption = iPacket.DecodeInt();
@@ -141,12 +135,11 @@ public class Login {
             }
             GW_ItemSlotEquip pItem = GW_ItemSlotEquip.Create(
                     pAvatar.dwCharacterID,
-                    nItemID,
-                    Database.GetConnection()
+                    nItemID
             );
             if (pItem != null) {
                 pItem.nSlot = ItemSlotIndex.GetBodyPartFromItem(nItemID, nGender);
-                pItem.Save(pAvatar.dwCharacterID, Database.GetConnection());
+                pItem.Save(pAvatar.dwCharacterID);
                 mBody.put((byte) pItem.nSlot, nItemID);
             }
         }
@@ -300,7 +293,7 @@ public class Login {
                 return;
         }
 
-        pAvatar.SaveNew(Database.GetConnection());
+        pAvatar.SaveNew();
         
         OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse);
         oPacket.EncodeInt(nSessionID);

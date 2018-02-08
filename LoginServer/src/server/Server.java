@@ -84,7 +84,7 @@ public class Server extends Thread {
     public void shutdown(boolean planned) {
         ChannelFuture sf = serverChannel.close();
         sf.awaitUninterruptibly();
-        CenterConnection.getInstance().shutdown(planned);
+        CenterConnection.GetInstance().Shutdown(planned);
     }
 
     public static Server getInstance() {
@@ -96,7 +96,7 @@ public class Server extends Thread {
 
     public static void main(String[] args) {
         Server.getInstance().start();
-        CenterConnection.getInstance().start();
+        CenterConnection.GetInstance().start();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override

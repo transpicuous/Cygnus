@@ -16,6 +16,7 @@
  */
 package character;
 
+import database.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -83,8 +84,8 @@ public class GW_CharacterStat {
         this.dwCharacterID = dwCharacterID;
     }
 
-    public void SaveNew(Connection c) {
-        try {
+    public void SaveNew() {
+        try (Connection c = Database.GetConnection()) {
             PreparedStatement ps = c.prepareStatement("INSERT INTO GW_CharacterStat (dwCharacterID, dwCharacterIDForLog, dwWorldIDForLog, "
                     + "sCharacterName, nGender, nSkin, nFace, nHair, nMixBaseHairColor, nMixAddHairColor, nMixHairBaseProb, nLevel, nJob,"
                     + "nSTR, nDEX, nINT, nLUK, nHP, nMHP, nMP, nMMP, nAP, nSP, nExp64, nPop, nWP, dwPosMap, nPortal, nSubJob, nDefFaceAcc, nFatigue, nLastFatigureUpdateTime, "
@@ -148,10 +149,9 @@ public class GW_CharacterStat {
         }
     }
 
-    public static GW_CharacterStat Load(Connection c, int dwCharacterID) {
+    public static GW_CharacterStat Load(int dwCharacterID) {
         GW_CharacterStat ret = new GW_CharacterStat(dwCharacterID);
-        try {
-
+        try (Connection c = Database.GetConnection()) {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM GW_CharacterStat WHERE dwCharacterID = ?");
             ps.setInt(1, dwCharacterID);
             ResultSet rs = ps.executeQuery();

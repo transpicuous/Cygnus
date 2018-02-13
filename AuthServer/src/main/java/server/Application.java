@@ -36,12 +36,8 @@ public class Application {
 
     public static final String SMTP_HOST, SERVICE_NAME, SERVICE_EMAIL;
     public static final Key TOKEN_ENCRYPTION_KEY;
+    public static final boolean REQUIRE_VERIFICATION;
 
-    /**
-     * Initializes the application.
-     *
-     * @param args Start line args.
-     */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -66,22 +62,23 @@ public class Application {
         }
         Properties p = new Properties();
         String a = "", b = "", c = "", d = "";
-        try {
-            try (FileReader fr = new FileReader(f)) {
-                p.load(fr);
-                a = p.getProperty("SMTP_HOST");
-                b = p.getProperty("SERVICE_NAME");
-                c = p.getProperty("SERVICE_EMAIL");
-                d = p.getProperty("TOKEN_ENCRYPTION_KEY");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        boolean e = false;
+        try (FileReader fr = new FileReader(f)) {
+            p.load(fr);
+            a = p.getProperty("SMTP_HOST");
+            b = p.getProperty("SERVICE_NAME");
+            c = p.getProperty("SERVICE_EMAIL");
+            d = p.getProperty("TOKEN_ENCRYPTION_KEY");
+            e = "true".equals(p.getProperty("REQUIRE_VERIFICATION"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
             System.exit(1);
         }
         SMTP_HOST = a;
         SERVICE_NAME = b;
         SERVICE_EMAIL = c;
         TOKEN_ENCRYPTION_KEY = new SecretKeySpec(d.getBytes(), "AES");
+        REQUIRE_VERIFICATION = e;
         p.clear();
     }
 }

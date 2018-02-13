@@ -25,28 +25,35 @@ import net.OutPacket;
  */
 public class Center {
 
-    public static OutPacket ProcessLogin(int nSessionID, String sToken) {
+    public static OutPacket ProcessLogin(long nSessionID, String sToken) {
         
         OutPacket oPacket = new OutPacket(LoopBackPacket.ProcessLogin);
-        oPacket.EncodeInt(nSessionID);
+        oPacket.EncodeLong(nSessionID);
         oPacket.EncodeString(sToken);
         return oPacket;
     }
 
-    public static OutPacket CheckDuplicatedID(int nSessionID, String sCharacterName) {
+    public static OutPacket CheckDuplicatedID(long nSessionID, String sCharacterName) {
         
         OutPacket oPacket = new OutPacket(LoopBackPacket.CheckDuplicateID);
-        oPacket.EncodeInt(nSessionID);
+        oPacket.EncodeLong(nSessionID);
         oPacket.EncodeString(sCharacterName);
         return oPacket;
     }
 
-    public static OutPacket CreateNewCharacter(int nSessionID, int nCharlistPosition, byte[] aData) {
+    public static OutPacket CreateNewCharacter(long nSessionID, int nCharlistPosition, byte[] aData) {
         
         OutPacket oPacket = new OutPacket(LoopBackPacket.CreateNewCharacter);
-        oPacket.EncodeInt(nSessionID);
+        oPacket.EncodeLong(nSessionID);
         oPacket.EncodeInt(nCharlistPosition);
         oPacket.Encode(aData);
+        return oPacket;
+    }
+
+    public static OutPacket UpdatePIC(long nSessionID, String sSPW) {
+        OutPacket oPacket = new OutPacket(LoopBackPacket.UpdateSPW);
+        oPacket.EncodeLong(nSessionID);
+        oPacket.EncodeString(sSPW);
         return oPacket;
     }
 

@@ -46,7 +46,7 @@ public class CenterSocket extends Socket {
 
     public void ProcessPacket(InPacket iPacket) {
         int nPacketID = iPacket.DecodeShort();
-        int nSessionID;
+        long nSessionID;
         switch (nPacketID) {
             case CenterPacket.WorldInformation:
                 this.nWorldID = iPacket.DecodeInt(); //Max 44 atm
@@ -69,7 +69,7 @@ public class CenterSocket extends Socket {
                 }
                 break;
             case CenterPacket.AccountInformation:
-                nSessionID = iPacket.DecodeInt();
+                nSessionID = iPacket.DecodeLong();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
                         pSocket.pAccount = Account.Decode(iPacket);
@@ -85,7 +85,7 @@ public class CenterSocket extends Socket {
                 });
                 break;
             case CenterPacket.CheckDuplicatedIDResponse:
-                nSessionID = iPacket.DecodeInt();
+                nSessionID = iPacket.DecodeLong();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
                         pSocket.SendPacket(Login.DuplicateIDResponse(
@@ -96,7 +96,7 @@ public class CenterSocket extends Socket {
                 });
                 break;
             case CenterPacket.OnCreateCharacterResponse:
-                nSessionID = iPacket.DecodeInt();
+                nSessionID = iPacket.DecodeLong();
                 ClientSessionManager.aSessions.forEach((pSocket) -> {
                     if (pSocket.nSessionID == nSessionID) {
                         Login.OnCreateNewCharacterResult(pSocket, iPacket);

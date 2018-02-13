@@ -31,10 +31,11 @@ import util.HexUtils;
  */
 public class ClientSocket extends Socket {
 
-    public int nSessionID = 0;
+    public long nSessionID = 0;
     public int nWorldID = -1;
     public int nChannelID = -1;
     public int nCharacterSlots = 15;//TODO
+    private long nLastAliveAck = -1;
     public Account pAccount;
 
     public ScheduledFuture<?> PingTask;
@@ -46,6 +47,9 @@ public class ClientSocket extends Socket {
     public void ProcessPacket(InPacket iPacket) {
         short nPacketID = iPacket.DecodeShort();
         switch (nPacketID) {
+            case ClientPacket.AliveAck:
+                this.nLastAliveAck = System.currentTimeMillis();
+                break; 
             case ClientPacket.NMCORequest:
                 SendPacket(Login.NCMOResult());
                 break;
@@ -76,11 +80,25 @@ public class ClientSocket extends Socket {
             case ClientPacket.CreateNewCharacter:
                 Login.OnCreateNewCharacter(this, iPacket);
                 break;
+            case ClientPacket.PermissionRequest:
+            case ClientPacket.ClientLoadingState:
+                break;
+            case ClientPacket.SetSPW:
+                Login.OnSetSPW(this, iPacket);
+                break;
             default:
                 System.out.println("[DEBUG] Received unhandled Client packet. nPacketID: " 
                         + nPacketID + ". Data: " 
                         + HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder())));
                 break;
+        }
+    }
+    
+    public void AliveReq() {
+        if (nLastAliveAck == -1 || nLastAliveAck + (20 * 1000) > System.currentTimeMillis()) {
+            SendPacket(Login.AliveReq());
+        } else {
+            this.Close();
         }
     }
 }

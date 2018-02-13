@@ -24,8 +24,7 @@ public enum CreationResponseCode {
 
     SUCCESS(0),
     FAILED(1),
-    RECENT_BLOCK(2),
-    EXISTS_UNVERIFIED(3);
+    EXISTS_UNVERIFIED(2);
 
     private final int code;
 
@@ -33,7 +32,7 @@ public enum CreationResponseCode {
         this.code = code;
     }
 
-    public int getValue() {
+    public int GetValue() {
         return this.code;
     }
 

@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with AuthAPI.  If not, see <http://www.gnu.org/licenses/>.
  */
-package server.verify;
+package server.blocklist;
 
 import server.data.Database;
 import java.util.concurrent.atomic.AtomicLong;
@@ -27,26 +27,16 @@ import org.springframework.web.bind.annotation.RestController;
  * @author kaz_v
  */
 @RestController
-public class VerificationController {
+public class AddBlockController {
 
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping("/verify")
-    public VerificationResult verify(@RequestParam(value = "email", defaultValue = "null") String email,
-            @RequestParam(value = "code", defaultValue = "null") String code) {
-
-        String right = Database.GetAuthCode(email);
-        if (right.equals("")) {
-            return new VerificationResult("No verification process was found for the supplied email.");
-        }
-        if (code.equals(right)) {
-            if (Database.SetAccountVerified(email)) {
-                return new VerificationResult("The verification was successful!");
-            }
-            return new VerificationResult("The verification failed due to an unknown reason.");
-        } else {
-            return new VerificationResult("The supplied code was incorrect.");
-        }
+    @RequestMapping("/block")
+    public boolean GetBlockList(
+            @RequestParam(value = "nType", defaultValue = "0") int nType,
+            @RequestParam(value = "sValue", defaultValue = "0.0.0.0") String sValue,
+            @RequestParam(value = "nDuration", defaultValue = "0") long nDuration
+            ) {
+        return Database.AddBlock(nType, sValue, nDuration);
     }
-
 }

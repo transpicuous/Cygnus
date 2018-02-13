@@ -16,9 +16,6 @@
  */
 package client.avatar;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import net.InPacket;
 import net.OutPacket;
 

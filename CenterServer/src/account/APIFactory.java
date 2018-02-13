@@ -16,7 +16,6 @@
  */
 package account;
 
-import database.Database;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +34,8 @@ import okhttp3.ResponseBody;
 import org.json.JSONObject;
 import server.Configuration;
 import character.AvatarData;
+import java.util.Date;
+import org.json.JSONArray;
 
 /**
  *
@@ -45,7 +46,7 @@ public class APIFactory {
     private static APIFactory instance;
     private final OkHttpClient client = new OkHttpClient();
 
-    public void RequestAccount(LoginServerSocket pSocket, int nSessionID, String sToken) {
+    public void RequestAccount(LoginServerSocket pSocket, long nSessionID, String sToken) {
         Request request = new Request.Builder()
                 .url(Configuration.AUTH_API_URL + "/account?token=" + sToken)
                 .build();
@@ -60,28 +61,33 @@ public class APIFactory {
             public void onResponse(Call call, Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (!response.isSuccessful()) {
-                        throw new IOException("[APIFactory] Unexpected code " + response);
+                        throw new IOException("[APIFactory] Unexpected response " + response);
                     }
                     JSONObject account = new JSONObject(responseBody.string());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     Account pAccount = new Account(
-                            account.getInt("id"),
+                            account.getInt("nAccountID"),
                             nSessionID,
-                            account.getString("name"),
-                            account.getString("ip"),
-                            account.getString("pic"),
-                            (byte) account.getInt("state"),
-                            (byte) account.getInt("gender"),
-                            sdf.parse(account.getString("history")),
-                            sdf.parse(account.getString("birthday")),
-                            (byte) account.getInt("admin")
+                            account.getString("sAccountName"),
+                            account.getString("sIP"),
+                            account.getString("sSecondPW"),
+                            (byte) account.getInt("nState"),
+                            (byte) account.getInt("nGender"),
+                            sdf.parse(account.getString("pLastLoadDate")),
+                            sdf.parse(account.getString("pBirthDate")),
+                            sdf.parse(account.getString("pnCreateDate")),
+                            (byte) account.getInt("nGradeCode"),
+                            sToken,
+                            (short) account.getInt("nLastWorldID"),
+                            account.getInt("nNexonCash"),
+                            account.getInt("nMaplePoint"),
+                            account.getInt("nMileage")
                     );
 
                     pSocket.mAccountStorage.put(nSessionID, pAccount);
 
-                    
                     OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInformation);
-                    oPacket.EncodeInt(pAccount.nSessionID);
+                    oPacket.EncodeLong(pAccount.nSessionID);
                     pAccount.Encode(oPacket);
                     List<AvatarData> avatars = pAccount.GetAvatars(pAccount.nAccountID, true);
                     oPacket.EncodeByte(avatars.size());
@@ -91,6 +97,209 @@ public class APIFactory {
                     });
                     pSocket.SendPacket(oPacket);
                 } catch (ParseException ex) {
+                    Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+
+    public void UpdateSecondPW(LoginServerSocket pSocket, long nSessionID, String sToken, String sSecondPW) {
+        Request request = new Request.Builder()
+                .url(Configuration.AUTH_API_URL + "/secondpw?sToken=" + sToken + "&sSecondPW=" + sSecondPW)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                OutPacket oPacket = new OutPacket(LoopBackPacket.SetSPWResult);
+                oPacket.EncodeLong(nSessionID);
+                oPacket.EncodeBool(false);
+                pSocket.SendPacket(oPacket);
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    if (!response.isSuccessful()) {
+                        throw new IOException("[APIFactory] Unexpected response " + response);
+                    }
+
+                    String result = responseBody.string();
+                    if (result.equals("true")) {
+                        Account pAccount = pSocket.mAccountStorage.get(nSessionID);
+                        if (pAccount != null) {
+                            pAccount.sSecondPW = sSecondPW;
+                        }
+                        OutPacket oPacket = new OutPacket(LoopBackPacket.SetSPWResult);
+                        oPacket.EncodeLong(nSessionID);
+                        oPacket.EncodeBool(true);
+                        pSocket.SendPacket(oPacket);
+
+                    } else {
+                        OutPacket oPacket = new OutPacket(LoopBackPacket.SetSPWResult);
+                        oPacket.EncodeLong(nSessionID);
+                        oPacket.EncodeBool(false);
+                        pSocket.SendPacket(oPacket);
+                    }
+                } catch (Exception ex) {
+                    OutPacket oPacket = new OutPacket(LoopBackPacket.SetSPWResult);
+                    oPacket.EncodeLong(nSessionID);
+                    oPacket.EncodeBool(false);
+                    pSocket.SendPacket(oPacket);
+                    Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+
+    public void Logout(String sToken) {
+        Request request = new Request.Builder()
+                .url(Configuration.AUTH_API_URL + "/logout?sToken=" + sToken)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response rspns) throws IOException {
+
+            }
+        });
+    }
+
+    public void Block(int nType, String sValue, long nDuration) {
+        Request request = new Request.Builder()
+                .url(Configuration.AUTH_API_URL + "/block?nType=" + nType + "&sValue=" + sValue + "&nDuration=" + nDuration)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response rspns) throws IOException {
+
+            }
+        });
+    }
+
+    public void Ban(String sToken) {
+        Request request = new Request.Builder()
+                .url(Configuration.AUTH_API_URL + "/ban?sToken=" + sToken)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response rspns) throws IOException {
+
+            }
+        });
+    }
+
+    public void SetIP(String sToken, String sIP) {
+        Request request = new Request.Builder()
+                .url(Configuration.AUTH_API_URL + "/ip?sToken=" + sToken + "&sIP=" + sIP)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response rspns) throws IOException {
+
+            }
+        });
+    }
+
+    public void GetBlockList(LoginServerSocket pSocket) {
+        Request request = new Request.Builder()
+                .url(Configuration.AUTH_API_URL + "/blocklist")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    if (!response.isSuccessful()) {
+                        throw new IOException("[APIFactory] Unexpected response " + response);
+                    }
+                    JSONObject pBlockList = new JSONObject(responseBody.string());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    JSONArray pIPBlock = pBlockList.getJSONArray("ip");
+                    JSONArray pHWIDBlock = pBlockList.getJSONArray("hwid");
+                    JSONArray pMACBlock = pBlockList.getJSONArray("mac");
+
+                    OutPacket oPacket = new OutPacket(LoopBackPacket.BlockList);
+
+                    //IP
+                    oPacket.EncodeInt(pIPBlock.length());
+                    pIPBlock.forEach((pBlock) -> {
+                        JSONObject pJSONBlock = (JSONObject) pBlock;
+                        try {
+                            if ((sdf.parse(pJSONBlock.getString("pBanEndDate"))).before(new Date())) {
+                                oPacket.EncodeString(pJSONBlock.getString("sIP"));
+                            } else {
+                                oPacket.EncodeString("");
+                            }
+                        } catch (ParseException ex) {
+                            Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
+                            oPacket.EncodeString("");
+                        }
+                    });
+
+                    //HWID
+                    oPacket.EncodeInt(pHWIDBlock.length());
+                    pHWIDBlock.forEach((pBlock) -> {
+                        JSONObject pJSONBlock = (JSONObject) pBlock;
+                        try {
+                            if ((sdf.parse(pJSONBlock.getString("pBanEndDate"))).before(new Date())) {
+                                oPacket.EncodeString(pJSONBlock.getString("sHWID"));
+                            } else {
+                                oPacket.EncodeString("");
+                            }
+                        } catch (ParseException ex) {
+                            Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
+                            oPacket.EncodeString("");
+                        }
+                    });
+
+                    //MAC
+                    oPacket.EncodeInt(pMACBlock.length());
+                    pMACBlock.forEach((pBlock) -> {
+                        JSONObject pJSONBlock = (JSONObject) pBlock;
+                        try {
+                            if ((sdf.parse(pJSONBlock.getString("pBanEndDate"))).before(new Date())) {
+                                oPacket.EncodeString(pJSONBlock.getString("sHWID"));
+                            } else {
+                                oPacket.EncodeString("");
+                            }
+                        } catch (ParseException ex) {
+                            Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
+                            oPacket.EncodeString("");
+                        }
+                    });
+
+                    pSocket.SendPacket(oPacket);
+                } catch (Exception ex) {
                     Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

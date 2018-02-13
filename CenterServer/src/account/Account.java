@@ -23,8 +23,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.OutPacket;
 import character.AvatarData;
 import character.CharacterData;
@@ -36,36 +34,45 @@ import database.Database;
  */
 public class Account {
 
-    public final int nAccountID, nSessionID;
-    public final String sAccountName, sIP, sPIC;
-    public final byte nState, nGender, nAdmin;
-    public final Date dBirthDay, dLastLoggedIn;
+    public final int nAccountID;
+    public long nSessionID;
+    public int nNexonCash, nMaplePoint, nMileage, nLastWorldID;
+    public String sAccountName, sIP, sToken, sSecondPW;
+    public byte nState, nGender, nGradeCode;
+    public Date dBirthDay, dLastLoggedIn, dCreateDate;
     private List<AvatarData> avatars = new LinkedList<>(); //Charlist
     public CharacterData pCharacterData; //Where we add the logged in character for transitions.
 
-    public Account(int nAccountID, int nSessionID, String sAccountName, String sIP, String sPIC,
-            byte nState, byte nGender, Date dBirthDay, Date dLastLoggedIn, byte nAdmin) {
+    public Account(int nAccountID, long nSessionID, String sAccountName, String sIP, String sSecondPW,
+            byte nState, byte nGender, Date dLastLoggedIn, Date dBirthDay, Date dCreateDate, byte nGradeCode, String sToken,
+            short nLastWorldID, int nNexonCash, int nMaplePoint, int nMileage) {
         this.nAccountID = nAccountID;
         this.nSessionID = nSessionID;
         this.sAccountName = sAccountName;
         this.sIP = sIP;
-        this.sPIC = sPIC;
+        this.sSecondPW = sSecondPW;
         this.nState = nState;
         this.nGender = nGender;
-        this.dBirthDay = dBirthDay;
         this.dLastLoggedIn = dLastLoggedIn;
-        this.nAdmin = nAdmin;
+        this.dBirthDay = dBirthDay;
+        this.dCreateDate = dCreateDate;
+        this.nGradeCode = nGradeCode;
+        this.sToken = sToken;
+        this.nLastWorldID = nLastWorldID;
+        this.nNexonCash = nNexonCash;
+        this.nMaplePoint = nMaplePoint;
+        this.nMileage = nMileage;
     }
 
     public void Encode(OutPacket oPacket) {
         oPacket.EncodeInt(nAccountID);
-        oPacket.EncodeInt(nSessionID);
+        oPacket.EncodeLong(nSessionID);
         oPacket.EncodeString(sAccountName);
         oPacket.EncodeString(sIP);
-        oPacket.EncodeString(sPIC);
+        oPacket.EncodeString(sSecondPW);
         oPacket.EncodeByte(nState);
         oPacket.EncodeByte(nGender);
-        oPacket.EncodeByte(nAdmin);
+        oPacket.EncodeByte(nGradeCode);
     }
 
     public List<AvatarData> GetAvatars(int nAccountID, boolean bReload) {

@@ -17,7 +17,7 @@
 package server.data;
 
 import server.create.CreationResponseCode;
-import server.login.account.Account;
+import server.account.Account;
 import server.crypto.BCrypt;
 import server.crypto.TokenFactory;
 import server.login.LoginResponseCode;
@@ -30,15 +30,15 @@ import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -46,11 +46,9 @@ import org.joda.time.DateTimeZone;
  */
 public class Database {
 
-    private static final HikariConfig config; //Hikari database config.
-    private static final HikariDataSource ds; //Hikari datasource based on config.
-    private static HashMap<String, Account> accounts = new HashMap<>(); //Map of loaded accounts by token.
+    private static final HikariConfig pConfig; //Hikari database config.
+    private static final HikariDataSource pDataSource; //Hikari datasource based on config.
     private static HashMap<String, Pair<String, Date>> authCodes = new HashMap<>(); //Map of account verification codes sorted by email.
-    private static Random rand = new Random();
 
     static {
         //Check if file exists, if not: create and use default file.
@@ -71,98 +69,91 @@ public class Database {
             }
             System.out.println("No database.properties file found. A default one has been generated.");
         }
-        config = new HikariConfig("database.properties");
-        ds = new HikariDataSource(config);
+        pConfig = new HikariConfig("database.properties");
+        pDataSource = new HikariDataSource(pConfig);
     }
 
-    /**
-     * Loads an account from the database by given name/e-mail. If the password matches the on in the database a token is generated and the
-     * account is loaded. Incorrect account info or database errors are caught and result in different return codes.
-     *
-     * @param name Account username or email
-     * @param password Account password (plaintext)
-     * @return LoginResponseCode operation result.
-     */
-    public static LoginResponseCode processLogin(String name, String password) {
-        try (Connection connection = ds.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE name = ? OR email = ?");
-            ps.setString(1, name);
-            ps.setString(2, name);
+    public static Account GetAccountByToken(String sToken) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE sToken = ?");
+            ps.setString(1, sToken);
             ResultSet rs = ps.executeQuery();
+            Account pRet = null;
             if (rs.first()) {
-                int id = rs.getInt("id");
-                String pwd = rs.getString("password");
-                int banned = rs.getInt("banned");
-                if (banned > 0) {
-                    return LoginResponseCode.BANNED;
-                }
-                if (!BCrypt.checkpw(password, pwd)) {
-                    return LoginResponseCode.WRONG_INFO;
-                }
-                String email = rs.getString("email");
-                boolean verified = rs.getBoolean("verified");
-                Date genTime = new Date();
-                String token = TokenFactory.genToken(id, name, genTime);
-                accounts.put(token, new Account(
-                        id,
-                        verified,
-                        rs.getString("name"),
-                        token,
-                        email,
-                        rs.getString("ip"),
-                        rs.getByte("state"),
-                        rs.getByte("admin"),
-                        rs.getByte("gender"),
-                        rs.getDate("creation"),
-                        genTime,
-                        rs.getDate("history"),
-                        rs.getDate("birthday"),
-                        rs.getShort("last_world"),
-                        rs.getString("pic")));
-                return verified ? LoginResponseCode.SUCCESS : LoginResponseCode.UNVERIFIED;
-            } else {
-                return LoginResponseCode.FAIL_UNKNOWN;
+                pRet = new Account(
+                        rs.getInt("nAccountID"),
+                        rs.getInt("nNexonCash"),
+                        rs.getInt("nMaplePoint"),
+                        rs.getInt("nMileage"),
+                        rs.getBoolean("bVerified"),
+                        rs.getString("sAccountName"),
+                        rs.getString("sToken"),
+                        rs.getString("sEmail"),
+                        rs.getString("sIP"),
+                        rs.getString("sSecondPW"),
+                        rs.getByte("nGradeCode"),
+                        rs.getByte("nState"),
+                        rs.getByte("nGender"),
+                        rs.getDate("pCreateDate"),
+                        rs.getDate("pLastLoadDate"),
+                        rs.getDate("pBirthDate"),
+                        rs.getShort("nLastWorldID")
+                );
             }
+            rs.close();
+            ps.close();
+            return pRet;
         } catch (Exception ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
-            return LoginResponseCode.SERVICE_UNAVAILABLE;
+            return null;
         }
     }
 
-    /**
-     * Gets Account from loaded accounts by name
-     *
-     * @param name Name of the Account.
-     * @return Account
-     */
-    public static Account getAccountByName(String name) {
-        for (Account acc : accounts.values()) {
-            if (acc.getName().equals(name)
-                    || acc.getEmail().equals(name)) {
-                return acc;
+    public static Account GetAccountByName(String sAccountName) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE sAccountName = ? OR sEmail = ?");
+            ps.setString(1, sAccountName);
+            ps.setString(2, sAccountName);
+            ResultSet rs = ps.executeQuery();
+            Account pRet = null;
+            if (rs.first()) {
+                pRet = new Account(
+                        rs.getInt("nAccountID"),
+                        rs.getInt("nNexonCash"),
+                        rs.getInt("nMaplePoint"),
+                        rs.getInt("nMileage"),
+                        rs.getBoolean("bVerified"),
+                        rs.getString("sAccountName"),
+                        rs.getString("sToken"),
+                        rs.getString("sEmail"),
+                        rs.getString("sIP"),
+                        rs.getString("sSecondPW"),
+                        rs.getByte("nGradeCode"),
+                        rs.getByte("nState"),
+                        rs.getByte("nGender"),
+                        rs.getDate("pCreateDate"),
+                        rs.getDate("pLastLoadDate"),
+                        rs.getDate("pBirthDate"),
+                        rs.getShort("nLastWorldID")
+                );
             }
+            rs.close();
+            ps.close();
+            return pRet;
+        } catch (Exception ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
     }
 
-    /**
-     * Gets Account from loaded accounts by token
-     *
-     * @param token Token assigned to the Account.
-     * @return Account
-     */
-    public static Account getAccountByToken(String token) {
-        return accounts.get(token);
-    }
-
-    public static CreationResponseCode verifyAccountName(String name, String email) {
-        try (Connection connection = ds.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE name = ? OR email = ?");
-            ps.setString(1, name);
-            ps.setString(2, email);
+    public static CreationResponseCode CheckDuplicatedID(String sAccountName, String sEmail) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE sAccountName = ? OR sEmail = ?");
+            ps.setString(1, sAccountName);
+            ps.setString(2, sEmail);
             ResultSet rs = ps.executeQuery();
             if (rs.first()) {
-                if (rs.getBoolean("verified")) {
+                if (rs.getBoolean("bVerified")) {
                     return CreationResponseCode.FAILED;
                 }
                 return CreationResponseCode.EXISTS_UNVERIFIED;
@@ -173,37 +164,68 @@ public class Database {
         }
     }
 
-    /**
-     *
-     *
-     * @param email New Account's email
-     * @param name New Account's name
-     * @param password New Account's password
-     * @param birthday New Account's birthday
-     * @param gender New Account's gender
-     * @param ip New Account's ip
-     * @return
-     */
-    public static CreationResponseCode createAccount(String email, String name, String password, String birthday, String gender, String ip) {
-        try (Connection connection = ds.getConnection()) {
+    public static LoginResponseCode CheckPassword(String sAccount, String sPassword) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE sAccountName = ? OR sEmail = ?");
+            ps.setString(1, sAccount);
+            ps.setString(2, sAccount);
+            ResultSet rs = ps.executeQuery();
+            if (rs.first()) {
+                if (rs.getByte("nBanned") > 0) {
+                    return LoginResponseCode.BANNED;
+                }
+                if (rs.getByte("nState") > 0) {
+                    return LoginResponseCode.BLOCKED;
+                }
+                if (BCrypt.checkpw(sPassword, rs.getString("sPassword"))) {
+                    return LoginResponseCode.SUCCESS;
+                } else {
+                    return LoginResponseCode.WRONG_INFO;
+                }
+            } else {
+                return LoginResponseCode.WRONG_INFO;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return LoginResponseCode.SERVICE_UNAVAILABLE;
+        }
+    }
+
+    public static String GenerateToken(Account pAccount) {
+        String sToken = TokenFactory.genToken(pAccount.getnAccountID(), pAccount.getsAccountName(), new Date());
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET sToken=? WHERE sAccountName=?");
+            ps.setString(1, sToken);
+            ps.setString(2, pAccount.getsAccountName());
+            ps.execute();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "ERROR";
+        }
+        return sToken;
+    }
+
+    public static CreationResponseCode CreateAccount(String sEmail, String sAccountName,
+            String sPassword, String pBirthDate, String nGender) {
+
+        try (Connection connection = pDataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(""
-                    + "INSERT INTO accounts (name, email, password, birthday, creation, history, gender, ip) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            ps.setString(1, name);
-            ps.setString(2, email);
-            ps.setString(3, BCrypt.hashpw(password, BCrypt.gensalt()));
+                    + "INSERT INTO accounts (sAccountName, sEmail, sPassword, pBirthDate, pCreateDate, pLastLoadDate, nGender) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+            ps.setString(1, sAccountName);
+            ps.setString(2, sEmail);
+            ps.setString(3, BCrypt.hashpw(sPassword, BCrypt.gensalt()));
             ps.setDate(4, new java.sql.Date(
                     new DateTime(
-                            Integer.parseInt(birthday.substring(4, 8)), //y
-                            Integer.parseInt(birthday.substring(2, 4)), //m
-                            Integer.parseInt(birthday.substring(0, 2)), //d
+                            Integer.parseInt(pBirthDate.substring(4, 8)), //y
+                            Integer.parseInt(pBirthDate.substring(2, 4)), //m
+                            Integer.parseInt(pBirthDate.substring(0, 2)), //d
                             0, 0, DateTimeZone.getDefault()
                     ).getMillis())
             );
             ps.setDate(5, new java.sql.Date(System.currentTimeMillis()));
             ps.setDate(6, new java.sql.Date(System.currentTimeMillis()));
-            ps.setByte(7, (byte) Integer.parseInt(gender));
-            ps.setString(8, ip);
+            ps.setByte(7, (byte) Integer.parseInt(nGender));
             ps.execute();
             return CreationResponseCode.SUCCESS;
         } catch (Exception ex) {
@@ -212,42 +234,151 @@ public class Database {
         }
     }
 
-    public static void checkTokenExpiration() {
-        long expiration = (1000 * 60 * 15); //Tokens expire after 15 mins.
-        long time = (new Date()).getTime(); //Current time.
-        accounts.forEach((token, account) -> {
-            if (account.getLoaded().getTime() + expiration <= time) {
-                accounts.remove(token);
-            }
-        });
-    }
-
-    public static void checkAuthCodesExpirated() {
-        long expiration = (1000 * 60 * 15); //Auth codes expire after 15 mins.
-        long time = (new Date()).getTime(); //Current time.
-        authCodes.forEach((name, pair) -> {
-            if (pair.getValue().getTime() + expiration <= time) {
-                authCodes.remove(name);
-            }
-        });
-    }
-
-    public static String getAuthCode(String email) {
-        if (authCodes.containsKey(email)) {
-            return authCodes.get(email).getKey();
+    public static String GetAuthCode(String sEmail) {
+        if (authCodes.containsKey(sEmail)) {
+            return authCodes.get(sEmail).getKey();
         }
         return "";
     }
 
-    public static void addAuthcode(String email) {
-        authCodes.put(email, new Pair<>(TokenFactory.genAuthenCode(), new Date()));
+    public static void CreateAuthCode(String sEmail) {
+        authCodes.put(sEmail, new Pair<>(TokenFactory.genAuthenCode(), new Date()));
     }
 
-    public static boolean verifyAccount(String email) {
-        try (Connection connection = ds.getConnection()){
-            PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET verified=true WHERE email=?");
-            ps.setString(1, email);
+    public static boolean SetAccountVerified(String sEmail) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET bVerified=true WHERE sEmail=?");
+            ps.setString(1, sEmail);
             ps.execute();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean SetSecondPW(String sToken, String sSecondPW) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET sSecondPW=? WHERE sToken=?");
+            ps.setString(1, sSecondPW);
+            ps.setString(2, sToken);
+            ps.execute();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean SetIP(String sToken, String sIP) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET sIP=? WHERE sToken=?");
+            ps.setString(1, sIP);
+            ps.setString(2, sToken);
+            ps.execute();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean SetState(String sToken, byte nState) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET nState=? WHERE sToken=?");
+            ps.setByte(1, nState);
+            ps.setString(2, sToken);
+            ps.execute();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+    
+    public static boolean Ban(String sToken) {
+        try (Connection connection = pDataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET nBanned=1 WHERE sToken=?");
+            ps.setString(1, sToken);
+            ps.execute();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static JSONObject GetBlockList() {
+        JSONObject pBlockListJSON = new JSONObject();
+        try (Connection connection = pDataSource.getConnection()) {
+
+            //IP
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM ipban");
+            ResultSet rs = ps.executeQuery();
+            JSONArray aBlockedIP = new JSONArray();
+            while (rs.next()) {
+                JSONObject pBlock = new JSONObject();
+                pBlock.put("sIP", rs.getString("sIP"));
+                pBlock.put("pBanDate", rs.getDate("pBanDate"));
+                pBlock.put("pBanEndDate", rs.getDate("pBanEndDate"));
+                aBlockedIP.put(pBlock);
+            }
+
+            //HWID
+            ps = connection.prepareStatement("SELECT * FROM hwidban");
+            rs = ps.executeQuery();
+            JSONArray aBlockedHWID = new JSONArray();
+            while (rs.next()) {
+                JSONObject pBlock = new JSONObject();
+                pBlock.put("sHWID", rs.getString("sHWID"));
+                pBlock.put("pBanDate", rs.getDate("pBanDate"));
+                pBlock.put("pBanEndDate", rs.getDate("pBanEndDate"));
+                aBlockedHWID.put(pBlock);
+            }
+
+            //MAC
+            ps = connection.prepareStatement("SELECT * FROM macban");
+            rs = ps.executeQuery();
+            JSONArray aBlockedMAC = new JSONArray();
+            while (rs.next()) {
+                JSONObject pBlock = new JSONObject();
+                pBlock.put("sMAC", rs.getString("sMAC"));
+                pBlock.put("pBanDate", rs.getDate("pBanDate"));
+                pBlock.put("pBanEndDate", rs.getDate("pBanEndDate"));
+                aBlockedMAC.put(pBlock);
+            }
+
+            //Finalize
+            pBlockListJSON.put("ip", aBlockedIP);
+            pBlockListJSON.put("hwid", aBlockedHWID);
+            pBlockListJSON.put("mac", aBlockedMAC);
+            return pBlockListJSON;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return pBlockListJSON;
+        }
+    }
+
+    public static boolean AddBlock(int nType, String sValue, long nDuration) {
+        try (Connection connection = pDataSource.getConnection()) {
+        PreparedStatement ps;
+            switch (nType) {
+                case 1:
+                    ps = connection.prepareStatement("INSERT INTO ipban (sIP, pBanDate, pBanEndDate) VALUES (?, ?, ?)");
+                    break;
+                case 2:
+                    ps = connection.prepareStatement("INSERT INTO hwidban (sHWID, pBanDate, pBanEndDate) VALUES (?, ?, ?)");
+                    break;
+                case 3:
+                    ps = connection.prepareStatement("INSERT INTO macban (sMAC, pBanDate, pBanEndDate) VALUES (?, ?, ?)");
+                    break;
+                default:
+                    return false;
+            }
+            ps.setString(1, sValue);
+            ps.setDate(2, new java.sql.Date(System.currentTimeMillis()));
+            ps.setDate(3, new java.sql.Date(System.currentTimeMillis() + nDuration));
+            ps.executeUpdate();
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -22,13 +22,13 @@ package server.verify;
  */
 public class VerificationResult {
 
-    private final String message;
+    private final String sMessage;
 
-    public VerificationResult(String message) {
-        this.message = message;
+    public VerificationResult(String sMessage) {
+        this.sMessage = sMessage;
     }
 
-    public String getMessage() {
-        return message;
+    public String GetMessage() {
+        return sMessage;
     }
 }

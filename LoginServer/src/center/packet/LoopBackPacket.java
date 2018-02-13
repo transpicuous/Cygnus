@@ -24,5 +24,6 @@ public class LoopBackPacket {
 
     public static final short ProcessLogin = 1,
             CheckDuplicateID = 2,
-            CreateNewCharacter = 3;
+            CreateNewCharacter = 3,
+            UpdateSPW = 4;
 }

@@ -53,7 +53,7 @@ public class Login {
     }
 
     public static void OnCheckDuplicateID(LoginServerSocket pSocket, InPacket iPacket) {
-        int nSessionID = iPacket.DecodeInt();
+        long nSessionID = iPacket.DecodeLong();
         String sCharacterName = iPacket.DecodeString();
         boolean bDuplicatedID = false;
 
@@ -82,7 +82,7 @@ public class Login {
         }
 
         pSocket.SendPacket((new OutPacket(LoopBackPacket.CheckDuplicatedIDResponse))
-                .EncodeInt(nSessionID)
+                .EncodeLong(nSessionID)
                 .EncodeString(sCharacterName)
                 .EncodeBool(bDuplicatedID)
                 
@@ -91,14 +91,14 @@ public class Login {
 
     public static void OnCreateNewCharacter(LoginServerSocket pSocket, InPacket iPacket) {
         //TODO: pCharacterData, Specifically inventories. Do them before sending back to login ya lazy cunt.
-        int nSessionID = iPacket.DecodeInt();
+        long nSessionID = iPacket.DecodeLong();
         int nCharListPosition = iPacket.DecodeInt();
         String sCharacterName = iPacket.DecodeString();
         if (!pSocket.mReservedCharacterNames.containsKey(sCharacterName)
                 || (pSocket.mReservedCharacterNames.get(sCharacterName) != nSessionID)) {
             
             OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse);
-            oPacket.EncodeInt(nSessionID);
+            oPacket.EncodeLong(nSessionID);
             oPacket.EncodeBool(false);
             pSocket.SendPacket(oPacket);
             return;
@@ -287,7 +287,7 @@ public class Login {
             default:
                 
                 OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse);
-                oPacket.EncodeInt(nSessionID);
+                oPacket.EncodeLong(nSessionID);
                 oPacket.EncodeBool(false);
                 pSocket.SendPacket(oPacket);
                 return;
@@ -296,9 +296,9 @@ public class Login {
         pAvatar.SaveNew();
         
         OutPacket oPacket = new OutPacket(LoopBackPacket.OnCreateCharacterResponse);
-        oPacket.EncodeInt(nSessionID);
+        oPacket.EncodeLong(nSessionID);
         oPacket.EncodeBool(true);
-        pAvatar.Encode(oPacket, pAccount.nAdmin <= 0);
+        pAvatar.Encode(oPacket, pAccount.nGradeCode <= 0);
         pSocket.SendPacket(oPacket);
     }
 }

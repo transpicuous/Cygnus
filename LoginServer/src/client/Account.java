@@ -24,21 +24,23 @@ import java.util.LinkedList;
 import java.util.List;
 import net.InPacket;
 import client.avatar.AvatarData;
+import crypto.BCrypt;
 
 public class Account {
 
-    public final int nAccountID, nSessionID;
-    public final String sAccountName, sIP, sPIC;
+    public final int nAccountID;
+    public final long nSessionID;
+    public String sAccountName, sIP, sSPW;
     public final byte nState, nGender, nAdmin;
     public List<AvatarData> aAvatarData = new LinkedList<>();
 
-    private Account(int nAccountID, int nSessionID, String sAccountName, String sIP, String sPIC,
+    private Account(int nAccountID, long nSessionID, String sAccountName, String sIP, String sPIC,
             byte nState, byte nGender, byte nAdmin) {
         this.nAccountID = nAccountID;
         this.nSessionID = nSessionID;
         this.sAccountName = sAccountName;
         this.sIP = sIP;
-        this.sPIC = sPIC;
+        this.sSPW = sPIC;
         this.nState = nState;
         this.nGender = nGender;
         this.nAdmin = nAdmin;
@@ -47,7 +49,7 @@ public class Account {
     public static Account Decode(InPacket iPacket) {
         Account pRet = new Account(
                 iPacket.DecodeInt(),
-                iPacket.DecodeInt(),
+                iPacket.DecodeLong(),
                 iPacket.DecodeString(),
                 iPacket.DecodeString(),
                 iPacket.DecodeString(),
@@ -56,6 +58,13 @@ public class Account {
                 iPacket.DecodeByte()
         );
         return pRet;
+    }
+
+    public void SetSPW(InPacket iPacket) {
+        if (!this.sSPW.isEmpty()) {
+            return;
+        }
+        this.sSPW = BCrypt.hashpw(iPacket.DecodeString(), BCrypt.gensalt());
     }
 
 }

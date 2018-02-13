@@ -3,28 +3,57 @@ USE `accounts`;
 
 DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE IF NOT EXISTS `accounts` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(13) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `pic` varchar(13) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT "",
-  `state` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `banned` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `bantime` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
-  `birthday` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
-  `creation` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
-  `history` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
-  `admin` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `nAccountID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `nNexonCash` int(11) unsigned NOT NULL default '0',
+  `nMaplePoint` int(11) unsigned NOT NULL default '0',
+  `nMileage` int(11) unsigned NOT NULL default '0',
+  `bVerified` BOOL NOT NULL DEFAULT false,
+  `sAccountName` varchar(13) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sPassword` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sToken` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL default "",
+  `sEmail` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sIP` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL default "0.0.0.0",
+  `sSecondPW` varchar(13) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT "",
+  `nGradeCode` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `nState` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `nGender` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `nBanned` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `pBanDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  `pCreateDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  `pLastLoadDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  `pBirthDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
   `gender` tinyint(2) unsigned NOT NULL DEFAULT '10',
-  `ip` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `verified` BOOL NOT NULL DEFAULT false,
-  `last_world` tinyint(2) NOT NULL DEFAULT '-1',
+  `nLastWorldID` tinyint(2) NOT NULL DEFAULT '-1',
   
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name_UNIQUE` (`name`),
-  UNIQUE KEY `email_UNIQUE` (`email`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`nAccountID`),
+  UNIQUE KEY `sAccountName_UNIQUE` (`sAccountName`),
+  UNIQUE KEY `sEmail_UNIQUE` (`sEmail`),
+  UNIQUE KEY `nAccountID_UNIQUE` (`nAccountID`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `ipban`;
+CREATE TABLE IF NOT EXISTS `ipban` (
+  `sIP` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pBanDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  `pBanEndDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  PRIMARY KEY (`sIP`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `macban`;
+CREATE TABLE IF NOT EXISTS `macban` (
+  `sMac` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pBanDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  `pBanEndDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  PRIMARY KEY (`sMac`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `hwidban`;
+CREATE TABLE IF NOT EXISTS `hwidban` (
+  `sHWID` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pBanDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  `pBanEndDate` timestamp NOT NULL DEFAULT '1971-01-01 00:00:01',
+  PRIMARY KEY (`sHWID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping database structure for center
 DROP DATABASE IF EXISTS `center`;
@@ -307,22 +336,6 @@ CREATE TABLE IF NOT EXISTS `telerock` (
 DELETE FROM `telerock`;
 /*!40000 ALTER TABLE `telerock` DISABLE KEYS */;
 /*!40000 ALTER TABLE `telerock` ENABLE KEYS */;
-
--- Dumping structure for table center.transition
-DROP TABLE IF EXISTS `transition`;
-CREATE TABLE IF NOT EXISTS `transition` (
-  `account` int(11) unsigned NOT NULL,
-  `player` int(11) unsigned NOT NULL,
-  `source` mediumint(4) unsigned NOT NULL,
-  PRIMARY KEY (`account`),
-  UNIQUE KEY `account_UNIQUE` (`account`),
-  UNIQUE KEY `player_UNIQUE` (`player`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table center.transition: 0 rows
-DELETE FROM `transition`;
-/*!40000 ALTER TABLE `transition` DISABLE KEYS */;
-/*!40000 ALTER TABLE `transition` ENABLE KEYS */;
 
 -- Dumping structure for table center.zeroinfo
 DROP TABLE IF EXISTS `zeroinfo`;

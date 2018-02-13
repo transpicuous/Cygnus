@@ -16,7 +16,7 @@
  */
 package server.login;
 
-import server.login.account.Account;
+import server.account.Account;
 import server.data.Database;
 import server.data.Email;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,31 +35,32 @@ public class LoginController {
 
     @RequestMapping("/login")
     public LoginResponse login(
-            @RequestParam(value = "name", defaultValue = "null") String name,
-            @RequestParam(value = "password", defaultValue = "password") String password) {
+            @RequestParam(value = "name", defaultValue = "null") String sName,
+            @RequestParam(value = "password", defaultValue = "password") String sPassword) {
 
-        LoginResponseCode code = Database.processLogin(name, password);
-        if (code == LoginResponseCode.SUCCESS) {
-            Account acc = Database.getAccountByName(name);
-            return new LoginResponse(acc.getName(), acc.getToken(), code);
+        LoginResponseCode nCode = Database.CheckPassword(sName, sPassword);
+        if (nCode == LoginResponseCode.SUCCESS) {
+            String sToken = Database.GenerateToken(Database.GetAccountByName(sName));
+            Database.SetState(sToken, (byte) 1);
+            return new LoginResponse(sName, sToken, nCode);
         }
 
-        if (code == LoginResponseCode.UNVERIFIED) {
-            Account acc = Database.getAccountByName(name);
-            if (!Database.getAuthCode(acc.getName()).equals("")) {
+        if (nCode == LoginResponseCode.UNVERIFIED) {
+            Account pAccount = Database.GetAccountByName(sName);
+            if (!Database.GetAuthCode(pAccount.getsAccountName()).equals("")) {
                 return new LoginResponse("Please use the verification code sent to the account's "
-                        + "e-mail address to verify the account.", "-1", code);
+                        + "e-mail address to verify the account.", "-1", nCode);
             } else {
-                Database.addAuthcode(acc.getEmail());
+                Database.CreateAuthCode(pAccount.getsEmail());
                 try {
-                    Email.sendAuthMail(acc.getEmail(), Database.getAuthCode(acc.getEmail()));
+                    Email.sendAuthMail(pAccount.getsEmail(), Database.GetAuthCode(pAccount.getsEmail()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                return new LoginResponse("New authentication code sent to account email.", "-1", code);
+                return new LoginResponse("New authentication code sent to account email.", "-1", nCode);
             }
         }
 
-        return new LoginResponse("Login failed.", "null", code);
+        return new LoginResponse("Login failed.", "null", nCode);
     }
 }

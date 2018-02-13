@@ -230,7 +230,7 @@ public class Login {
         oPacket.EncodeString(pAccount.sAccountName);
         oPacket.EncodeLong(0);
         oPacket.EncodeInt(3);
-        oPacket.EncodeLong(0);
+        oPacket.EncodeLong(pAccount.nSessionID);
         oPacket.EncodeString("");//nAge?
         JobOrder.Encode(oPacket);
         oPacket.EncodeBool(false); //Make view world button shining?
@@ -279,7 +279,7 @@ public class Login {
             pAvatar.Encode(oPacket, false); //no ranking for now.
         }
 
-        oPacket.EncodeByte((byte) 0);
+        oPacket.EncodeBool(!pSocket.pAccount.sSPW.isEmpty());
         oPacket.EncodeBool(false); //bQuerrySSNOnCreateNewCharacter LMAO LEZ STEAL THOSE NUMBERS
         oPacket.EncodeInt(pSocket.nCharacterSlots);
         oPacket.EncodeInt(0);//amount of chars bought with CS coupons? nBuyCharCount
@@ -312,10 +312,10 @@ public class Login {
         CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
             if (pCenterSocket.nWorldID == pSocket.nWorldID) {
                 pCenterSocket.SendPacket(Center.CreateNewCharacter(
-                                pSocket.nSessionID,
-                                pSocket.pAccount.aAvatarData.size() + 1,
-                                iPacket.Decode(iPacket.GetRemainder())
-                        )
+                        pSocket.nSessionID,
+                        pSocket.pAccount.aAvatarData.size() + 1,
+                        iPacket.Decode(iPacket.GetRemainder())
+                )
                 );
             }
         });
@@ -360,6 +360,16 @@ public class Login {
             pSocket.pAccount.aAvatarData.add(pAvatar);
         }
         pSocket.SendPacket(CreateNewCharacterResult(pAvatar, bSuccess));
+    }
+
+    public static void OnSetSPW(ClientSocket pSocket, InPacket iPacket) {
+        Account pAccount = pSocket.pAccount;
+        
+        CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
+            if (pCenterSocket.nWorldID == pSocket.nWorldID) {
+                pCenterSocket.SendPacket(Center.UpdatePIC(pSocket.nSessionID, iPacket.DecodeString()));
+            }
+        });
     }
 
     public class Balloon {

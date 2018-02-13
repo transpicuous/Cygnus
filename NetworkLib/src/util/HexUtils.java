@@ -16,6 +16,14 @@
  */
 package util;
 
+/**
+ * Artifact from Invictus. Documentation is not going to be added since
+ * the logic is fairly straightforward.
+ * 
+ * @author OdinMS (original code)
+ * @author Zygon (modified code)
+ */
+
 public final class HexUtils {
 
     private static final char[] HEX_CHARS = {

@@ -34,8 +34,8 @@ import util.HexUtils;
  */
 public class LoginServerSocket extends Socket {
 
-    public ConcurrentHashMap<String, Integer> mReservedCharacterNames = new ConcurrentHashMap<>();
-    public HashMap<Integer, Account> mAccountStorage = new HashMap<>();
+    public ConcurrentHashMap<String, Long> mReservedCharacterNames = new ConcurrentHashMap<>();
+    public HashMap<Long, Account> mAccountStorage = new HashMap<>();
 
     public LoginServerSocket(Channel channel, int uSeqSend, int uSeqRcv) {
         super(channel, uSeqSend, uSeqRcv);

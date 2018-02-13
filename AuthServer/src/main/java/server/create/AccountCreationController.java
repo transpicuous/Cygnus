@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.CharEncoding;
@@ -62,33 +63,33 @@ public class AccountCreationController {
 
         try {
             (new InternetAddress(email)).validate();
-        } catch (Exception ex) {
-            return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
+        } catch (AddressException ex) {
+            return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Invalid e-mail address.");
         }
 
         if (name.length() < 5 || name.length() > 13) {
-            return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
+            return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Username has to be at least 5 and maximum 13 characters long.");
         }
 
         if (password.length() < 5 || password.length() > 13) {
-            return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
+            return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Password has to be at least 5 and maximum 13 characters long.");
         }
 
         if (!(gender.equals("0") || gender.equals("1"))) {
-            return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
+            return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Gender has to be either 0 (male) or 1 (female).");
         }
 
         if (!Charset.forName(CharEncoding.UTF_8).newEncoder().canEncode(name)) {
-            return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
+            return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Username contains invalid characters. Only utf8 characters are supported.");
         }
 
         if (!Charset.forName(CharEncoding.UTF_8).newEncoder().canEncode(password)) {
-            return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
+            return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Password contains invalid characters. Only utf8 characters are supported.");
         }
 
@@ -99,47 +100,40 @@ public class AccountCreationController {
             if (day > 31 || day < 1
                     || month > 12 || month < 1
                     || year > 9999 || year < 1900) {
-                return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
+                return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                         "Invalid birthday. Please use format ddmmyyyy");
             }
-        } catch (Exception ex) {
-            return new AccountCreationResponse(CreationResponseCode.FAILED.getValue(),
+        } catch (NumberFormatException ex) {
+            return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Invalid birthday. Please use format ddmmyyyy");
         }
 
-        String ip = request.getRemoteAddr(); //Verify if IP has made an account recently.
-        if (CreationThrottle.checkIP(ip)) {
-            CreationResponseCode valid = Database.verifyAccountName(name, email);
-            switch (valid) {
-                case FAILED:
-                    return new AccountCreationResponse(valid.getValue(),
-                            "The provided name or email is already in use.");
-                case EXISTS_UNVERIFIED:
-                    return new AccountCreationResponse(valid.getValue(),
-                            "This account already exists but hasn't been verified yet. Please login to this account to initiate "
-                            + "the verification process.");
-                case SUCCESS:
-                    CreationResponseCode returned = Database.createAccount(email, name, password, birthday, gender, ip);
-                    String message = "Account created succesfully! Please use to code sent to your e-mail adress to verify the account.";
-                    if (returned == CreationResponseCode.FAILED) {
-                        message = "Failed";
-                    } else {
-                        try {
-                            Database.addAuthcode(email);
-                            Email.sendAuthMail(ip, Database.getAuthCode(name));
-                        } catch (MessagingException ex) {
-                            Logger.getLogger(AccountCreationController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+        CreationResponseCode nResponse = Database.CheckDuplicatedID(name, email);
+        switch (nResponse) {
+            case FAILED:
+                return new AccountCreationResponse(nResponse.GetValue(),
+                        "The provided name or email is already in use.");
+            case EXISTS_UNVERIFIED:
+                return new AccountCreationResponse(nResponse.GetValue(),
+                        "This account already exists but hasn't been verified yet. Please login to this account to initiate "
+                        + "the verification process.");
+            case SUCCESS:
+                CreationResponseCode returned = Database.CreateAccount(email, name, password, birthday, gender);
+                String message = "Account created succesfully! Please use to code sent to your e-mail adress to verify the account.";
+                if (returned == CreationResponseCode.FAILED) {
+                    message = "Failed";
+                } else {
+                    try {
+                        Database.CreateAuthCode(email);
+                        Email.sendAuthMail(email, Database.GetAuthCode(name));
+                    } catch (MessagingException ex) {
+                        Logger.getLogger(AccountCreationController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    CreationThrottle.addIP(ip);
-                    return new AccountCreationResponse(returned.getValue(), message);
-                default:
-                    return new AccountCreationResponse(valid.getValue(),
-                            "Err.");
-            }
-        } else {
-            return new AccountCreationResponse(CreationResponseCode.RECENT_BLOCK.getValue(),
-                    "15 minutes needs to have passed before you can create another account.");
+                }
+                return new AccountCreationResponse(returned.GetValue(), message);
+            default:
+                return new AccountCreationResponse(nResponse.GetValue(),
+                        "Err.");
         }
     }
 }

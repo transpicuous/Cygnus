@@ -68,7 +68,7 @@ public class ClientPacket {
             CheckHotfix = 156, // v188
             ClientLoadingState = 158, // v188
             WorldInfoRequest = 162,
-            SetSPW = 166,
+            SetSPW = 176, //v188
             UserLimitRequest = 167, //v188
             ChangeSPWRequest = 170,
             NMCORequest = 171,

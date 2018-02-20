@@ -81,11 +81,11 @@ public class Account {
         }
         LinkedList<AvatarData> ret = new LinkedList<>();
         try (Connection con = Database.GetConnection()){
-            PreparedStatement ps = con.prepareStatement("SELECT dwCharacterID FROM AvatarData WHERE nAccountID = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT dwCharacterID FROM avatardata WHERE nAccountID = ?");
             ps.setInt(1, nAccountID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ret.add(AvatarData.LoadAvatar(rs.getInt("dwCharacterID")));
+                ret.add(AvatarData.LoadAvatar(con, rs.getInt("dwCharacterID")));
             }
             ps.close();
             rs.close();

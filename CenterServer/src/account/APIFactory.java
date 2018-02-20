@@ -48,7 +48,7 @@ public class APIFactory {
 
     public void RequestAccount(LoginServerSocket pSocket, long nSessionID, String sToken) {
         Request request = new Request.Builder()
-                .url(Configuration.AUTH_API_URL + "/account?token=" + sToken)
+                .url(Configuration.AUTH_API_URL + "/account?sToken=" + sToken)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

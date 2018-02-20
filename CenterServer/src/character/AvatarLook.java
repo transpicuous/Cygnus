@@ -57,8 +57,8 @@ public class AvatarLook {
         this.dwCharacterID = dwCharacterID;
     }
 
-    public void SaveNew() {
-        try (Connection c = Database.GetConnection()) {
+    public void SaveNew(Connection c) {
+        try {
             PreparedStatement ps = c.prepareStatement("INSERT INTO AvatarLook (dwCharacterID, nGender, nSkin, nFace, nHair, "
                     + "nJob, nWeaponsStickerID, nWeaponID, nSubWeaponID, bDrawElfEar, nXenonDefFaceAcc, nDemonSlayerDefFaceAcc, nBeastDefFaceAcc, nBeastEars, nBeastTail, nMixedHairColor, nMixHairPercent) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -87,9 +87,9 @@ public class AvatarLook {
         }
     }
 
-    public static AvatarLook LoadAvatarLook(int dwCharacterID) {
+    public static AvatarLook LoadAvatarLook(Connection c, int dwCharacterID) {
         AvatarLook ret = new AvatarLook(dwCharacterID);
-        try (Connection c = Database.GetConnection()) {
+        try {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM AvatarLook WHERE dwCharacterID = ?");
             ps.setInt(1, dwCharacterID);
             ResultSet rs = ps.executeQuery();

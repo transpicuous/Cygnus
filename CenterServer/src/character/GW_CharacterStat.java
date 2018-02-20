@@ -84,8 +84,8 @@ public class GW_CharacterStat {
         this.dwCharacterID = dwCharacterID;
     }
 
-    public void SaveNew() {
-        try (Connection c = Database.GetConnection()) {
+    public void SaveNew(Connection c) {
+        try {
             PreparedStatement ps = c.prepareStatement("INSERT INTO GW_CharacterStat (dwCharacterID, dwCharacterIDForLog, dwWorldIDForLog, "
                     + "sCharacterName, nGender, nSkin, nFace, nHair, nMixBaseHairColor, nMixAddHairColor, nMixHairBaseProb, nLevel, nJob,"
                     + "nSTR, nDEX, nINT, nLUK, nHP, nMHP, nMP, nMMP, nAP, nSP, nExp64, nPop, nWP, dwPosMap, nPortal, nSubJob, nDefFaceAcc, nFatigue, nLastFatigureUpdateTime, "
@@ -149,9 +149,9 @@ public class GW_CharacterStat {
         }
     }
 
-    public static GW_CharacterStat Load(int dwCharacterID) {
+    public static GW_CharacterStat Load(Connection c, int dwCharacterID) {
         GW_CharacterStat ret = new GW_CharacterStat(dwCharacterID);
-        try (Connection c = Database.GetConnection()) {
+        try {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM GW_CharacterStat WHERE dwCharacterID = ?");
             ps.setInt(1, dwCharacterID);
             ResultSet rs = ps.executeQuery();

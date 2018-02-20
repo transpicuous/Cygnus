@@ -8,7 +8,7 @@ namespace Launcher
 {
     static class Program
     {
-        public static String APIHost = "http://127.0.0.1:8080/login?";
+        public static String APIHost = "http://127.0.0.1:8080/";
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

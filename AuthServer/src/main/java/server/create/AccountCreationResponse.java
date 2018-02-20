@@ -22,32 +22,32 @@ package server.create;
  */
 public class AccountCreationResponse {
 
-    private final int value; //Response value
-    private final String response; //Response message
+    private final int nValue; //Response value
+    private final String sResponse; //Response message
 
     /**
      * API response constructor
      *
-     * @param value API response value.
-     * @param response API response text.
+     * @param nValue API response value.
+     * @param sResponse API response text.
      */
-    public AccountCreationResponse(int value, String response) {
-        this.value = value;
-        this.response = response;
+    public AccountCreationResponse(int nValue, String sResponse) {
+        this.nValue = nValue;
+        this.sResponse = sResponse;
     }
 
     /**
      * @return Object's API response code value.
      */
     public int getValue() {
-        return value;
+        return nValue;
     }
 
     /**
      * @return Object's API response text.
      */
     public String getResponse() {
-        return response;
+        return sResponse;
     }
 
 }

@@ -45,7 +45,7 @@ public class LoginServerSocket extends Socket {
         short nPacketID = iPacket.DecodeShort();
         switch (nPacketID) {
             case LoginPacket.ProcessLogin:
-                APIFactory.GetInstance().RequestAccount(this, iPacket.DecodeInt(), iPacket.DecodeString());
+                APIFactory.GetInstance().RequestAccount(this, iPacket.DecodeLong(), iPacket.DecodeString());
                 break;
             case LoginPacket.CheckDuplicateID:
                 Login.OnCheckDuplicateID(this, iPacket);

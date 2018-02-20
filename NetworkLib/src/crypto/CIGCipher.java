@@ -43,9 +43,12 @@ public class CIGCipher {
     /**
      * Generates (or, shuffles) a new hash for the ClientSocket's Sequence.
      *
+     * @Author Eric Smith
+     * 
      * @param pSrc The ClientSocket's current sequence
      * @param nLen The length in bytes of the sequence (default: 4, integer)
      * @param dwKey - The key to shuffle
+     * 
      * @return The new sequence for the ClientSocket.
      */
     public static int InnoHash(int pSrc, int nLen, int dwKey) {
@@ -61,6 +64,9 @@ public class CIGCipher {
 
     /**
      * Transforms and shuffles a 4-byte key source with the provided previous byte of the keys initial sequence.
+     * 
+     * @Author Eric Smith: original conversion from GMS Client to JAVA.
+     * @Author Kaz Voeten: modified code to match shortened version in the later GMS clients.
      *
      * @param pSrc The input key source to modify
      * @param bData The specific byte within the sequence to shuffle

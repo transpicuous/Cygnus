@@ -64,7 +64,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
                 try {
                     int nState = iPacket.AppendBuffer(pBuff, pSocket.bEncryptData);
                     if (nState == 2) {
-                        if (pSocket.bEncryptData && !iPacket.DecryptData(pSocket.uSeqRcv)) {
+                        if (pSocket.bEncryptData && !iPacket.DecryptData(pSocket.uSeqRcv, pSocket.nCryptoMode == 2)) {
                             System.out.println("Unable to decrypt data.");
                             pSocket.uSeqRcv = CIGCipher.InnoHash(pSocket.uSeqRcv, 4, 0);
                             return;

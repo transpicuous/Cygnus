@@ -35,8 +35,8 @@ public class LoginController {
 
     @RequestMapping("/login")
     public LoginResponse login(
-            @RequestParam(value = "name", defaultValue = "null") String sName,
-            @RequestParam(value = "password", defaultValue = "password") String sPassword) {
+            @RequestParam(value = "sName", defaultValue = "null") String sName,
+            @RequestParam(value = "sPassword", defaultValue = "null") String sPassword) {
 
         LoginResponseCode nCode = Database.CheckPassword(sName, sPassword);
         if (nCode == LoginResponseCode.SUCCESS) {

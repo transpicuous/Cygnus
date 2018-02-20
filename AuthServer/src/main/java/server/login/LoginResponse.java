@@ -22,25 +22,25 @@ package server.login;
  */
 public class LoginResponse {
 
-    private final int response;
-    private final String name;
-    private final String token;
+    private final int nResponse;
+    private final String sName;
+    private final String sToken;
 
-    public LoginResponse(String name, String token, LoginResponseCode response) {
-        this.name = name;
-        this.token = token;
-        this.response = response.getValue();
+    public LoginResponse(String sName, String sToken, LoginResponseCode response) {
+        this.sName = sName;
+        this.sToken = sToken;
+        this.nResponse = response.getValue();
     }
 
-    public int getResponse() {
-        return response;
+    public int getnResponse() {
+        return nResponse;
     }
 
-    public String getName() {
-        return name;
+    public String getsName() {
+        return sName;
     }
 
-    public String getToken() {
-        return token;
+    public String getsToken() {
+        return sToken;
     }
 }

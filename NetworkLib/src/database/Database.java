@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  *
@@ -60,12 +61,7 @@ public class Database {
         return ds;
     }
 
-    public static Connection GetConnection() {
-        try (Connection con = ds.getConnection()){
-            return con;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+    public static Connection GetConnection() throws SQLException {
+        return ds.getConnection();
     }
 }

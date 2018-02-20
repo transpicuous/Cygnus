@@ -21,36 +21,47 @@ package crypto;
  */
 public final class CAESCipher {
 
-    private static final AES cipher;
+    private static final AES pCipher;
+    private static final AES pOpcodeCipher;
 
     public static final short nVersion = 188;
     private static final byte[] aKey = new byte[]{
-        (byte) 0x29, (byte) 0x00, (byte) 0x00,
-        (byte) 0x00, (byte) 0xF6, (byte) 0x00,
-        (byte) 0x00, (byte) 0x00, (byte) 0x18,
-        (byte) 0x00, (byte) 0x00, (byte) 0x00,
-        (byte) 0x5E, (byte) 0x00, (byte) 0x00,
-        (byte) 0x00, (byte) 0xCA, (byte) 0x00,
-        (byte) 0x00, (byte) 0x00, (byte) 0x5A,
-        (byte) 0x00, (byte) 0x00, (byte) 0x00,
-        (byte) 0x40, (byte) 0x00, (byte) 0x00,
-        (byte) 0x00, (byte) 0x61, (byte) 0x00,
-        (byte) 0x00, (byte) 0x00
+        (byte) 0x29, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0xF6, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x18, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x5E, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0xCA, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x5A, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x40, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x61, (byte) 0x00, (byte) 0x00, (byte) 0x00
+    };
+    private static final byte[] aOpcodeKey = new byte[]{
+        (byte) 0x04, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
     };
 
     static {
-        cipher = new AES();
-        cipher.setKey(aKey);
+        pCipher = new AES();
+        pCipher.setKey(aKey);
+
+        pOpcodeCipher = new AES();
+        pOpcodeCipher.setKey(aOpcodeKey);
     }
 
-    public static byte[] Crypt(byte[] delta, int pSrc) {
+    public static byte[] Crypt(byte[] aData, int pSrc, boolean bOpcodeEnc) {
         byte[] pdwKey = new byte[]{
             (byte) (pSrc & 0xFF), (byte) ((pSrc >> 8) & 0xFF), (byte) ((pSrc >> 16) & 0xFF), (byte) ((pSrc >> 24) & 0xFF)
         };
-        return Crypt(delta, pdwKey);
+        return Crypt(aData, pdwKey, bOpcodeEnc);
     }
 
-    public static byte[] Crypt(byte[] delta, byte[] gamma) {
+    public static byte[] Crypt(byte[] delta, byte[] gamma, boolean bOpcodeEnc) {
         int a = delta.length;
         int b = 0x5B0;
         int c = 0;
@@ -61,7 +72,11 @@ public final class CAESCipher {
             }
             for (int e = c; e < (c + b); e++) {
                 if ((e - c) % d.length == 0) {
-                    cipher.encrypt(d);
+                    if (!bOpcodeEnc) {
+                        pCipher.encrypt(d);
+                    } else {
+                        pOpcodeCipher.encrypt(d);
+                    }
                 }
                 delta[e] ^= d[(e - c) % d.length];
             }

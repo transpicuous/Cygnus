@@ -43,60 +43,60 @@ public class AccountCreationController {
     /**
      * Controls Account creation API requests.
      *
-     * @param email Supplied email parameter.
-     * @param name Supplied name parameter.
-     * @param password Supplied password parameter.
-     * @param birthday Supplied birthday parameter.
-     * @param gender Supplied gender parameter.
+     * @param sEmail Supplied email parameter.
+     * @param sAccountName Supplied name parameter.
+     * @param sPassword Supplied password parameter.
+     * @param pBirthDate Supplied birthday parameter.
+     * @param nGender Supplied gender parameter.
      * @param request Supplied request parameter.
      *
      * @return new Account with supplied parameters as configuration.
      */
     @RequestMapping("/create")
     public AccountCreationResponse create(
-            @RequestParam(value = "email", defaultValue = "") String email,
-            @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "password", defaultValue = "") String password,
-            @RequestParam(value = "birthday", defaultValue = "") String birthday,
-            @RequestParam(value = "gender", defaultValue = "") String gender,
+            @RequestParam(value = "sEmail", defaultValue = "") String sEmail,
+            @RequestParam(value = "sAccountName", defaultValue = "") String sAccountName,
+            @RequestParam(value = "sPassword", defaultValue = "") String sPassword,
+            @RequestParam(value = "pBirthDate", defaultValue = "") String pBirthDate,
+            @RequestParam(value = "nGender", defaultValue = "") String nGender,
             HttpServletRequest request) {
 
         try {
-            (new InternetAddress(email)).validate();
+            (new InternetAddress(sEmail)).validate();
         } catch (AddressException ex) {
             return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Invalid e-mail address.");
         }
 
-        if (name.length() < 5 || name.length() > 13) {
+        if (sAccountName.length() < 5 || sAccountName.length() > 13) {
             return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Username has to be at least 5 and maximum 13 characters long.");
         }
 
-        if (password.length() < 5 || password.length() > 13) {
+        if (sPassword.length() < 5 || sPassword.length() > 13) {
             return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Password has to be at least 5 and maximum 13 characters long.");
         }
 
-        if (!(gender.equals("0") || gender.equals("1"))) {
+        if (!(nGender.equals("0") || nGender.equals("1"))) {
             return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Gender has to be either 0 (male) or 1 (female).");
         }
 
-        if (!Charset.forName(CharEncoding.UTF_8).newEncoder().canEncode(name)) {
+        if (!Charset.forName(CharEncoding.UTF_8).newEncoder().canEncode(sAccountName)) {
             return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Username contains invalid characters. Only utf8 characters are supported.");
         }
 
-        if (!Charset.forName(CharEncoding.UTF_8).newEncoder().canEncode(password)) {
+        if (!Charset.forName(CharEncoding.UTF_8).newEncoder().canEncode(sPassword)) {
             return new AccountCreationResponse(CreationResponseCode.FAILED.GetValue(),
                     "Password contains invalid characters. Only utf8 characters are supported.");
         }
 
         try {
-            int day = Integer.parseInt(birthday.substring(0, 2));
-            int month = Integer.parseInt(birthday.substring(2, 4));
-            int year = Integer.parseInt(birthday.substring(4, 8));
+            int day = Integer.parseInt(pBirthDate.substring(0, 2));
+            int month = Integer.parseInt(pBirthDate.substring(2, 4));
+            int year = Integer.parseInt(pBirthDate.substring(4, 8));
             if (day > 31 || day < 1
                     || month > 12 || month < 1
                     || year > 9999 || year < 1900) {
@@ -108,7 +108,7 @@ public class AccountCreationController {
                     "Invalid birthday. Please use format ddmmyyyy");
         }
 
-        CreationResponseCode nResponse = Database.CheckDuplicatedID(name, email);
+        CreationResponseCode nResponse = Database.CheckDuplicatedID(sAccountName, sEmail);
         switch (nResponse) {
             case FAILED:
                 return new AccountCreationResponse(nResponse.GetValue(),
@@ -118,14 +118,14 @@ public class AccountCreationController {
                         "This account already exists but hasn't been verified yet. Please login to this account to initiate "
                         + "the verification process.");
             case SUCCESS:
-                CreationResponseCode returned = Database.CreateAccount(email, name, password, birthday, gender);
+                CreationResponseCode returned = Database.CreateAccount(sEmail, sAccountName, sPassword, pBirthDate, nGender);
                 String message = "Account created succesfully! Please use to code sent to your e-mail adress to verify the account.";
                 if (returned == CreationResponseCode.FAILED) {
                     message = "Failed";
                 } else {
                     try {
-                        Database.CreateAuthCode(email);
-                        Email.sendAuthMail(email, Database.GetAuthCode(name));
+                        Database.CreateAuthCode(sEmail);
+                        Email.sendAuthMail(sEmail, Database.GetAuthCode(sAccountName));
                     } catch (MessagingException ex) {
                         Logger.getLogger(AccountCreationController.class.getName()).log(Level.SEVERE, null, ex);
                     }

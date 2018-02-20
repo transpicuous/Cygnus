@@ -149,8 +149,8 @@ public class ZeroInfo {
         }
     }
 
-    public void SaveNew(int dwCharacterID) {
-        try (Connection c = Database.GetConnection()){
+    public void SaveNew(Connection c, int dwCharacterID) {
+        try {
             PreparedStatement ps = c.prepareStatement("INSERT INTO ZeroInfo (dwCharacterID, nSubHP, nSubMP, nSubSkin, nSubHair, nSubFace, nSubMHP, nSubMMP, "
                     + "dbcharZeroLinkCashPart, nMixBaseHairColor, nMixAddHairColor, nMixHairBaseProb, bIsBeta, nLapis, nLazuli) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -177,8 +177,8 @@ public class ZeroInfo {
         }
     }
 
-    public void Load(int dwCharacterID) {
-        try (Connection c = Database.GetConnection()){
+    public void Load(Connection c, int dwCharacterID) {
+        try {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM ZeroInfo WHERE dwCharacterID = ?");
             ps.setInt(1, dwCharacterID);
             ResultSet rs = ps.executeQuery();

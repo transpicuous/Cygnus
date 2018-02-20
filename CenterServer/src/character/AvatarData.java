@@ -64,9 +64,9 @@ public class AvatarData {
             ps.setInt(8, dwCharacterID);
             ps.executeUpdate();
 
-            pCharacterStat.SaveNew();
-            pAvatarLook.SaveNew();
-            pZeroInfo.SaveNew(dwCharacterID);
+            pCharacterStat.SaveNew(con);
+            pAvatarLook.SaveNew(con);
+            pZeroInfo.SaveNew(con, dwCharacterID);
             ps.close();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -107,9 +107,9 @@ public class AvatarData {
         return null;
     }
 
-    public static AvatarData LoadAvatar(int dwCharacterID) {
+    public static AvatarData LoadAvatar(Connection c, int dwCharacterID) {
         AvatarData ret = new AvatarData(dwCharacterID);
-        try (Connection c = Database.GetConnection()) {
+        try {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM AvatarData WHERE dwCharacterID = ?");
             ps.setInt(1, dwCharacterID);
             ResultSet rs = ps.executeQuery();
@@ -123,10 +123,9 @@ public class AvatarData {
                 ret.nOverallRank = rs.getInt("nOverallRank");
                 ret.nOverallRankMove = rs.getInt("nOverallRankMove");
 
-                ret.pCharacterStat = GW_CharacterStat.Load(dwCharacterID);
-                ret.pAvatarLook = AvatarLook.LoadAvatarLook(dwCharacterID);
-                ret.pZeroInfo.Load(dwCharacterID);
-                int nJob = ret.pCharacterStat.nJob;
+                ret.pCharacterStat = GW_CharacterStat.Load(c, dwCharacterID);
+                ret.pAvatarLook = AvatarLook.LoadAvatarLook(c, dwCharacterID);
+                ret.pZeroInfo.Load(c, dwCharacterID);
             }
             ps.close();
             rs.close();

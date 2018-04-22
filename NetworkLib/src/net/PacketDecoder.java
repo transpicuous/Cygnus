@@ -16,7 +16,7 @@
  */
 package net;
 
-import crypto.CAESCipher;
+import crypto.AESCipher;
 import crypto.CIGCipher;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -48,7 +48,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
                         return;
                     }
                     pSocket.nLastState = iPacket.uDataLen;
-                    if (pSocket.bEncryptData && iPacket.DecodeSeqBase(pSocket.uSeqRcv) != CAESCipher.nVersion) {
+                    if (pSocket.bEncryptData && iPacket.DecodeSeqBase(pSocket.uSeqRcv) != AESCipher.nVersion) {
                         System.out.println("Recv packet sequence mismatch.");
                     }
                 }

@@ -115,7 +115,6 @@ public class APIFactory {
                 oPacket.EncodeLong(nSessionID);
                 oPacket.EncodeBool(false);
                 pSocket.SendPacket(oPacket);
-                e.printStackTrace();
             }
 
             @Override
@@ -257,12 +256,15 @@ public class APIFactory {
                         try {
                             if ((sdf.parse(pJSONBlock.getString("pBanEndDate"))).before(new Date())) {
                                 oPacket.EncodeString(pJSONBlock.getString("sIP"));
+                                oPacket.EncodeString(pJSONBlock.getString("pBanEndDate"));
                             } else {
-                                oPacket.EncodeString("");
+                                oPacket.EncodeString("null");
+                                oPacket.EncodeString("null");
                             }
                         } catch (ParseException ex) {
                             Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
-                            oPacket.EncodeString("");
+                            oPacket.EncodeString("null");
+                            oPacket.EncodeString("null");
                         }
                     });
 
@@ -273,12 +275,15 @@ public class APIFactory {
                         try {
                             if ((sdf.parse(pJSONBlock.getString("pBanEndDate"))).before(new Date())) {
                                 oPacket.EncodeString(pJSONBlock.getString("sHWID"));
+                                oPacket.EncodeString(pJSONBlock.getString("pBanEndDate"));
                             } else {
-                                oPacket.EncodeString("");
+                                oPacket.EncodeString("null");
+                                oPacket.EncodeString("null");
                             }
                         } catch (ParseException ex) {
                             Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
-                            oPacket.EncodeString("");
+                            oPacket.EncodeString("null");
+                            oPacket.EncodeString("null");
                         }
                     });
 
@@ -289,12 +294,15 @@ public class APIFactory {
                         try {
                             if ((sdf.parse(pJSONBlock.getString("pBanEndDate"))).before(new Date())) {
                                 oPacket.EncodeString(pJSONBlock.getString("sHWID"));
+                                oPacket.EncodeString(pJSONBlock.getString("pBanEndDate"));
                             } else {
-                                oPacket.EncodeString("");
+                                oPacket.EncodeString("null");
+                                oPacket.EncodeString("null");
                             }
                         } catch (ParseException ex) {
                             Logger.getLogger(APIFactory.class.getName()).log(Level.SEVERE, null, ex);
-                            oPacket.EncodeString("");
+                            oPacket.EncodeString("null");
+                            oPacket.EncodeString("null");
                         }
                     });
 

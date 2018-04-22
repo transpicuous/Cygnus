@@ -16,12 +16,12 @@
  */
 package client;
 
-import client.packet.Login;
-import client.packet.ClientPacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import net.InPacket;
@@ -35,6 +35,7 @@ import server.Configuration;
  */
 public class ClientSessionManager extends ChannelInboundHandlerAdapter {
 
+    public static HashMap<String, Date> mIPBan = new HashMap<>(), mHWIDBan = new HashMap<>(), mMACBan = new HashMap<>();
     public static ArrayList<ClientSocket> aSessions = new ArrayList<>();
     private static final Random rand = new Random();
 

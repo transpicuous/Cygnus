@@ -16,11 +16,11 @@
  */
 package login;
 
+import account.APIFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.Random;
-import login.packet.LoginPacket;
 import login.packet.LoopBackPacket;
 import net.InPacket;
 import net.OutPacket;
@@ -56,6 +56,8 @@ public class LoginSessionManager extends ChannelInboundHandlerAdapter {
         oPacket.EncodeShort(Configuration.EVENT_DROP);
         oPacket.EncodeBool(Configuration.DISABLE_CHAR_CREATION);
         pClient.SendPacket(oPacket);
+        
+        APIFactory.GetInstance().GetBlockList(pClient);
     }
 
     @Override

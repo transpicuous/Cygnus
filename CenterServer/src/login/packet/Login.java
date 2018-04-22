@@ -90,7 +90,6 @@ public class Login {
     }
 
     public static void OnCreateNewCharacter(LoginServerSocket pSocket, InPacket iPacket) {
-        //TODO: pCharacterData, Specifically inventories. Do them before sending back to login ya lazy cunt.
         long nSessionID = iPacket.DecodeLong();
         int nCharListPosition = iPacket.DecodeInt();
         String sCharacterName = iPacket.DecodeString();

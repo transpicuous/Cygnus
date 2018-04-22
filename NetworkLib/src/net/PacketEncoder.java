@@ -16,8 +16,8 @@
  */
 package net;
 
-import crypto.CAESCipher;
-import static crypto.CAESCipher.nVersion;
+import crypto.AESCipher;
+import static crypto.AESCipher.nVersion;
 import crypto.CIGCipher;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -46,7 +46,7 @@ public class PacketEncoder extends MessageToByteEncoder<OutPacket> {
                 if (pSocket.bEncryptData) {
                     uDataLen ^= uRawSeq;
                     if (pSocket.nCryptoMode == 1) {
-                        CAESCipher.Crypt(pBuffer, uSeqSend, false);
+                        AESCipher.Crypt(pBuffer, uSeqSend, false);
                     } else if (pSocket.nCryptoMode == 2) {
                         CIGCipher.Crypt(pBuffer, uSeqSend);
                     }

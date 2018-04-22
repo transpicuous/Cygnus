@@ -19,7 +19,7 @@ package crypto;
 /**
  * @author Kaz Voeten
  */
-public final class CAESCipher {
+public final class AESCipher {
 
     private static final AES pCipher;
     private static final AES pOpcodeCipher;
@@ -35,7 +35,7 @@ public final class CAESCipher {
         (byte) 0x40, (byte) 0x00, (byte) 0x00, (byte) 0x00,
         (byte) 0x61, (byte) 0x00, (byte) 0x00, (byte) 0x00
     };
-    private static final byte[] aOpcodeKey = new byte[]{
+    private static final byte[] aOpcodeKey = new byte[]{ //Wrong, need to get proper key struct
         (byte) 0x04, (byte) 0x00, (byte) 0x00, (byte) 0x00,
         (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
         (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,

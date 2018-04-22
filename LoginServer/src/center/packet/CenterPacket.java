@@ -27,5 +27,7 @@ public class CenterPacket {
             WorldInformation = 2,
             ChannelInformation = 3,
             CheckDuplicatedIDResponse = 4,
-            OnCreateCharacterResponse = 5;
+            OnCreateCharacterResponse = 5,
+            SetSPWResult = 6,
+            BlockList = 7;
 }

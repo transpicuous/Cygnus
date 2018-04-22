@@ -20,6 +20,7 @@ package client;
  *
  * @author Kaz Voeten
  */
+import center.CenterSessionManager;
 import java.util.LinkedList;
 import java.util.List;
 import net.InPacket;
@@ -30,7 +31,7 @@ public class Account {
 
     public final int nAccountID;
     public final long nSessionID;
-    public String sAccountName, sIP, sSPW;
+    public String sAccountName, sIP, sSPW, sHWID, sMAC;
     public final byte nState, nGender, nAdmin;
     public List<AvatarData> aAvatarData = new LinkedList<>();
 
@@ -65,6 +66,34 @@ public class Account {
             return;
         }
         this.sSPW = BCrypt.hashpw(iPacket.DecodeString(), BCrypt.gensalt());
+    }
+
+    public void VerifyWhitelisted(ClientSocket pSocket) {
+        if (!sIP.isEmpty()) {
+            if (ClientSessionManager.mMACBan.containsKey(sIP)) {
+                Ban(pSocket);
+            }
+        }
+
+        if (!sMAC.isEmpty()) {
+            if (ClientSessionManager.mMACBan.containsKey(sMAC)) {
+                Ban(pSocket);
+            }
+        }
+
+        if (!sHWID.isEmpty()) {
+            if (ClientSessionManager.mMACBan.containsKey(sHWID)) {
+                Ban(pSocket);
+            }
+        }
+    }
+
+    public void Ban(ClientSocket pSocket) {
+        CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
+            if (pCenterSocket.nWorldID == pSocket.nWorldID) {
+                //TODO: ban packet
+            }
+        });
     }
 
 }

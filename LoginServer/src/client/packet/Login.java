@@ -214,8 +214,8 @@ public class Login {
     }
 
     public static OutPacket AccountInfoResult(Account pAccount) {
-
         OutPacket oPacket = new OutPacket(LoopBackPacket.AccountInfoResult);
+
         oPacket.EncodeByte(0x00);
         oPacket.EncodeInt(pAccount.nAccountID);
         oPacket.EncodeByte(0);//?
@@ -235,6 +235,7 @@ public class Login {
         JobOrder.Encode(oPacket);
         oPacket.EncodeBool(false); //Make view world button shining?
         oPacket.EncodeInt(-1); //Has to do with that shining button, so worldID?
+
         return oPacket;
     }
 
@@ -364,10 +365,27 @@ public class Login {
 
     public static void OnSetSPW(ClientSocket pSocket, InPacket iPacket) {
         Account pAccount = pSocket.pAccount;
+
+        if (!iPacket.DecodeBool() && !iPacket.DecodeBool()) {
+            return;
+        }
+
+        int nCharacterID = iPacket.DecodeInt();
+
+        pAccount.sMAC = iPacket.DecodeString();
+        pAccount.sHWID = iPacket.DecodeString();
+        pAccount.sSPW = iPacket.DecodeString();
         
+        pAccount.VerifyWhitelisted(pSocket);
+
         CenterSessionManager.aCenterSessions.forEach((pCenterSocket) -> {
             if (pCenterSocket.nWorldID == pSocket.nWorldID) {
-                pCenterSocket.SendPacket(Center.UpdatePIC(pSocket.nSessionID, iPacket.DecodeString()));
+                pAccount.aAvatarData.forEach((pAvatar) -> {
+                    if (pAvatar.dwCharacterID == nCharacterID) {
+                        pCenterSocket.SendPacket(Center.UpdatePIC(pSocket.nSessionID, pAccount.nAccountID, iPacket.DecodeString()));
+                        pCenterSocket.SendPacket(Center.RegisterTransition(pSocket.nSessionID, pAccount.nAccountID, nCharacterID));
+                    }
+                });
             }
         });
     }

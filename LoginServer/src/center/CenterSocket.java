@@ -16,6 +16,7 @@
  */
 package center;
 
+import center.packet.Center;
 import center.packet.CenterPacket;
 import client.Account;
 import client.ClientSessionManager;
@@ -25,6 +26,9 @@ import java.util.ArrayList;
 import net.InPacket;
 import net.Socket;
 import client.avatar.AvatarData;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.HexUtils;
 
 /**
@@ -58,6 +62,14 @@ public class CenterSocket extends Socket {
                 this.bCreateChar = iPacket.DecodeBool();
                 System.out.println("[Info] Registered world : " + sWorldName + ".");
                 break;
+            case CenterPacket.BlockList: {
+                try {
+                    Center.ParseBlockList(iPacket);
+                } catch (ParseException ex) {
+                    Logger.getLogger(CenterSocket.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            break;
             case CenterPacket.ChannelInformation:
                 aChannels.clear();
                 System.out.println("[Info] Cleared channel cache.");
@@ -104,8 +116,8 @@ public class CenterSocket extends Socket {
                 });
                 break;
             default:
-                System.out.println("[DEBUG] Received unhandled Center packet. nPacketID: " 
-                        + nPacketID + ". Data: " 
+                System.out.println("[DEBUG] Received unhandled Center packet. nPacketID: "
+                        + nPacketID + ". Data: "
                         + HexUtils.ToHex(iPacket.Decode(iPacket.GetRemainder())));
                 break;
         }

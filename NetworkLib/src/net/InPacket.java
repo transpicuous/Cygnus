@@ -16,7 +16,7 @@
  */
 package net;
 
-import crypto.CAESCipher;
+import crypto.AESCipher;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.awt.Point;
@@ -48,13 +48,13 @@ public class InPacket {
 
     public boolean DecryptData(int uSeqKey, boolean bOpcodeEnc) {
         if (uDataLen > 0 && aRawData.length >= uDataLen) {
-            CAESCipher.Crypt(aRawData, uSeqKey, false);
+            AESCipher.Crypt(aRawData, uSeqKey, false);
             pRecvBuff.writeBytes(aRawData);
             if (bOpcodeEnc) {
                 int nReaderIdx = pRecvBuff.readerIndex();
                 byte[] aPacketID = new byte[2];
                 pRecvBuff.getBytes(nReaderIdx, aPacketID);
-                CAESCipher.Crypt(aPacketID, uSeqKey, true);
+                AESCipher.Crypt(aPacketID, uSeqKey, true);
                 pRecvBuff.setBytes(nReaderIdx, aPacketID);
             }
             return true;
